@@ -1,9 +1,7 @@
 package no.nav.bidrag.cucumber.controller
 
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
-import no.nav.bidrag.cucumber.BidragCucumberCloudLocal
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -22,7 +20,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-@SpringBootTest(classes = [BidragCucumberCloudLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("CucumberController (mocked bean: RestTemplate)")
 class CucumberControllerRestTemplateMockBeanTest {
 
@@ -33,7 +31,7 @@ class CucumberControllerRestTemplateMockBeanTest {
     private lateinit var httpHeaderRestTemplateMock: HttpHeaderRestTemplate
 
     @Test
-    fun `skal lage endpoint url mot bidrag-sak`() {
+    fun `skal lage endpoint url mot bidrag-beregn-barnebidrag-sak`() {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
 
@@ -42,9 +40,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "testUsername":"z992903","ingressesForApps":[
-                    "https://bidrag-sak-feature.dev-fss-pub.nais.io@bidrag-sak"
-                  ]
+                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@bidrag-beregn-barnebidrag-rest"]
                 }
                 """.trimMargin().trim(), headers
             ),
@@ -59,7 +55,10 @@ class CucumberControllerRestTemplateMockBeanTest {
 
         assertAll(
             { assertThat(testResponse.statusCode).`as`("status code").isEqualTo(HttpStatus.NOT_ACCEPTABLE) },
-            { assertThat(urlCaptor.value).`as`("endpoint url").isEqualTo("/sak/1900000") }
+            {
+                assertThat(urlCaptor.value).`as`("endpoint url")
+                    .isEqualTo("/swagger-ui/index.html?configUrl=/bidrag-beregn-barnebidrag-rest/v3/api-docs/swagger-config#")
+            }
         )
     }
 
@@ -73,9 +72,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "testUsername":"z992903","ingressesForApps":[
-                    "https://bidrag-sak-feature.dev-fss-pub.nais.io@bidrag-sak"
-                  ]
+                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@bidrag-beregn-barnebidrag-rest"]
                 }
                 """.trimMargin().trim(), headers
             ),
@@ -84,11 +81,11 @@ class CucumberControllerRestTemplateMockBeanTest {
 
         val testMessages = testResponse.body ?: "Ingen body i response: $testResponse"
 
-        val softly = SoftAssertions()
-        softly.assertThat(testMessages).contains("Starting")
-        softly.assertThat(testMessages).contains("Link")
-        softly.assertThat(testMessages).contains("Finished")
-        softly.assertThat(testMessages).contains("Scenario")
-        softly.assertAll()
+        assertAll(
+            { assertThat(testMessages).contains("Starting") },
+            { assertThat(testMessages).contains("Link") },
+            { assertThat(testMessages).contains("Finished") },
+            { assertThat(testMessages).contains("Scenario") }
+        )
     }
 }

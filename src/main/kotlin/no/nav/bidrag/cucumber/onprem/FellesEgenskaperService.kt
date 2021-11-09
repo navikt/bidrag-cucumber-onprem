@@ -1,4 +1,4 @@
-package no.nav.bidrag.cucumber.cloud
+package no.nav.bidrag.cucumber.onprem
 
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.RestTjeneste

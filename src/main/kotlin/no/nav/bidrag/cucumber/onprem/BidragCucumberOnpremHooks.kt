@@ -1,10 +1,10 @@
-package no.nav.bidrag.cucumber.cloud
+package no.nav.bidrag.cucumber.onprem
 
 import io.cucumber.java8.No
 import io.cucumber.java8.Scenario
 import no.nav.bidrag.cucumber.ScenarioManager
 
-class BidragCucumberCloudHooks : No {
+class BidragCucumberOnpremHooks : No {
     init {
         Before(10) { scenario: Scenario ->
             ScenarioManager.use(scenario)

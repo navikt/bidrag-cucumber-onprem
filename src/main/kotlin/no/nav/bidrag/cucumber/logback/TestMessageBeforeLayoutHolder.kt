@@ -23,7 +23,7 @@ class TestMessageBeforeLayoutHolder : PatternLayout() {
 
     override fun doLayout(event: ILoggingEvent?): String {
         if (TEST_RUN_STARTED.get() == true) {
-            val message = event?.message ?: throw IllegalStateException("event or event.message should not be null!")
+            val message = event?.message ?: throw IllegalStateException("ILoggingEvent should not be null!")
             BidragCucumberSingletons.holdTestMessage(message)
         }
 

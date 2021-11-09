@@ -1,6 +1,6 @@
 package no.nav.bidrag.cucumber
 
-import no.nav.bidrag.cucumber.cloud.FellesEgenskaperService
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
 import no.nav.bidrag.cucumber.logback.TestMessageBeforeLayoutHolder
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestsModel

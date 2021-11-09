@@ -1,8 +1,8 @@
-package no.nav.bidrag.cucumber.cloud
+package no.nav.bidrag.cucumber.onprem
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.cloud.FellesEgenskaperService.Assertion
-import no.nav.bidrag.cucumber.cloud.FellesEgenskaperService.hentRestTjeneste
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.hentRestTjeneste
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet

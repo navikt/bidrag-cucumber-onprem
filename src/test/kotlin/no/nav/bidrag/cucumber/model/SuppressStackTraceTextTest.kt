@@ -22,14 +22,14 @@ ${"\t"}at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMap
 ${"\t"}at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3548)
 ${"\t"}at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3516)
 ${"\t"}at no.nav.bidrag.cucumber.RestTjeneste.hentResponseSomMap(RestTjeneste.kt:32)
-${"\t"}at no.nav.bidrag.cucumber.cloud.FellesEgenskaper._init_(FellesEgenskaper.kt:41)"""
+${"\t"}at no.nav.bidrag.cucumber.onprem.FellesEgenskaper._init_(FellesEgenskaper.kt:41)"""
 
         val stackedText = suppressStackTraceText.suppress(text)
 
         assertThat(stackedText).isEqualTo(
             """com.fasterxml.jackson.core.JsonParseException:
 ${"\t"}at no.nav.bidrag.cucumber.RestTjeneste.hentResponseSomMap(RestTjeneste.kt:32)
-${"\t"}at no.nav.bidrag.cucumber.cloud.FellesEgenskaper._init_(FellesEgenskaper.kt:41)"""
+${"\t"}at no.nav.bidrag.cucumber.onprem.FellesEgenskaper._init_(FellesEgenskaper.kt:41)"""
         )
     }
 

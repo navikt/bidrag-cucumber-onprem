@@ -8,15 +8,15 @@ import java.io.File
 
 internal class FilePathTest {
     @Test
-    fun `skal finne cloud-features i prosjekt katalogen`() {
-        val filePath = FilePath("cloud-features.path")
+    fun `skal finne features i onprem katalogen`() {
+        val filePath = FilePath("features.path")
         val pathFile = filePath.findFile()
 
         assertAll(
             { assertThat(pathFile.exists()).`as`("file exists").isTrue() },
             {
                 assertThat(filePath.findFolderPath()).`as`("folder path")
-                    .isEqualTo(File("src/main/resources/no/nav/bidrag/cucumber/cloud").absolutePath)
+                    .isEqualTo(File("src/main/resources/no/nav/bidrag/cucumber/onprem").absolutePath)
             },
         )
     }

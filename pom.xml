@@ -10,11 +10,11 @@
   </parent>
 
   <groupId>no.nav.bidrag.cucumber</groupId>
-  <artifactId>bidrag-cucumber-cloud</artifactId>
-  <version>0.3.79-SNAPSHOT</version>
+  <artifactId>bidrag-cucumber-onprem</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
 
-  <name>bidrag-cucumber-cloud</name>
-  <description>Nais jobb for applikasjoner som bruker Azure Ad og har ingress med tilgang via naisdevice</description>
+  <name>bidrag-cucumber-onprem</name>
+  <description>Nais app for applikasjoner som er deployet "on-premise"</description>
   <packaging>jar</packaging>
 
   <properties>
@@ -49,7 +49,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -65,10 +64,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.kafka</groupId>
-      <artifactId>spring-kafka</artifactId>
     </dependency>
 
     <!-- cucumber -->

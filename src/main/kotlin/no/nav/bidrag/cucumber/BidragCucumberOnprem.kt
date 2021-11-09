@@ -5,10 +5,10 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class BidragCucumberCloud {
+class BidragCucumberOnprem {
     companion object {
         @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(BidragCucumberCloud::class.java)
+        private val LOGGER = LoggerFactory.getLogger(BidragCucumberOnprem::class.java)
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -18,7 +18,7 @@ class BidragCucumberCloud {
                 args[0]
             }
 
-            val app = SpringApplication(BidragCucumberCloud::class.java)
+            val app = SpringApplication(BidragCucumberOnprem::class.java)
 
             app.setAdditionalProfiles(profile)
             app.run(*args)

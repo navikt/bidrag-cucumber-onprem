@@ -17,27 +17,27 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal hente tags basert på ingressesForApps`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("https://somewhere.out.there@bidrag-sak"))
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("https://somewhere.out.there@bidrag-cucumber-onprem"))
 
-        assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags").isEqualTo("@bidrag-sak and not @ignored")
+        assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags").isEqualTo("@bidrag-cucumber-onprem and not @ignored")
     }
 
     @Test
     fun `skal også bruke tags som ikke er listet i ingressesForApps`() {
         val cucumberTestsModel = CucumberTestsModel(
-            ingressesForApps = listOf("https://somewhere.out.there@bidrag-sak"), tags = listOf("@arbeidsflyt-endre-fagomrade")
+            ingressesForApps = listOf("https://somewhere.out.there@bidrag-cucumber-onprem"), tags = listOf("@bidrag-beregn-barnebidrag-rest")
         )
 
         assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags")
-            .isEqualTo("(@bidrag-sak or @arbeidsflyt-endre-fagomrade) and not @ignored")
+            .isEqualTo("(@bidrag-beregn-barnebidrag-rest or @bidrag-cucumber-onprem) and not @ignored")
     }
 
     @Test
     fun `skal bare plukke tags fra ingressesForApps`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@arbeidsflyt-endre-fagomrade", "here@no-tag:this-app"))
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@bidrag-cucumber-onprem", "here@no-tag:this-app"))
 
         assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags")
-            .isEqualTo("@arbeidsflyt-endre-fagomrade and not @ignored")
+            .isEqualTo("@bidrag-cucumber-onprem and not @ignored")
     }
 
     @Test
@@ -46,7 +46,7 @@ internal class CucumberTestsModelTest {
 
         assertThatIllegalStateException().isThrownBy { cucumberTestsModel.fetchTags() }
             .withMessageContaining("@not-available er ukjent")
-            .withMessageContaining("bidrag-cucumber-cloud.feature")
+            .withMessageContaining("bidrag-cucumber-onprem.feature")
     }
 
     @Test
@@ -59,8 +59,11 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal ikke hente ut tags dobbelt opp`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("https://somewhere.out.there@bidrag-sak"), tags = listOf("@bidrag-sak"))
+        val cucumberTestsModel = CucumberTestsModel(
+            ingressesForApps = listOf("https://somewhere.out.there@bidrag-cucumber-onprem"),
+            tags = listOf("@bidrag-cucumber-onprem")
+        )
 
-        assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags").isEqualTo("@bidrag-sak and not @ignored")
+        assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags").isEqualTo("@bidrag-cucumber-onprem and not @ignored")
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.bidrag.cucumber.model
 
-import no.nav.bidrag.cucumber.ABSOLUTE_CLOUD_PATH
+import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.dto.CucumberTestsApi
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
         private val LOGGER = LoggerFactory.getLogger(CucumberTestsModel::class.java)
 
         @JvmStatic
-        private val FEATURE_FILES = File(ABSOLUTE_CLOUD_PATH)
+        private val FEATURE_FILES = File(ABSOLUTE_FEATURE_PATH)
             .walkBottomUp()
             .filter { it.isFile }
             .filter { it.name.endsWith(".feature") }

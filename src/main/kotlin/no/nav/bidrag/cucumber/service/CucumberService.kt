@@ -3,9 +3,8 @@ package no.nav.bidrag.cucumber.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.cucumber.core.cli.Main
 import no.nav.bidrag.commons.ExceptionLogger
-import no.nav.bidrag.cucumber.ABSOLUTE_CLOUD_PATH
+import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
 import no.nav.bidrag.cucumber.Environment
-import no.nav.bidrag.cucumber.hendelse.HendelseProducer
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
 import no.nav.bidrag.cucumber.model.SuppressStackTraceText
@@ -19,14 +18,12 @@ class CucumberService(
     private val suppressStackTraceText: SuppressStackTraceText,
     applicationContext: ApplicationContext,
     exceptionLogger: ExceptionLogger,
-    hendelseProducer: HendelseProducer,
     objectMapper: ObjectMapper,
     testMessagesHolder: TestMessagesHolder
 ) {
     init {
         BidragCucumberSingletons.setApplicationContext(applicationContext)
         BidragCucumberSingletons.setExceptionLogger(exceptionLogger)
-        BidragCucumberSingletons.setHendelseProducer(hendelseProducer)
         BidragCucumberSingletons.setObjectMapper(objectMapper)
         BidragCucumberSingletons.setTestMessagesHolder(testMessagesHolder)
     }
@@ -54,7 +51,7 @@ class CucumberService(
         if (tags.isBlank()) throw IllegalStateException("Ingen tags som kan brukes")
 
         return Main.run(
-            ABSOLUTE_CLOUD_PATH, "--glue", "no.nav.bidrag.cucumber.cloud", "--tags", tags
+            ABSOLUTE_FEATURE_PATH, "--glue", "no.nav.bidrag.cucumber.onprem", "--tags", tags
         )
     }
 }

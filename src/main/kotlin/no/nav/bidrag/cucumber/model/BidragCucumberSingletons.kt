@@ -4,11 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.cucumber.java8.Scenario
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
-import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.SpringConfig
-import no.nav.bidrag.cucumber.hendelse.HendelseProducer
 import no.nav.bidrag.cucumber.sikkerhet.SecurityTokenService
-import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 
 /**
@@ -18,12 +15,8 @@ internal object BidragCucumberSingletons {
     @JvmStatic
     private val RUN_STATS = ThreadLocal<RunStats>()
 
-    @JvmStatic
-    private val LOGGER = LoggerFactory.getLogger(BidragCucumberSingletons::class.java)
-
     private var applicationContext: ApplicationContext? = null
     private var exceptionLogger: ExceptionLogger? = null
-    private var hendelseProducer: HendelseProducer? = null
     private var objectMapper: ObjectMapper? = null
     private var testMessagesHolder: TestMessagesHolder? = null
 
@@ -73,12 +66,6 @@ internal object BidragCucumberSingletons {
         fetchRunStats().addExceptionLogging(listOf(assertionMessage))
     }
 
-    fun publiserHendelse(journalpostHendelse: JournalpostHendelse) {
-        hendelseProducer?.publish(journalpostHendelse) ?: LOGGER.warn(
-            "Cannot publish $journalpostHendelse when spring context is not initialized, sanity check: ${Environment.isSanityCheck}"
-        )
-    }
-
     fun <T> readValue(value: String, mapClass: Class<T>): T = objectMapper?.readValue(value, mapClass) ?: throw IllegalStateException(
         "Kunne ikke mappe: $value"
     )
@@ -91,10 +78,6 @@ internal object BidragCucumberSingletons {
 
     fun setExceptionLogger(exceptionLogger: ExceptionLogger) {
         BidragCucumberSingletons.exceptionLogger = exceptionLogger
-    }
-
-    fun setHendelseProducer(hendelseProducer: HendelseProducer) {
-        BidragCucumberSingletons.hendelseProducer = hendelseProducer
     }
 
     fun setObjectMapper(objectMapper: ObjectMapper) {

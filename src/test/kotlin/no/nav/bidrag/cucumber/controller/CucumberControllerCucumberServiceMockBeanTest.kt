@@ -1,6 +1,5 @@
 package no.nav.bidrag.cucumber.controller
 
-import no.nav.bidrag.cucumber.BidragCucumberCloudLocal
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
 import no.nav.bidrag.cucumber.model.TestFailedException
 import no.nav.bidrag.cucumber.service.CucumberService
@@ -20,7 +19,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-@SpringBootTest(classes = [BidragCucumberCloudLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("CucumberController (mocked bean: CucumberService)")
 internal class CucumberControllerCucumberServiceMockBeanTest {
 

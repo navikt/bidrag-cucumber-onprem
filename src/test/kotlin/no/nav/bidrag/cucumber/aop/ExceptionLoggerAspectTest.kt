@@ -1,7 +1,6 @@
 package no.nav.bidrag.cucumber.aop
 
 import no.nav.bidrag.commons.ExceptionLogger
-import no.nav.bidrag.cucumber.BidragCucumberCloudLocal
 import no.nav.bidrag.cucumber.controller.CucumberController
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
 import no.nav.bidrag.cucumber.service.CucumberService
@@ -18,7 +17,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
 @DisplayName("ExceptionLoggerAspect")
-@SpringBootTest(classes = [BidragCucumberCloudLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class ExceptionLoggerAspectTest {
 
     @Autowired

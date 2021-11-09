@@ -1,9 +1,7 @@
 package no.nav.bidrag.cucumber.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.bidrag.cucumber.BidragCucumberCloudLocal
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
-import no.nav.bidrag.cucumber.model.PostOppgaveRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -11,7 +9,7 @@ import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [BidragCucumberCloudLocal::class])
+@SpringBootTest
 @DisplayName("Test of mapping dto from json")
 class JsonMappingTest {
 
@@ -41,16 +39,5 @@ class JsonMappingTest {
                     .isEqualTo(listOf("https://oppgave-q1.dev-fss-pub.nais.io@no-tag:oppgave"))
             }
         )
-    }
-
-    @Test
-    fun `skal mappe 'data class' for opprettelse av oppgave`() {
-        val postOppgaveRequest = PostOppgaveRequest(journalpostId = "BID-101", tema = "FAR")
-        val json: String = objectMapper.writeValueAsString(postOppgaveRequest)
-
-        assertThat(json).isNotNull
-            .contains("journalpostId")
-            .contains("BID-101")
-            .contains("FAR")
     }
 }
