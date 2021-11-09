@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
-  INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
+  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.ekstern.dev.nav.no
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
       - uses: navikt/bidrag-docker/exists@v1
         id: dockerimage
         with:
-          image_name: bidrag-cucumber-cloud
+          image_name: bidrag-cucumber-onprem
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo NOT_FOUND=${{ steps.dockerimage.outputs.not_found }} >> $GITHUB_ENV
@@ -55,14 +55,14 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy bidrag-cucumber-cloud
+    name: Deploy bidrag-cucumber-onprem
     needs: build
 
     steps:
       - uses: actions/checkout@v2
         with:
           path: deploy
-      - name: Deploy bidrag-cucumber-cloud testapplication for main branches to dev-gcp
+      - name: Deploy bidrag-cucumber-onprem testapplication for main branches to dev-gcp
         if: github.ref == 'refs/heads/main'
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -70,7 +70,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/main.yaml
-      - name: Deploy bidrag-cucumber-cloud testapplication for feature branches to dev-gcp
+      - name: Deploy bidrag-cucumber-onprem testapplication for feature branches to dev-gcp
         if: github.ref != 'refs/heads/main'
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -79,182 +79,21 @@ jobs:
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/feature.yaml
 
-  run-tests-for-cucumber-cloud:
+  run-tests-for-cucumber-onprem:
     runs-on: ubuntu-latest
-    name: "bidrag-cucumber-cloud"
+    name: bidrag-cucumber-onprem
     needs: deploy
 
     steps:
-      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
+      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -H "Content-Type: application/json" -i \
                --request POST \
                --data '{"ingressesForApps":[
-                   "${{ env.INGRESS_CUCUMBER }}@bidrag-cucumber-cloud"
+                   "${{ env.INGRESS_CUCUMBER }}@bidrag-cucumber-onprem"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-bidrag-sak:
-    runs-on: ubuntu-latest
-    name: "bidrag-sak"
-    needs: deploy
-
-    env:
-      INGRESS_SAK: https://bidrag-sak.dev-fss-pub.nais.io
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_SAK=https://bidrag-sak-feature.dev-fss-pub.nais.io" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"testUsername":"z992903","ingressesForApps":[
-                   "${{ env.INGRESS_SAK }}@bidrag-sak"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-bidrag-stonad:
-    runs-on: ubuntu-latest
-    name: "bidrag-stonad"
-    needs: deploy
-
-    env:
-      INGRESS_STONAD: https://bidrag-stonad.dev.intern.nav.no
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_STONAD=https://bidrag-stonad-feature.dev.intern.nav.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"ingressesForApps":[
-                   "${{ env.INGRESS_STONAD }}@bidrag-stonad"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-bidrag-vedtak:
-    runs-on: ubuntu-latest
-    name: "bidrag-vedtak"
-    needs: deploy
-
-    env:
-      INGRESS_VEDTAK: https://bidrag-vedtak.dev.intern.nav.no
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_VEDTAK=https://bidrag-vedtak-feature.dev.intern.nav.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"ingressesForApps":[
-                   "${{ env.INGRESS_VEDTAK }}@bidrag-vedtak"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-arbeidsflyt-endre-fagomrade:
-    runs-on: ubuntu-latest
-    name: "arbeidsflyt-endre-fagomrade"
-    needs: deploy
-
-    env:
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_OPPGAVE=https://oppgave-q1.dev-fss-pub.nais.io" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"tags":["@arbeidsflyt-endre-fagomrade"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
-                   "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-arbeidsflyt-journalforing:
-    runs-on: ubuntu-latest
-    name: "arbeidsflyt-journalforing"
-    needs: deploy
-
-    env:
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_OPPGAVE=https://oppgave-q1.dev-fss-pub.nais.io" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"tags":["@arbeidsflyt-journalforing"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
-                   "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-arbeidsflyt-opprett-oppgave:
-    runs-on: ubuntu-latest
-    name: "arbeidsflyt-opprett-oppgave"
-    needs: deploy
-
-    env:
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_OPPGAVE=https://oppgave-q1.dev-fss-pub.nais.io" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"tags":["@arbeidsflyt-opprett-oppgave"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
-                   "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-  run-tests-for-arbeidsflyt-overfor-enhet:
-    runs-on: ubuntu-latest
-    name: "arbeidsflyt-overfor-til-annen-enhet"
-    needs: deploy
-
-    env:
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_OPPGAVE=https://oppgave-q1.dev-fss-pub.nais.io" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-               --request POST \
-               --data '{"tags":["@arbeidsflyt-overfor-til-annen-enhet"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
-                   "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
   run-tests-for-bidrag-beregn:
@@ -272,7 +111,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: |
           echo "INGRESS_BARNEBIDRAG=https://bidrag-beregn-barnebidrag-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
           echo "INGRESS_FORSKUDD=https://bidrag-beregn-forskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_SAERTILSKUDD=https://bidrag-beregn-saertilskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
       - run: |
@@ -283,23 +122,16 @@ jobs:
                    "${{ env.INGRESS_FORSKUDD }}@bidrag-beregn-forskudd-rest",
                    "${{ env.INGRESS_SAERTILSKUDD }}@bidrag-beregn-saertilskudd-rest"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          # cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
   bump_dev_version:
     runs-on: ubuntu-latest
     name: Bump SNAPSHOT version
     if: github.ref == 'refs/heads/main'
     needs:
-      - run-tests-for-cucumber-cloud
-      - run-tests-for-arbeidsflyt-endre-fagomrade
-      - run-tests-for-arbeidsflyt-journalforing
-      - run-tests-for-arbeidsflyt-opprett-oppgave
-      - run-tests-for-arbeidsflyt-overfor-enhet
+      - run-tests-for-cucumber-onprem
       - run-tests-for-bidrag-beregn
-      - run-tests-for-bidrag-sak
-      - run-tests-for-bidrag-stonad
-      - run-tests-for-bidrag-vedtak
 
     steps:
       - uses: actions/checkout@v2

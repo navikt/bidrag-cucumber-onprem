@@ -1,16 +1,16 @@
-# bidrag-cucumber-cloud
+# bidrag-cucumber-onprem
 
 Nais applikasjon som kjører integrasjonstester for applikasjoner som bruker Azure Ad og har ingress med tilgang via naisdevice
 
 ## workflow
 
-[![build and deploy](https://github.com/navikt/bidrag-cucumber-cloud/actions/workflows/build-and-deploy.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-cloud/actions/workflows/build-and-deploy.yaml)
-[![test build on pull request](https://github.com/navikt/bidrag-cucumber-cloud/actions/workflows/pr.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-cloud/actions/workflows/pr.yaml)
+[![build and deploy](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/build-and-deploy.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/build-and-deploy.yaml)
+[![test build on pull request](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/pr.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/pr.yaml)
 
 ## beskrivelse
 
 Funksjonelle tester av bidrag nais applikasjoner som er designet for å kunne kjøre en "sanity check" på en laptop som har innstallert naisdevice og
-vil gjelde applikasjoner med azure i google cloud såfremt on-prem (når de har blitt eksponert for google cloud platform)
+vil gjelde applikasjoner med azure i google onprem såfremt on-prem (når de har blitt eksponert for google onprem platform)
 
 ### Teknisk beskrivelse
 
@@ -81,7 +81,7 @@ testbruker angies.
 
 Hvis kjøring av denne applikasjonen gjøres lokalt (fra naisdevice) og mot en applikasjon som kjører under sikkerhet, så kan en fullstendig testkjøring
 ikke gjøres uten at azure token blir send med når testen starter. Azure Ad brukes for å lage sikkerhetstoken for testbruker. Det er derfor nødvendig
-med et ekstra parameter som forteller `bidrag-cucumber-cloud` at testbruker har et manuelt generert sikkerhetstoken eller kjøringen er en "sanity
+med et ekstra parameter som forteller `bidrag-cucumber-onprem` at testbruker har et manuelt generert sikkerhetstoken eller kjøringen er en "sanity
 check" for å teste at den tekniske implementasjonen til cucumber er ok.
 * Vær obs på at en fullstendig kjøring fra et nais-device ikke kan gjøres (selv med manuelt token) hvis testen er designet slik at den kontakter
   applikasjonen direkte. GCP er satt opp med zero-trust og derfor vil applikasjonen ikke reagere på request fra en applikasjon (eller naisdevice) som
@@ -142,7 +142,7 @@ Z-bruker og det må sørges for at den har et gyldig passord og at "two factor a
 
 #### Kjøring lokalt
 
-Tester i `bidrag-cucumber-cloud` er tilgjengelig fra et "naisdevice", men kjøring lokalt vil kun være en "sanity-check" for å sjekke at cucumber er
+Tester i `bidrag-cucumber-onprem` er tilgjengelig fra et "naisdevice", men kjøring lokalt vil kun være en "sanity-check" for å sjekke at cucumber er
 koblet opp riktig og at kjøring kan gjøres uten tekniske feil. Dette grunnet "zero trust" regimet som nais-applikasjonene på Azure AD kjører under. En
 applikasjon som kjører uten sikkerhet kan dog testes lokalt.
 
@@ -158,7 +158,7 @@ mvn exec:java                                        \
     -DTEST_USER="<azure bruker ala z123456>          \
     -DSECURITY_TOKEN="<abc...xyz>                    \
     -DINGRESSES_FOR_APPS=<ingress@app1,ingress@app2> \
-    -Dexec.mainClass=no.nav.bidrag.cucumber.BidragCucumberCloud
+    -Dexec.mainClass=no.nav.bidrag.cucumber.BidragCucumberonprem
 ```
 
 **NB**
@@ -175,14 +175,14 @@ mvn exec:java                                        \
   curl -H "Content-Type: application/json" \
        --request POST \
        --data '{"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag>"]}' \
-       http://localhost:8080/bidrag-cucumber-cloud/run
+       http://localhost:8080/bidrag-cucumber-onprem/run
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -H "Content-Type: application/json" \
        --request POST \
        --data '{"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tag>"],"securityToken"="<security token (uten Bearer)}' \
-       http://localhost:8080/bidrag-cucumber-cloud/run
+       http://localhost:8080/bidrag-cucumber-onprem/run
   ```
 
 ##### Kjøring med IntelliJ
@@ -192,7 +192,7 @@ ut fra testene som kjøres, så bør du installere plugin `Cucumber Kotlin` (Int
 
 ###### Kjør cucumber features
 
-* alle testene: høyreklikk på prosjektet og velg `Run 'All features in bidrag-cucumber-cloud'`
+* alle testene: høyreklikk på prosjektet og velg `Run 'All features in bidrag-cucumber-onprem'`
 * en feature: høyreklikk på feature-fil, eks `sak.feature`prosjektet og velg `Run 'Feature: ...'`
 
 **NB!**
@@ -212,14 +212,14 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
   curl -H "Content-Type: application/json" \
        --request POST \
        --data '{"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}' \
-       http://localhost:8080/bidrag-cucumber-cloud/run
+       http://localhost:8080/bidrag-cucumber-onprem/run
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -H "Content-Type: application/json" \
        --request POST \
        --data '{"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}' \
-       http://localhost:8080/bidrag-cucumber-cloud/run
+       http://localhost:8080/bidrag-cucumber-onprem/run
   ```
 
 ##### Kjøring med swagger
@@ -227,7 +227,7 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
 ###### lokalhost
 
 1. Start spring-boot applikasjon
-2. Gå til url: http://localhost:8080/bidrag-cucumber-cloud/swagger-ui/index.html?configUrl=/bidrag-cucumber-cloud/v3/api-docs/swagger-config#/
+2. Gå til url: http://localhost:8080/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
 3. Ekspander endpoint `/run`
 4. Trykk på "Try it out"
 5. Endre json-schema med ingress@tag, sanity check evt. testbruker med security token
@@ -236,8 +236,8 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
 ###### gcp
 
 2. Gå til url for main eller feature branch
-   * main - https://bidrag-cucumber-cloud.ekstern.dev.nav.no/bidrag-cucumber-cloud/swagger-ui/index.html?configUrl=/bidrag-cucumber-cloud/v3/api-docs/swagger-config#/
-   * feature - https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no/bidrag-cucumber-cloud/swagger-ui/index.html?configUrl=/bidrag-cucumber-cloud/v3/api-docs/swagger-config#/
+   * main - https://bidrag-cucumber-onprem.ekstern.dev.nav.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
+   * feature - https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
 3. Ekspander endpoint `/run`
 4. Trykk på "Try it out"
 5. Endre json-schema med ingress@tag, sanity check evt. testbruker med security token

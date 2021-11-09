@@ -8,28 +8,28 @@ on:
       - feature/cron-fix
 
 env:
-  INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
+  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.ekstern.dev.nav.no
 
 jobs:
 
-  run-tests-for-cucumber-cloud:
+  run-tests-for-cucumber-onprem:
     runs-on: ubuntu-latest
-    name: "bidrag-cucumber-cloud"
+    name: "bidrag-cucumber-onprem"
 
     steps:
       - run: |
           curl -H "Content-Type: application/json" -i \
                --request POST \
                --data '{"ingressesForApps":[
-                   "${{ env.INGRESS_CUCUMBER }}@bidrag-cucumber-cloud"
+                   "${{ env.INGRESS_CUCUMBER }}@bidrag-cucumber-onprem"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @bidrag-cucumber-cloud feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @bidrag-cucumber-onprem feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-bidrag-sak:
@@ -46,13 +46,13 @@ jobs:
                --data '{"testUsername":"z992903","ingressesForApps":[
                    "${{ env.INGRESS_SAK }}@bidrag-sak"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @bidrag-sak feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @bidrag-sak feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-bidrag-stonad:
@@ -69,13 +69,13 @@ jobs:
                --data '{"ingressesForApps":[
                    "${{ env.INGRESS_STONAD }}@bidrag-stonad"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tab @bidrag-stonad feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tab @bidrag-stonad feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-bidrag-vedtak:
@@ -92,13 +92,13 @@ jobs:
                --data '{"ingressesForApps":[
                    "${{ env.INGRESS_VEDTAK }}@bidrag-vedtak"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @bidrag-vedtak feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @bidrag-vedtak feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-arbeidsflyt-endre-fagomrade:
@@ -115,13 +115,13 @@ jobs:
                --data '{"tags":["@arbeidsflyt-endre-fagomrade"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
                    "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @arbeidsflyt-endre-fagomrade feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @arbeidsflyt-endre-fagomrade feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-arbeidsflyt-journalforing:
@@ -138,13 +138,13 @@ jobs:
                --data '{"tags":["@arbeidsflyt-journalforing"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
                    "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @arbeidsflyt-journalforing feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @arbeidsflyt-journalforing feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-arbeidsflyt-opprett-oppgave:
@@ -161,13 +161,13 @@ jobs:
                --data '{"tags":["@arbeidsflyt-opprett-oppgave"],"testUsername":"z992903","noContextPathForApps":["oppgave"],"ingressesForApps":[
                    "${{ env.INGRESS_OPPGAVE }}@no-tag:oppgave"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tag @arbeidsflyt-opprett-oppgave feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @arbeidsflyt-opprett-oppgave feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-bidrag-beregn:
@@ -184,7 +184,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: |
           echo "INGRESS_BARNEBIDRAG=https://bidrag-beregn-barnebidrag-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
           echo "INGRESS_FORSKUDD=https://bidrag-beregn-forskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_SAERTILSKUDD=https://bidrag-beregn-saertilskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
       - run: |
@@ -195,11 +195,11 @@ jobs:
                    "${{ env.INGRESS_FORSKUDD }}@bidrag-beregn-forskudd-rest",
                    "${{ env.INGRESS_SAERTILSKUDD }}@bidrag-beregn-saertilskudd-rest"
                  ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run | tee .cucumber-result
           # cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-cloud/actions|Cucumber tests> for tags @bidrag-beregn-* feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tags @bidrag-beregn-* feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
