@@ -17,8 +17,6 @@ spec:
   envFrom:
     - secret: test-auth-z992903
   image: {{ image }}
-  kafka:
-    pool: nav-dev
   liveness:
     path: /bidrag-cucumber-onprem/actuator/health
     initialDelay: 35
