@@ -164,17 +164,17 @@ mvn exec:java                                        \
 * åpne terminal og kjør kommandoen `mvn spring-boot:run`
 * for sanity check, åpne ny terminal kjør kommandoen
   ```
-  curl -H "Content-Type: application/json" \
-       --request POST \
-       --data '{"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag>"]}' \
-       http://localhost:8080/bidrag-cucumber-onprem/run
+  curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
+    -H 'accept: */*' \
+    -H 'Content-Type: application/json' \
+    -d '{"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}'
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
-  curl -H "Content-Type: application/json" \
-       --request POST \
-       --data '{"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tag>"],"securityToken"="<security token (uten Bearer)}' \
-       http://localhost:8080/bidrag-cucumber-onprem/run
+  curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
+    -H 'accept: */*' \
+    -H 'Content-Type: application/json' \
+    -d '{"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
   ```
 
 ##### Kjøring med IntelliJ
