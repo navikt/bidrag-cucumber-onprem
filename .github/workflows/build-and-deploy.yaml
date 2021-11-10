@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
-  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.dev.nav.no
+  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.dev.adeo.no
 
 jobs:
   build:
@@ -85,7 +85,7 @@ jobs:
     needs: deploy
 
     steps:
-      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.nav.no" >> $GITHUB_ENV
+      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -H "Content-Type: application/json" -i \
@@ -111,7 +111,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: |
           echo "INGRESS_BARNEBIDRAG=https://bidrag-beregn-barnebidrag-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_FORSKUDD=https://bidrag-beregn-forskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_SAERTILSKUDD=https://bidrag-beregn-saertilskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
       - run: |

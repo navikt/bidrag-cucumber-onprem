@@ -62,14 +62,14 @@ internal class CucumberControllerIntegrationTest {
     @Test
     @Disabled("høna og egget... kan ikke teste dette før en gyldig deploy")
     fun `skal hente ut cucumber tekst fra kjøring`() {
-        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no", "bidrag-cucumber-onprem")
+        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-cucumber-onprem-feature.dev.adeo.no", "bidrag-cucumber-onprem")
 
         val testResponse = testRestTemplate.postForEntity(
             "/run",
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-cucumber-onprem.ekstern.dev.nav.no@bidrag-cucumber-onprem"],
+                  "ingressesForApps":["https://bidrag-cucumber-onprem.dev.adeo.no@bidrag-cucumber-onprem"],
                   "sanityCheck":true
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()

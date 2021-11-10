@@ -1,6 +1,6 @@
 # bidrag-cucumber-onprem
 
-Nais applikasjon som kjører integrasjonstester for applikasjoner som bruker Azure Ad og har ingress med tilgang via naisdevice
+Nais applikasjon som kjører integrasjonstester for applikasjoner som er deployet på cloud "on-premise"
 
 ## workflow
 
@@ -10,7 +10,7 @@ Nais applikasjon som kjører integrasjonstester for applikasjoner som bruker Azu
 ## beskrivelse
 
 Funksjonelle tester av bidrag nais applikasjoner som er designet for å kunne kjøre en "sanity check" på en laptop som har innstallert naisdevice og
-vil gjelde applikasjoner med azure i google onprem såfremt on-prem (når de har blitt eksponert for google onprem platform)
+vil gjelde applikasjoner som kjører på cloud "on-premise"
 
 ### Teknisk beskrivelse
 
@@ -83,9 +83,6 @@ Hvis kjøring av denne applikasjonen gjøres lokalt (fra naisdevice) og mot en a
 ikke gjøres uten at azure token blir send med når testen starter. Azure Ad brukes for å lage sikkerhetstoken for testbruker. Det er derfor nødvendig
 med et ekstra parameter som forteller `bidrag-cucumber-onprem` at testbruker har et manuelt generert sikkerhetstoken eller kjøringen er en "sanity
 check" for å teste at den tekniske implementasjonen til cucumber er ok.
-* Vær obs på at en fullstendig kjøring fra et nais-device ikke kan gjøres (selv med manuelt token) hvis testen er designet slik at den kontakter
-  applikasjonen direkte. GCP er satt opp med zero-trust og derfor vil applikasjonen ikke reagere på request fra en applikasjon (eller naisdevice) som
-  ikke er definert med accessPolicy inbound i `nais.yaml`
 
 4. securityToken
 5. sanityCheck=true
@@ -123,7 +120,7 @@ i `nais.yaml`. Følgende azure data blir brukt til å hente sikkerhetstoken for 
 
 json | Beskrivelse | Kommentar
 ---|---|---
-`ingressesForApps` | kommaseparert liste over ingress og nais-applikasjon som testes | Eks: https://somewhere.com@nais.app.a,https://something.com@annen.nais.app.b
+`ingressesForApps` | kommaseparert liste over ingress og nais-applikasjon som testes | Eks:https://somewhere.com@nais.app.a,https://something.com@annen.nais.app.b
 `noContextPathForApps` | kommaseparert liste over applikasjoner (fra `ingressesForApps`) som ikke bruker appnavn som context-path etter ingress
 `tags` | kommaseparert liste over tags som skal kjøres (som ikke nevnes blant ingressene)
 `testUser` | Testbruker (saksbehandler) med ident ala z123456 | unødvendig for sanity check, men må brukes med `securityToken` (hvis kjøring lokalt).
@@ -142,13 +139,8 @@ Z-bruker og det må sørges for at den har et gyldig passord og at "two factor a
 
 #### Kjøring lokalt
 
-Tester i `bidrag-cucumber-onprem` er tilgjengelig fra et "naisdevice", men kjøring lokalt vil kun være en "sanity-check" for å sjekke at cucumber er
-koblet opp riktig og at kjøring kan gjøres uten tekniske feil. Dette grunnet "zero trust" regimet som nais-applikasjonene på Azure AD kjører under. En
-applikasjon som kjører uten sikkerhet kan dog testes lokalt.
-
-Er det satt på sikkerhet, så kan ikke nais-applikasjonen testes fullt ut fra lokal kjøring. For å unngå at sjekker feiler når man kjører lokalt, så må
-miljøvariabelen `SANITY_CHECK=true` settes. Da vil bare resultatene fra operasjoner som krever sikkerhet logges til konsoll i stedet for å den
-aktuelle sjekken.
+Ved kjøring lokalt kan det vøre ønskelig å bare teste at det tekniske "fungerer". Dette kan gjøres ved å sette miljøvariabelen `SANITY_CHECK=true`. Da
+vil bare resultatene fra operasjoner logges til konsoll i stedet for at den aktuelle sjekken gjøres.
 
 ##### Kjøring med maven
 
@@ -158,7 +150,7 @@ mvn exec:java                                        \
     -DTEST_USER="<azure bruker ala z123456>          \
     -DSECURITY_TOKEN="<abc...xyz>                    \
     -DINGRESSES_FOR_APPS=<ingress@app1,ingress@app2> \
-    -Dexec.mainClass=no.nav.bidrag.cucumber.BidragCucumberonprem
+    -Dexec.mainClass=no.nav.bidrag.cucumber.BidragCucumberOnprem
 ```
 
 **NB**
@@ -187,7 +179,7 @@ mvn exec:java                                        \
 
 ##### Kjøring med IntelliJ
 
-Man kan ogå bruke IntelliJ til å kjøre cucumber testene direkte. IntelliJ har innebygd støtte for cucumber (java), men hvis du vil navigeere i koden
+Man kan ogå bruke IntelliJ til å kjøre cucumber testene direkte. IntelliJ har innebygd støtte for cucumber (java), men hvis du vil navigere i koden
 ut fra testene som kjøres, så bør du installere plugin `Cucumber Kotlin` (IntelliJ settings/prefrences -> Plugins)
 
 ###### Kjør cucumber features
@@ -236,8 +228,8 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
 ###### gcp
 
 2. Gå til url for main eller feature branch
-   * main - https://bidrag-cucumber-onprem.ekstern.dev.nav.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
-   * feature - https://bidrag-cucumber-onprem-feature.ekstern.dev.nav.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
+   * main - https://bidrag-cucumber-onprem.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
+   * feature - https://bidrag-cucumber-onprem-feature.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
 3. Ekspander endpoint `/run`
 4. Trykk på "Try it out"
 5. Endre json-schema med ingress@tag, sanity check evt. testbruker med security token
