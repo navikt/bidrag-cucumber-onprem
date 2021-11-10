@@ -1,11 +1,8 @@
 name: bidrag-cucumber-onprem
 ingresses:
-  - https://bidrag-cucumber-onprem.ekstern.dev.nav.no
+  - https://bidrag-cucumber-onprem.dev.nav.no
 access:
   outbound:
     bidrag-sak: bidrag-sak.dev-fss-pub.nais.io
-    oppgave: oppgave.dev-fss-pub.nais.io
-kafka-topic-journalpost: bidrag.journalpost
 scope:
-  oppgave: dev-fss.oppgavehandtering.oppgave
   sak: dev-fss.bidrag.bidrag-sak

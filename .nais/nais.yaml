@@ -13,7 +13,6 @@ spec:
   accessPolicy:
       outbound:
         external:
-          - host: {{ access.outbound.oppgave }}
           - host: {{ access.outbound.bidrag-sak }}
   envFrom:
     - secret: test-auth-z992903
@@ -45,9 +44,5 @@ spec:
     - {{url}}
   {{/each}}
   env:
-    - name: TOPIC_JOURNALPOST
-      value: {{ kafka-topic-journalpost }}
-    - name: OPPGAVE_SCOPE
-      value: {{ scope.oppgave }}
     - name: SAK_SCOPE
       value: {{ scope.sak }}

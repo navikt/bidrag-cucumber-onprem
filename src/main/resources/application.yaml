@@ -19,12 +19,6 @@ spring:
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
       client:
         registration:
-          oppgave:
-            provider: aad
-            client-id: ${AZURE_APP_CLIENT_ID}
-            client-secret: ${AZURE_APP_CLIENT_SECRET}
-            authorization-grant-type: client_credentials
-            scope: api://${OPPGAVE_SCOPE}/.default
           bidrag-sak:
             provider: aad
             client-id: ${AZURE_APP_CLIENT_ID}
