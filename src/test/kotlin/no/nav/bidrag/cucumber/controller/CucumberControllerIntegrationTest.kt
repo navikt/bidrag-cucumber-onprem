@@ -2,7 +2,6 @@ package no.nav.bidrag.cucumber.controller
 
 import no.nav.bidrag.cucumber.TestUtil.assumeThatActuatorHealthIsRunning
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.SoftAssertions
 import org.junit.AssumptionViolatedException
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
@@ -60,7 +59,6 @@ internal class CucumberControllerIntegrationTest {
     }
 
     @Test
-    @Disabled("høna og egget... kan ikke teste dette før en gyldig deploy")
     fun `skal hente ut cucumber tekst fra kjøring`() {
         assumeThatActuatorHealthIsRunningCachedException("https://bidrag-cucumber-onprem-feature.dev.adeo.no", "bidrag-cucumber-onprem")
 
@@ -69,19 +67,18 @@ internal class CucumberControllerIntegrationTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-cucumber-onprem.dev.adeo.no@bidrag-cucumber-onprem"],
-                  "sanityCheck":true
+                  "ingressesForApps":["https://bidrag-cucumber-onprem-feature.dev.adeo.no@bidrag-cucumber-onprem"]
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),
             String::class.java
         )
 
-        val softly = SoftAssertions()
-        softly.assertThat(testResponse.body).`as`("body").contains("Scenarios")
-        softly.assertThat(testResponse.body).`as`("body").contains("Failed")
-        softly.assertThat(testResponse.body).`as`("body").contains("Passed")
-        softly.assertAll()
+        assertAll(
+            { assertThat(testResponse.body).`as`("body").contains("Scenarios") },
+            { assertThat(testResponse.body).`as`("body").contains("Failed") },
+            { assertThat(testResponse.body).`as`("body").contains("Passed") }
+        )
     }
 
     @Test

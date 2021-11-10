@@ -24,7 +24,7 @@ open class RestTjeneste(
     }
 
     private lateinit var fullUrl: FullUrl
-    internal var responseEntity: ResponseEntity<String?>? = null
+    private var responseEntity: ResponseEntity<String?>? = null
 
     constructor(naisApplication: String) : this(RestTjenesteForApplikasjon.hentEllerKonfigurer(naisApplication))
 
@@ -79,15 +79,6 @@ open class RestTjeneste(
     fun exchangePost(endpointUrl: String, json: String) {
         val jsonEntity = httpEntity(endpointUrl, json)
         exchange(jsonEntity, endpointUrl, HttpMethod.POST)
-    }
-
-    fun exchangePost(endpointUrl: String, body: Any) {
-        exchangePost(endpointUrl = endpointUrl, json = BidragCucumberSingletons.toJson(body))
-    }
-
-    fun exchangePatch(endpointUrl: String, body: Any) {
-        val jsonEntity = httpEntity(endpointUrl, BidragCucumberSingletons.toJson(body))
-        exchange(jsonEntity, endpointUrl, HttpMethod.PATCH)
     }
 
     private fun httpEntity(endpointUrl: String, body: Any): HttpEntity<*> {

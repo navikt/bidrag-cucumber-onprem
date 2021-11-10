@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
 
+@Suppress("unused") // used by cucumber
 class FellesEgenskaper : No {
 
     init {

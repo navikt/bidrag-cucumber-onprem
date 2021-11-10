@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.slf4j.LoggerFactory
 import java.io.File
 
+@Suppress("unused") // used by cucumber
 class BeregnEgenskaper : No {
     companion object {
         @JvmStatic
