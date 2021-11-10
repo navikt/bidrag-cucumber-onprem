@@ -15,5 +15,3 @@ internal const val PROFILE_LIVE = "LIVE"
 
 internal val ABSOLUTE_FEATURE_PATH = FilePath("features.path").findFolderPath()
 internal const val CORRELATION_ID = "correlationId"
-
-internal const val FAGOMRADE_BIDRAG = "BID"

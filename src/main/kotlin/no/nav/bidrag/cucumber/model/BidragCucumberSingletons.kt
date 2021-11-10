@@ -66,10 +66,6 @@ internal object BidragCucumberSingletons {
         fetchRunStats().addExceptionLogging(listOf(assertionMessage))
     }
 
-    fun <T> readValue(value: String, mapClass: Class<T>): T = objectMapper?.readValue(value, mapClass) ?: throw IllegalStateException(
-        "Kunne ikke mappe: $value"
-    )
-
     fun toJson(body: Any): String = objectMapper?.writeValueAsString(body) ?: """{ "noMappingAvailable":"$body" }"""
 
     fun setApplicationContext(applicationContext: ApplicationContext) {
