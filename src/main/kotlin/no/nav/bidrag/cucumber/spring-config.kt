@@ -25,7 +25,7 @@ class SpringConfig {
     fun openAPI(): OpenAPI = OpenAPI().info(
         Info()
             .title("bidrag-cucumber-onprem")
-            .description("Funksjonelle tester for nais applikasjoner som er sikret med azure ad og bruker rest/kafka")
+            .description("""Funksjonelle tester for nais applikasjoner som er deployet på cloud "on-premise"""")
             .version("v1")
     )
 
