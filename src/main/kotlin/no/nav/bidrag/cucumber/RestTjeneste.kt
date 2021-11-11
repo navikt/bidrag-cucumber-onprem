@@ -89,6 +89,8 @@ open class RestTjeneste(
         return HttpEntity(body, headers)
     }
 
+    fun hentHttpHeaders(): HttpHeaders = responseEntity?.headers ?: HttpHeaders()
+
     private fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod) {
         LOGGER.info("$httpMethod: $fullUrl")
 
