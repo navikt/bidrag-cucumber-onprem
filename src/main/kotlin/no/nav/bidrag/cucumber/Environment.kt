@@ -4,6 +4,7 @@ import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
 import no.nav.bidrag.cucumber.logback.TestMessageBeforeLayoutHolder
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
+import no.nav.bidrag.cucumber.model.TokenType
 import org.slf4j.LoggerFactory
 
 internal object Environment {
@@ -93,6 +94,7 @@ internal object Environment {
     }
 
     fun isNoContextPathForApp(applicationName: String) = fromPropertyOrEnvironment(applicationName) ?: fromCucumberTestsDto(applicationName) ?: false
+    fun hentTokeType() = TokenType.fetch(CUCUMBER_TESTS.get().cucumberTestsApi.tokenType)
     private fun fromPropertyOrEnvironment(applicationName: String) = fetchPropertyOrEnvironment(NO_CONTEXT_PATH_FOR_APPS)?.contains(applicationName)
     private fun fromCucumberTestsDto(applicationName: String) = CUCUMBER_TESTS.get()?.noContextPathForApps?.contains(applicationName)
 }
