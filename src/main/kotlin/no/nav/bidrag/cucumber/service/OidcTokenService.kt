@@ -21,15 +21,15 @@ class OidcTokenService(private val oidcTokenManager: OidcTokenManager) : TokenSe
         val token = GENERATED_TOKEN.get()
 
         if (token != null) {
-            return bearer(token)
+            return initBearer(token)
         }
 
         val oidcConfigEnvironment = OidcConfiguration.fetchConfiguration(application)
         val generatedToken = oidcTokenManager.generateToken(Environment.navUsername, oidcConfigEnvironment)
         GENERATED_TOKEN.set(generatedToken)
 
-        return bearer(generatedToken)
+        return initBearer(generatedToken)
     }
 
-    private fun bearer(token: String) = "Bearer $token"
+    private fun initBearer(token: String) = "Bearer $token"
 }

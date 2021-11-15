@@ -62,7 +62,7 @@ internal object RestTjenesteForApplikasjon {
         REST_TJENESTE_FOR_APPLIKASJON.removeAll()
     }
 
-    private class BaseUrlTemplateHandler(val baseUrl: String) : UriTemplateHandler {
+    internal class BaseUrlTemplateHandler(val baseUrl: String) : UriTemplateHandler {
         override fun expand(uriTemplate: String, uriVariables: MutableMap<String, *>): URI {
             if (uriVariables.isNotEmpty()) {
                 val queryString = StringBuilder()
