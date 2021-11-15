@@ -69,8 +69,6 @@ internal object BidragCucumberSingletons {
         fetchRunStats().addExceptionLogging(listOf(assertionMessage))
     }
 
-    fun toJson(body: Any): String = objectMapper?.writeValueAsString(body) ?: """{ "noMappingAvailable":"$body" }"""
-
     fun setApplicationContext(applicationContext: ApplicationContext) {
         BidragCucumberSingletons.applicationContext = applicationContext
     }
