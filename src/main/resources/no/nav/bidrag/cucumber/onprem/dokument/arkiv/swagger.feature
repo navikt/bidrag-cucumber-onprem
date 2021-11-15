@@ -1,6 +1,5 @@
 # language: no
 @arkiv-swagger
-@ignored
 Egenskap: bidrag-dokument-arkiv: swagger
 
   Tester REST API med swagger i bidrag-dokument-arkiv

@@ -1,7 +1,7 @@
 package no.nav.bidrag.cucumber.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.bidrag.cucumber.model.CucumberTestsModel
+import no.nav.bidrag.cucumber.dto.CucumberTestsApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -17,26 +17,34 @@ class JsonMappingTest {
     private lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `skal mappe en kjøring av bidrag-arberdsflyt`() {
+    fun `skal mappe CucumberTestsApi`() {
         val json = """
           {
-            "tags":["@arbeidsflyt-endre-fagomrade"],
-            "testUsername":"z992903",
-            "noContextPathForApps":["oppgave"],
-            "ingressesForApps":["https://oppgave-q1.dev-fss-pub.nais.io@no-tag:oppgave"]
+            "tags": ["@arkiv-swagger"],
+            "navUsername": "j103364",
+            "testUsername": "z992903",
+            "noContextPathForApps": ["oppgave"],
+            "ingressesForApps": [
+              "https://oppgave-q1.dev-fss-pub.nais.io@no-tag:oppgave",
+              "https://bidrag-dokument-arkiv.dev.adeo.no@bidrag-dokument-arkiv"
+            ]
           }
           """.trimIndent()
 
-        val cucumberTestsModel = objectMapper.readValue(json, CucumberTestsModel::class.java)
+        val cucumberTestsApi = objectMapper.readValue(json, CucumberTestsApi::class.java)
 
         assertAll(
-            { assertThat(cucumberTestsModel).`as`("cucumberTestsDto").isNotNull() },
-            { assertThat(cucumberTestsModel.tags).`as`("tags").isEqualTo(listOf("@arbeidsflyt-endre-fagomrade")) },
-            { assertThat(cucumberTestsModel.testUsername).`as`("testUsername").isEqualTo("z992903") },
-            { assertThat(cucumberTestsModel.noContextPathForApps).`as`("noContextPathForApps").isEqualTo(listOf("oppgave")) },
+            { assertThat(cucumberTestsApi).`as`("cucumberTestsApi").isNotNull() },
+            { assertThat(cucumberTestsApi.tags).`as`("tags").isEqualTo(listOf("@arkiv-swagger")) },
+            { assertThat(cucumberTestsApi.navUsername).`as`("navUsername").isEqualTo("j103364") },
+            { assertThat(cucumberTestsApi.testUsername).`as`("testUsername").isEqualTo("z992903") },
+            { assertThat(cucumberTestsApi.noContextPathForApps).`as`("noContextPathForApps").isEqualTo(listOf("oppgave")) },
             {
-                assertThat(cucumberTestsModel.ingressesForApps).`as`("ingressesForApps")
-                    .isEqualTo(listOf("https://oppgave-q1.dev-fss-pub.nais.io@no-tag:oppgave"))
+                assertThat(cucumberTestsApi.ingressesForApps).`as`("ingressesForApps").isEqualTo(
+                    listOf(
+                        "https://oppgave-q1.dev-fss-pub.nais.io@no-tag:oppgave", "https://bidrag-dokument-arkiv.dev.adeo.no@bidrag-dokument-arkiv"
+                    )
+                )
             }
         )
     }
