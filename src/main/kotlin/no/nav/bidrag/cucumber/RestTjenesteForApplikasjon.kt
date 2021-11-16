@@ -1,6 +1,12 @@
 package no.nav.bidrag.cucumber
 
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
+import no.nav.bidrag.cucumber.model.TokenType
+import no.nav.bidrag.cucumber.model.TokenType.AZURE
+import no.nav.bidrag.cucumber.model.TokenType.OIDC
+import no.nav.bidrag.cucumber.service.AzureTokenService
+import no.nav.bidrag.cucumber.service.OidcTokenService
+import no.nav.bidrag.cucumber.sikkerhet.TokenService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.web.util.UriTemplateHandler
@@ -37,8 +43,12 @@ internal object RestTjenesteForApplikasjon {
         httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
 
         if (Environment.isTestUserPresent) {
-            val tokenService = BidragCucumberSingletons.hentTokenServiceFraContext()
-            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenService?.generateBearerToken(applicationName) }
+            val tokenService = when(Environment.hentTokeType()) {
+                AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) as TokenService? ?: throw notNullTokenService(AZURE)
+                OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) as TokenService? ?: throw notNullTokenService(OIDC)
+            }
+
+            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenService.generateBearerToken(applicationName) }
         } else {
             LOGGER.info("No user to provide security for when accessing $applicationName")
         }
@@ -46,11 +56,13 @@ internal object RestTjenesteForApplikasjon {
         return RestTjeneste.ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl)
     }
 
+    private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No token service provided for $tokenType")
+
     fun removeAll() {
         REST_TJENESTE_FOR_APPLIKASJON.removeAll()
     }
 
-    private class BaseUrlTemplateHandler(val baseUrl: String) : UriTemplateHandler {
+    internal class BaseUrlTemplateHandler(val baseUrl: String) : UriTemplateHandler {
         override fun expand(uriTemplate: String, uriVariables: MutableMap<String, *>): URI {
             if (uriVariables.isNotEmpty()) {
                 val queryString = StringBuilder()

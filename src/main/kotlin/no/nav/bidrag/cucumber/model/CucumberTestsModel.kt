@@ -32,6 +32,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     }
 
     val ingressesForApps: List<String> get() = cucumberTestsApi.ingressesForApps
+    val navUsername: String? get() = cucumberTestsApi.navUsername
     val noContextPathForApps: List<String> get() = cucumberTestsApi.noContextPathForApps
     val sanityCheck: Boolean? get() = cucumberTestsApi.sanityCheck
     val tags: List<String> get() = cucumberTestsApi.tags
@@ -39,6 +40,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
 
     constructor(
         ingressesForApps: List<String> = emptyList(),
+        navUsername: String? = null,
         noContextPathForApps: List<String> = emptyList(),
         sanityCheck: Boolean? = false,
         securityToken: String? = null,
@@ -51,7 +53,8 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
             sanityCheck = sanityCheck,
             securityToken = securityToken,
             tags = tags,
-            testUsername = testUsername
+            testUsername = testUsername,
+            navUsername = navUsername
         )
     )
 

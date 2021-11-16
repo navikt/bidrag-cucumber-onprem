@@ -1,5 +1,6 @@
-package no.nav.bidrag.cucumber.sikkerhet
+package no.nav.bidrag.cucumber.service
 
+import no.nav.bidrag.cucumber.sikkerhet.TokenService
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -9,7 +10,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.stereotype.Service
 
 @Service
-class SecurityTokenService(@Lazy val authorizedClientManager: OAuth2AuthorizedClientManager) {
+class AzureTokenService(@Lazy val authorizedClientManager: OAuth2AuthorizedClientManager) : TokenService {
 
     companion object {
         @JvmStatic
@@ -18,11 +19,11 @@ class SecurityTokenService(@Lazy val authorizedClientManager: OAuth2AuthorizedCl
         )
     }
 
-    fun generateBearerToken(clientRegistrationId: String): String {
+    override fun generateBearerToken(application: String): String {
         val accessToken = authorizedClientManager
             .authorize(
                 OAuth2AuthorizeRequest
-                    .withClientRegistrationId(clientRegistrationId)
+                    .withClientRegistrationId(application)
                     .principal(ANONYMOUS_AUTHENTICATION)
                     .build()
             )!!.accessToken

@@ -5,8 +5,11 @@ import io.cucumber.java8.Scenario
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.SpringConfig
-import no.nav.bidrag.cucumber.sikkerhet.SecurityTokenService
+import no.nav.bidrag.cucumber.service.AzureTokenService
+import no.nav.bidrag.cucumber.service.OidcTokenService
+import no.nav.bidrag.cucumber.sikkerhet.TokenService
 import org.springframework.context.ApplicationContext
+import kotlin.reflect.KClass
 
 /**
  * Singletons som er gyldige i en cucumber-kjøring og som er felles for ALLE egenskaper definert i feature-filer
@@ -21,7 +24,7 @@ internal object BidragCucumberSingletons {
     private var testMessagesHolder: TestMessagesHolder? = null
 
     fun hentPrototypeFraApplicationContext() = applicationContext?.getBean(HttpHeaderRestTemplate::class.java) ?: doManualInit()
-    fun hentTokenServiceFraContext() = applicationContext?.getBean(SecurityTokenService::class.java)
+    fun hentFraContext(kClass: KClass<*>) = applicationContext?.getBean(kClass.java)
 
     private fun doManualInit(): HttpHeaderRestTemplate {
         val httpComponentsClientHttpRequestFactory = SpringConfig().httpComponentsClientHttpRequestFactorySomIgnorererHttps()
@@ -65,8 +68,6 @@ internal object BidragCucumberSingletons {
         testMessagesHolder?.hold(assertionMessage)
         fetchRunStats().addExceptionLogging(listOf(assertionMessage))
     }
-
-    fun toJson(body: Any): String = objectMapper?.writeValueAsString(body) ?: """{ "noMappingAvailable":"$body" }"""
 
     fun setApplicationContext(applicationContext: ApplicationContext) {
         BidragCucumberSingletons.applicationContext = applicationContext

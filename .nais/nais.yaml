@@ -16,6 +16,7 @@ spec:
           - host: {{ access.outbound.bidrag-sak }}
   envFrom:
     - secret: test-auth-z992903
+    - secret: nav-auth-j104364
   image: {{ image }}
   liveness:
     path: /bidrag-cucumber-onprem/actuator/health
