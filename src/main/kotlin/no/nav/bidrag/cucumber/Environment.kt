@@ -27,6 +27,7 @@ internal object Environment {
     val testUsername: String? get() = fetchPropertyOrEnvironment(TEST_USER) ?: CUCUMBER_TESTS.get()?.testUsername
     val testUserAuth: String get() = fetchPropertyOrEnvironment(testAuthPropName()) ?: unknownProperty(testAuthPropName())
     val tenantUsername: String get() = "F_${testUsernameUppercase()}.E_${testUsernameUppercase()}@trygdeetaten.no"
+    val isFeatureBranch: Boolean get() = CUCUMBER_TESTS.get()?.isFeatureBranch() ?: false
     val isNotSanityCheck: Boolean get() = !isSanityCheck
     val isTestUserPresent: Boolean get() = testUsername != null
 
@@ -97,8 +98,10 @@ internal object Environment {
         TestMessageBeforeLayoutHolder.endTestRun()
     }
 
-    fun isNoContextPathForApp(applicationName: String) = fromPropertyOrEnvironment(applicationName) ?: fromCucumberTestsDto(applicationName) ?: false
+    fun isNoContextPathForApp(applicationName: String) =
+        fromPropertyOrEnvironment(applicationName) ?: fromCucumberTestsModel(applicationName) ?: false
+
     fun hentTokeType() = TokenType.fetch(CUCUMBER_TESTS.get().cucumberTestsApi.tokenType)
     private fun fromPropertyOrEnvironment(applicationName: String) = fetchPropertyOrEnvironment(NO_CONTEXT_PATH_FOR_APPS)?.contains(applicationName)
-    private fun fromCucumberTestsDto(applicationName: String) = CUCUMBER_TESTS.get()?.noContextPathForApps?.contains(applicationName)
+    private fun fromCucumberTestsModel(applicationName: String) = CUCUMBER_TESTS.get()?.noContextPathForApps?.contains(applicationName)
 }
