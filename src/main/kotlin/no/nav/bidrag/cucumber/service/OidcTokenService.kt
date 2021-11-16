@@ -24,7 +24,7 @@ class OidcTokenService(private val oidcTokenManager: OidcTokenManager) : TokenSe
             return initBearer(token)
         }
 
-        val oidcConfigEnvironment = OidcConfiguration.fetchConfiguration(application)
+        val oidcConfigEnvironment = OidcConfiguration.fetchConfiguration()
         val generatedToken = oidcTokenManager.generateToken(Environment.navUsername, oidcConfigEnvironment)
         GENERATED_TOKEN.set(generatedToken)
 
