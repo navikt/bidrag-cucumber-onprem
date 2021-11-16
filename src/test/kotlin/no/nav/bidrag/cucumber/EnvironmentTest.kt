@@ -38,4 +38,18 @@ internal class EnvironmentTest {
         Environment.initCucumberEnvironment(CucumberTestsModel(sanityCheck = false))
         assertThat(Environment.isSanityCheck).isFalse
     }
+
+    @Test
+    fun `skal være feature branch når ingressesForApps inneholder -feature`() {
+        CucumberTestsModel(ingressesForApps = listOf("https://a-nais-app.no", "https://some-nais-feature.no")).initCucumberEnvironment()
+
+        assertThat(Environment.isFeatureBranch).isTrue
+    }
+
+    @Test
+    fun `skal ikke være feature branch når ingressesForApps mangler -feature`() {
+        CucumberTestsModel(ingressesForApps = listOf("https://some-nais-app.no")).initCucumberEnvironment()
+
+        assertThat(Environment.isFeatureBranch).isFalse
+    }
 }

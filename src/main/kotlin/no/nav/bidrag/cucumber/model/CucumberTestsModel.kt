@@ -128,7 +128,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
         if (isNotEqual(testUsername, Environment.tenantUsername)) warningForDifference("testUsername", testUsername, Environment.testUsername)
     }
 
-    private fun isNotEqual(dtoValue: Any?, envValue: Any?) = dtoValue != envValue
+    private fun isNotEqual(apiValue: Any?, envValue: Any?) = apiValue != envValue
 
     private fun warningForDifference(name: String, property: Any?, envValue: Any?) {
         val propVal: String = property?.toString() ?: "null"
@@ -138,4 +138,6 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
             LOGGER.warn("$property vs $envValue: (${this.javaClass.simpleName}.$name vs ${Environment::class.java.simpleName})")
         }
     }
+
+    fun isFeatureBranch() = ingressesForApps.any { it.contains("-feature") }
 }
