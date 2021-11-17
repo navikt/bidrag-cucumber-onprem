@@ -1,7 +1,7 @@
 package no.nav.bidrag.cucumber.onprem.person
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.hentRestTjeneste
+import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjeneste
 
 @Suppress("unused") // used by cucumber
 class PersonEgenskaper: No {

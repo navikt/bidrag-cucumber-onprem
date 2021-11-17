@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.cucumber.core.cli.Main
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
-import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
-import no.nav.bidrag.cucumber.model.CucumberTestsModel
+import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.SuppressStackTraceText
 import no.nav.bidrag.cucumber.model.TestFailedException
-import no.nav.bidrag.cucumber.model.TestMessagesHolder
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 
@@ -19,29 +17,24 @@ class CucumberService(
     applicationContext: ApplicationContext,
     exceptionLogger: ExceptionLogger,
     objectMapper: ObjectMapper,
-    testMessagesHolder: TestMessagesHolder
 ) {
     init {
         BidragCucumberSingletons.setApplicationContext(applicationContext)
         BidragCucumberSingletons.setExceptionLogger(exceptionLogger)
         BidragCucumberSingletons.setObjectMapper(objectMapper)
-        BidragCucumberSingletons.setTestMessagesHolder(testMessagesHolder)
     }
 
-    internal fun run(cucumberTestsModel: CucumberTestsModel): String {
-        Environment.initCucumberEnvironment(cucumberTestsModel)
-
-        val tags = cucumberTestsModel.fetchTags()
-        val result = runCucumberTests(tags)
+    internal fun run(cucumberTestRun: CucumberTestRun): String {
+        val result = runCucumberTests(cucumberTestRun.tags)
 
         val suppressedStackText = suppressStackTraceText.suppress(
-            BidragCucumberSingletons.fetchTestMessagesWithRunStats()
+            CucumberTestRun.fetchTestMessagesWithRunStats()
         )
 
-        Environment.resetCucumberEnvironment()
+        CucumberTestRun.endRun()
 
         if (result != 0.toByte()) {
-            throw TestFailedException("Cucumber tests failed! (tags: $tags)!", suppressedStackText)
+            throw TestFailedException("Cucumber tests failed! (tags: ${cucumberTestRun.tags})!", suppressedStackText)
         }
 
         return suppressedStackText

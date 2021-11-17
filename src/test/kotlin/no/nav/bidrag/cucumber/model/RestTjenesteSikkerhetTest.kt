@@ -1,9 +1,10 @@
-package no.nav.bidrag.cucumber
+package no.nav.bidrag.cucumber.model
 
+import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.dto.CucumberTestsApi
-import no.nav.bidrag.cucumber.model.CucumberTestsModel
 import no.nav.bidrag.cucumber.service.AzureTokenService
 import no.nav.bidrag.cucumber.service.OidcTokenService
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -31,13 +32,13 @@ internal class RestTjenesteSikkerhetTest {
 
     @Test
     fun `skal generere AZURE token ved kall med url`() {
-        CucumberTestsModel(
+        CucumberTestRun(
             CucumberTestsApi(
                 ingressesForApps = listOf("https://somewhere@nais-app"),
                 testUsername = "jactor-rises",
                 tokenType = "AZURE"
             )
-        ).initCucumberEnvironment()
+        ).initEnvironment()
 
         val restTjeneste = RestTjeneste("nais-app")
 

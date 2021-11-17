@@ -27,29 +27,4 @@ internal class EnvironmentTest {
         System.setProperty("NAV_AUTH_J104364", "707")
         assertThat(Environment.navAuth).isEqualTo("707")
     }
-
-    @Test
-    fun `skal hente sanity check`() {
-        val cucumberTestsModel = CucumberTestsModel(sanityCheck = true)
-        cucumberTestsModel.initCucumberEnvironment()
-
-        assertThat(Environment.isSanityCheck).isTrue
-
-        Environment.initCucumberEnvironment(CucumberTestsModel(sanityCheck = false))
-        assertThat(Environment.isSanityCheck).isFalse
-    }
-
-    @Test
-    fun `skal være feature branch når ingressesForApps inneholder -feature`() {
-        CucumberTestsModel(ingressesForApps = listOf("https://a-nais-app.no", "https://some-nais-feature.no")).initCucumberEnvironment()
-
-        assertThat(Environment.isFeatureBranch).isTrue
-    }
-
-    @Test
-    fun `skal ikke være feature branch når ingressesForApps mangler -feature`() {
-        CucumberTestsModel(ingressesForApps = listOf("https://some-nais-app.no")).initCucumberEnvironment()
-
-        assertThat(Environment.isFeatureBranch).isFalse
-    }
 }

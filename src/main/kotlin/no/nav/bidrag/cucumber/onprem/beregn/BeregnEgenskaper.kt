@@ -3,8 +3,8 @@ package no.nav.bidrag.cucumber.onprem.beregn
 import com.jayway.jsonpath.JsonPath
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
+import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjeneste
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.hentRestTjeneste
 import org.assertj.core.api.Assertions.assertThat
 import org.slf4j.LoggerFactory
 import java.io.File
