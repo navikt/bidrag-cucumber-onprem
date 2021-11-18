@@ -4,23 +4,30 @@ import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestsModel
 import org.slf4j.LoggerFactory
 
+/**
+ * Values gathered by environment variables or which is possible to override with system properties or environment variables
+ */
 internal object Environment {
+    val scope: String get() = CucumberTestRun.fetchQenvironmentFromIngress()
+    val withSecurityToken: Boolean get() = fetchPropertyOrEnvironment(SECURITY_TOKEN) != null
+
     @JvmStatic
     private val LOGGER = LoggerFactory.getLogger(Environment::class.java)
 
-    val isSanityCheckFromApplication: Boolean? get() = fetchPropertyOrEnvironment(SANITY_CHECK)?.toBoolean()
+    private val navUsername: String? get() = fetchPropertyOrEnvironment(NAV_USER) ?: CucumberTestRun.navUsername
+    private val testUsername: String? get() = fetchPropertyOrEnvironment(TEST_USER) ?: CucumberTestRun.testUsername
 
-    val navAuth: String get() = fetchPropertyOrEnvironment(userAuthPropName()) ?: unknownProperty(userAuthPropName())
-    val navUsername: String? get() = fetchPropertyOrEnvironment(NAV_USER) ?: CucumberTestRun.navUsername
-    val testUserAuth: String get() = fetchPropertyOrEnvironment(testAuthPropName()) ?: unknownProperty(testAuthPropName())
-    val testUsername: String? get() = fetchPropertyOrEnvironment(TEST_USER) ?: CucumberTestRun.testUsername
-    val tenantUsername: String get() = "F_${testUsernameUppercase()}.E_${testUsernameUppercase()}@trygdeetaten.no"
+    val isSanityCheck: Boolean? get() = fetchPropertyOrEnvironment(SANITY_CHECK)?.toBoolean()
+
+    val navAuth: String get() = fetchPropertyOrEnvironment(navAuthPropName()) ?: throw unknownProperty(navAuthPropName())
+    val securityToken: String? get() = fetchPropertyOrEnvironment(SECURITY_TOKEN)
+    val testUserAuth: String get() = fetchPropertyOrEnvironment(testAuthPropName()) ?: throw unknownProperty(testAuthPropName())
 
     fun fetchPropertyOrEnvironment(key: String): String? = System.getProperty(key) ?: System.getenv(key)
-    private fun testAuthPropName() = TEST_AUTH + '_' + testUsernameUppercase()
-    private fun testUsernameUppercase() = testUsername?.uppercase()
-    private fun userAuthPropName() = "${NAV_AUTH}_${navUsername?.uppercase()}"
-    private fun unknownProperty(property: String): String = throw IllegalStateException("Ingen $property å finne!")
+    private fun navAuthPropName() = NAV_AUTH + '_' + navUsername?.uppercase()
+    private fun testAuthPropName() = TEST_AUTH + '_' + testUsername?.uppercase()
+
+    private fun unknownProperty(property: String) = IllegalStateException("Ingen $property å finne!")
 
     fun initCucumberEnvironment(cucumberTestsModel: CucumberTestsModel) {
         LOGGER.info("Initializing environment for $cucumberTestsModel")
@@ -28,14 +35,12 @@ internal object Environment {
     }
 
     /**
-     * removes thread specific data values
+     * removes properties and thread specific data values
      */
-    fun resetCucumberEnvironment() {
+    fun reset() {
         System.clearProperty(NAV_USER)
-        System.clearProperty(NO_CONTEXT_PATH_FOR_APPS)
         System.clearProperty(SANITY_CHECK)
         System.clearProperty(SECURITY_TOKEN)
-        System.clearProperty(TAGS)
         System.clearProperty(TEST_USER)
         CucumberTestRun.endRun()
     }

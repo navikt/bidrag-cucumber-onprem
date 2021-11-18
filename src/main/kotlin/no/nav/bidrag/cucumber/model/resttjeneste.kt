@@ -6,7 +6,7 @@ import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.service.AzureTokenService
 import no.nav.bidrag.cucumber.service.OidcTokenService
-import no.nav.bidrag.cucumber.sikkerhet.TokenService
+import no.nav.bidrag.cucumber.service.TokenService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -59,7 +59,7 @@ internal class RestTjenesteForApplikasjon {
                 )
             }
 
-            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenService.generateBearerToken(applicationName) }
+            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenService.fetchBearerToken(applicationName) }
         } else {
             LOGGER.info("No user to provide security for when accessing $applicationName")
         }

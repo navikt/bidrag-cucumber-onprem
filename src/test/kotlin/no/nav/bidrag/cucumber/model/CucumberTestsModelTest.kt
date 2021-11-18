@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@DisplayName("CucumberTestsDto")
+@DisplayName("CucumberTestsModel")
 internal class CucumberTestsModelTest {
 
     @Test
