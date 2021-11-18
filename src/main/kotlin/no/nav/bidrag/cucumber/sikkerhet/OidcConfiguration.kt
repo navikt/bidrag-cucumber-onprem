@@ -1,13 +1,14 @@
 package no.nav.bidrag.cucumber.sikkerhet
 
 import no.nav.bidrag.cucumber.Environment
+import no.nav.bidrag.cucumber.model.CucumberTestRun
 
 object OidcConfiguration {
 
     private const val BIDRAG_UI_FEATURE_OIDC = "bidrag-ui-feature-oidc"
     private const val BIDRAG_UI_OIDC = "bidrag-ui-q2"
 
-    fun fetchConfiguration() = if (Environment.isFeatureBranch)
+    fun fetchConfiguration() = if (CucumberTestRun.isFeatureBranch)
         OidcConfigEnvironment(
             agentName = BIDRAG_UI_FEATURE_OIDC,
             tokenNamespace = "feature-q1",

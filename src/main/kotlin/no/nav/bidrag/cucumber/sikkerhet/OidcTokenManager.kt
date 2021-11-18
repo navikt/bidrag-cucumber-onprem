@@ -5,8 +5,8 @@ import no.nav.bidrag.cucumber.ALIAS_BIDRAG_UI
 import no.nav.bidrag.cucumber.ALIAS_OIDC
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.Headers
-import no.nav.bidrag.cucumber.RestTjenesteForApplikasjon
 import no.nav.bidrag.cucumber.Url
+import no.nav.bidrag.cucumber.model.BaseUrlTemplateHandler
 import org.apache.tomcat.util.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -135,7 +135,7 @@ class OidcTokenManager {
 
     private fun initRestTemplate(url: String): RestTemplate {
         val restTemplate = RestTemplate()
-        restTemplate.uriTemplateHandler = RestTjenesteForApplikasjon.BaseUrlTemplateHandler(url)
+        restTemplate.uriTemplateHandler = BaseUrlTemplateHandler(url)
 
         return restTemplate
     }

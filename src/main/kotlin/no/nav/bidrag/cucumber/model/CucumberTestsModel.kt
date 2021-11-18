@@ -35,8 +35,10 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     val navUsername: String? get() = cucumberTestsApi.navUsername
     val noContextPathForApps: List<String> get() = cucumberTestsApi.noContextPathForApps
     val sanityCheck: Boolean? get() = cucumberTestsApi.sanityCheck
+    val securityToken: String? get() = cucumberTestsApi.securityToken
     val tags: List<String> get() = cucumberTestsApi.tags
     val testUsername: String? get() = cucumberTestsApi.testUsername
+    val tokenType: TokenType get() = TokenType.fetch(cucumberTestsApi.tokenType)
 
     constructor(
         ingressesForApps: List<String> = emptyList(),
@@ -59,16 +61,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     )
 
     fun getSanityCheck() = sanityCheck?.toString() ?: "false"
-
-    fun fetchIngressesForAppsAsString(): String {
-        val string = ingressesForApps.joinToString(separator = ",")
-
-        if (string.isBlank()) {
-            throw IllegalStateException("ingen ingress(er) for nais-app(s)")
-        }
-
-        return string
-    }
+    fun isFeatureBranch() = cucumberTestsApi.ingressesForApps.any { it.contains("-feature") }
 
     fun fetchTags(): String {
         val collectTags = ingressesForApps
@@ -92,6 +85,18 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
         LOGGER.info("Using tags - '$tagsAsStringWithNotIgnored' - from $logValues")
 
         return tagsAsStringWithNotIgnored
+    }
+
+    fun fetchIngress(applicationName: String): String {
+        LOGGER.info("Finding ingress for '$applicationName' in $ingressesForApps")
+
+        return ingressesForApps.map {
+            it.replace("@no-tag:", "@")
+        }.filter {
+            it.substring(it.indexOf('@') + 1) == applicationName
+        }.map {
+            it.split("@")[0]
+        }.first()
     }
 
     private fun transformAssertedTagsToString(tags: List<String>): String {
@@ -123,8 +128,6 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     }
 
     internal fun warningLogDifferences() {
-        @Suppress("NullableBooleanElvis")
-        if (isNotEqual(sanityCheck ?: false, Environment.isSanityCheck)) warningForDifference("sanityCheck", sanityCheck, Environment.isSanityCheck)
         if (isNotEqual(testUsername, Environment.tenantUsername)) warningForDifference("testUsername", testUsername, Environment.testUsername)
     }
 
@@ -138,6 +141,4 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
             LOGGER.warn("$property vs $envValue: (${this.javaClass.simpleName}.$name vs ${Environment::class.java.simpleName})")
         }
     }
-
-    fun isFeatureBranch() = ingressesForApps.any { it.contains("-feature") }
 }
