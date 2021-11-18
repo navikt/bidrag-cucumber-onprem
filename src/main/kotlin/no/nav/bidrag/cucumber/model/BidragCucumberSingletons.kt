@@ -25,7 +25,6 @@ internal object BidragCucumberSingletons {
     }
 
     fun addRunStats(scenario: Scenario) = CucumberTestRun.addToRunStats(scenario)
-    fun toJson(body: Any): String = objectMapper?.writeValueAsString(body) ?: """{ "noMappingAvailable":"$body" }"""
 
     fun scenarioMessage(scenario: Scenario): String {
         val haveScenario = scenario.name != null && scenario.name.isNotBlank()

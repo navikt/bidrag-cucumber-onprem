@@ -170,8 +170,8 @@ class RestTjeneste(
         return headers
     }
 
-    fun exchangePost(endpointUrl: String, body: Any) {
-        val jsonEntity = httpEntity(endpointUrl, BidragCucumberSingletons.toJson(body))
+    fun exchangePost(endpointUrl: String, body: String) {
+        val jsonEntity = httpEntity(endpointUrl, body)
         exchange(jsonEntity, endpointUrl, HttpMethod.POST)
     }
 
