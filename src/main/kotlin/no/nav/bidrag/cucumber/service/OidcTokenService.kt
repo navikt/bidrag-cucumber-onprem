@@ -30,19 +30,26 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
         private val LOGGER = LoggerFactory.getLogger(OidcTokenService::class.java)
     }
 
-
     override fun generateToken(application: String) = generateOidcToken(CucumberTestRun.navUsername ?: throw noUserForToken())
     private fun noUserForToken() = IllegalStateException("No navUsername to generate token for!")
 
     fun generateOidcToken(navUsername: String): String {
-        val openIdFasitRessurs = hentOpenIdConnectFasitRessurs()
-        val openAmPassword = hentOpenAmPassword(navUsername, openIdFasitRessurs)
-        val tokenIdForTestUser = hentTokenIdForTestbruker()
-        val codeFraLocationHeader = hentCodeFraLocationHeader(tokenIdForTestUser)
+        try {
+            val openIdFasitRessurs = hentOpenIdConnectFasitRessurs()
+            val openAmPassword = hentOpenAmPassword(navUsername, openIdFasitRessurs)
+            val tokenIdForTestUser = hentTokenIdForTestbruker()
+            val codeFraQueryString = fetchCodeFromCodeQueryString(tokenIdForTestUser)
 
-        LOGGER.info("Fetched id token for ${CucumberTestRun.testUsername}")
+            LOGGER.info("Fetched id token for ${CucumberTestRun.testUsername}")
 
-        return hentIdToken(codeFraLocationHeader, openAmPassword)
+            return hentIdToken(codeFraQueryString, openAmPassword)
+        } catch (throwable: Throwable) {
+            LOGGER.error(
+                "Unable to find token id for ${CucumberTestRun.testUsername} using $navUsername - ${throwable.javaClass.name}: ${throwable.message}"
+            )
+
+            throw throwable
+        }
     }
 
     private fun hentOpenIdConnectFasitRessurs(): FasitRessurs {
@@ -111,13 +118,17 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
         return authMap["tokenId"] as String? ?: throw IllegalStateException("Fant ikke id token i json for $testUserAndAgent")
     }
 
-    private fun hentCodeFraLocationHeader(tokenIdForAuthenticatedTestUser: String): String {
+    private fun fetchCodeFromCodeQueryString(tokenIdForAuthenticatedTestUser: String): String {
         val oidcConfigEnvironment = OidcConfiguration.fetchConfiguration()
-        val tokenNamespace = oidcConfigEnvironment.tokenNamespace
-        val issoRedirectUrl = oidcConfigEnvironment.issoRedirectUrl
+        val bidragUiTokenNamespace = "bidrag-ui-${oidcConfigEnvironment.tokenNamespace}"
+        val redirectUrl = oidcConfigEnvironment.issoRedirectUrl
+        val body =
+            "client_id=$bidragUiTokenNamespace&response_type=code&redirect_uri=$redirectUrl&decision=allow&csrf=$tokenIdForAuthenticatedTestUser&scope=openid"
+
+        LOGGER.info("Henter location uri med $body...")
 
         val httpEntityWithHeaders = initHttpEntity(
-            "client_id=bidrag-ui-$tokenNamespace&response_type=code&redirect_uri=$issoRedirectUrl&decision=allow&csrf=$tokenIdForAuthenticatedTestUser&scope=openid",
+            body = body,
             header(HttpHeaders.CACHE_CONTROL, "no-cache"),
             header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded"),
             header(HttpHeaders.COOKIE, "nav-isso=$tokenIdForAuthenticatedTestUser")
@@ -129,7 +140,9 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
 
         val queryString = uri.query
         val queries = queryString.split("&")
-        val codeQuery = queries.find { it.startsWith("code=") } ?: throw IllegalStateException("Fant ikke code i Location")
+        val codeQuery = queries.find { it.startsWith("code=") } ?: throw IllegalStateException(
+            "Fant ikke code i query string til ${uri.toString().substring(0, uri.toString().indexOf('?'))}"
+        )
 
         return codeQuery.substringAfter("code=")
     }
@@ -138,7 +151,7 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
         val oidcConfigEnvironment = OidcConfiguration.fetchConfiguration()
         val openApAuth = "$ALIAS_BIDRAG_UI-${oidcConfigEnvironment.tokenNamespace}:$passordOpenAm"
         val httpEntityWithHeaders = initHttpEntity(
-            "grant_type=authorization_code&code=$codeFraLocationHeader&redirect_uri=${oidcConfigEnvironment.issoRedirectUrl}",
+            body = "grant_type=authorization_code&code=$codeFraLocationHeader&redirect_uri=${oidcConfigEnvironment.issoRedirectUrl}",
             header(HttpHeaders.AUTHORIZATION, "Basic " + String(Base64.encodeBase64(openApAuth.toByteArray(Charsets.UTF_8)))),
             header(HttpHeaders.CACHE_CONTROL, "no-cache"),
             header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
@@ -161,15 +174,15 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
     }
 
     private fun initHttpEntity(vararg headers: Map.Entry<String, String>): HttpEntity<*> {
-        return initHttpEntity(null, *headers)
+        return initHttpEntity(body = null, *headers)
     }
 
-    private fun initHttpEntity(data: String?, vararg headers: Map.Entry<String, String>): HttpEntity<*> {
+    private fun initHttpEntity(body: String?, vararg headers: Map.Entry<String, String>): HttpEntity<*> {
         val linkedMultiValueMap = LinkedMultiValueMap<String, String>()
         headers.forEach { linkedMultiValueMap.add(it.key, it.value) }
         val httpHeaders = HttpHeaders(linkedMultiValueMap)
 
-        return HttpEntity(data, httpHeaders)
+        return HttpEntity(body, httpHeaders)
     }
 
     private fun initRestTemplate(url: String? = null): RestTemplate {
