@@ -6,17 +6,17 @@ import no.nav.bidrag.cucumber.model.CucumberTestRun
 abstract class TokenService {
     abstract fun generateToken(application: String): String
 
-    fun fetchBearerToken(application: String): String {
+    fun cacheGeneratedToken(application: String): String {
         val token = if (Environment.withSecurityToken) {
-            Environment.securityToken
+            Environment.securityToken!!
         } else if (CucumberTestRun.withSecurityToken) {
-            CucumberTestRun.securityToken
+            CucumberTestRun.securityToken!!
         } else {
             generateToken(application)
         }
 
         CucumberTestRun.updateSecurityToken(token)
 
-        return "Bearer $token"
+        return token
     }
 }

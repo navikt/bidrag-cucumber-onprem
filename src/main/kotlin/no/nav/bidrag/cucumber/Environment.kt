@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
  * Values gathered by environment variables or which is possible to override with system properties or environment variables
  */
 internal object Environment {
-    val scope: String get() = CucumberTestRun.fetchQenvironmentFromIngress()
     val withSecurityToken: Boolean get() = fetchPropertyOrEnvironment(SECURITY_TOKEN) != null
 
     @JvmStatic
@@ -19,15 +18,16 @@ internal object Environment {
 
     val isSanityCheck: Boolean? get() = fetchPropertyOrEnvironment(SANITY_CHECK)?.toBoolean()
 
-    val navAuth: String get() = fetchPropertyOrEnvironment(navAuthPropName()) ?: throw unknownProperty(navAuthPropName())
+    val navAuth: String get() = fetchPropertyOrEnvironment(navAuthPropName()) ?: throw unknownState(navAuthPropName())
     val securityToken: String? get() = fetchPropertyOrEnvironment(SECURITY_TOKEN)
-    val testUserAuth: String get() = fetchPropertyOrEnvironment(testAuthPropName()) ?: throw unknownProperty(testAuthPropName())
+    val testUserAuth: String get() = fetchPropertyOrEnvironment(testAuthPropName()) ?: throw unknownState(testAuthPropName())
 
     fun fetchPropertyOrEnvironment(key: String): String? = System.getProperty(key) ?: System.getenv(key)
     private fun navAuthPropName() = NAV_AUTH + '_' + navUsername?.uppercase()
     private fun testAuthPropName() = TEST_AUTH + '_' + testUsername?.uppercase()
 
-    private fun unknownProperty(property: String) = IllegalStateException("Ingen $property å finne!")
+    private fun unknownState(name: String) = IllegalStateException("Ukjent miljøvariabel ($name), kjente: ${listKnownVariables()}!")
+    private fun listKnownVariables() = ArrayList(System.getenv().keys).joinToString { it }
 
     fun initCucumberEnvironment(cucumberTestsModel: CucumberTestsModel) {
         LOGGER.info("Initializing environment for $cucumberTestsModel")

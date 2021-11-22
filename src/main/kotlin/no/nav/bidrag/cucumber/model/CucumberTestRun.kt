@@ -78,12 +78,12 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         val isTestUserPresent: Boolean get() = fetchPropertyOrEnvironment(TEST_USER) != null || thisRun().cucumberTestsModel.testUsername != null
 
         val navUsername: String? get() = thisRun().cucumberTestsModel.navUsername
+        val qEnvironment: String get() = if (isFeatureBranch) "q1" else "q2"
         val securityToken: String? get() = thisRun().cucumberTestsModel.securityToken
         val testUsername: String? get() = thisRun().cucumberTestsModel.testUsername
         val withSecurityToken: Boolean get() = securityToken != null
 
         fun addToRunStats(scenario: Scenario) = thisRun().runStats.add(scenario)
-        fun fetchQenvironmentFromIngress(): String = if (isFeatureBranch) "q1" else "q2"
         fun fetchIngress(applicationName: String) = thisRun().cucumberTestsModel.fetchIngress(applicationName)
         fun fetchTestMessagesWithRunStats() = thisRun().testMessagesHolder.fetchTestMessages() + "\n\n" + thisRun().runStats.get()
         fun hentEllerKonfigurerResttjeneste(applicationName: String) = thisRun().hentEllerKonfigurerResttjenesteMedBaseUrl(applicationName)

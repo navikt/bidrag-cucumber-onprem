@@ -59,7 +59,8 @@ internal class RestTjenesteForApplikasjon {
                 )
             }
 
-            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenService.fetchBearerToken(applicationName) }
+            val tokenValue = TokenValue(tokenService.cacheGeneratedToken(applicationName))
+            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
         } else {
             LOGGER.info("No user to provide security for when accessing $applicationName")
         }
@@ -75,6 +76,10 @@ internal class RestTjenesteForApplikasjon {
     }
 
     fun hentSisteResttjeneste() = sisteResttjenester.last()
+}
+
+class TokenValue(private val token: String) {
+    fun initBearerToken() = "Bearer $token"
 }
 
 internal class BaseUrlTemplateHandler(private val baseUrl: String) : UriTemplateHandler {

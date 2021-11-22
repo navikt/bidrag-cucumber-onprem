@@ -16,13 +16,6 @@ class FasitManager(private val restTemplate: RestTemplate) {
         private val LOGGER = LoggerFactory.getLogger(FasitManager::class.java)
     }
 
-    internal fun buildUriString(url: String, vararg queries: String): String {
-        val resourceUrl = UriComponentsBuilder.fromHttpUrl(url)
-        queries.forEach { resourceUrl.query(it) }
-
-        return resourceUrl.toUriString()
-    }
-
     private fun hentFasitRessursSomJson(resourceUrl: String): FasitJson {
         val fasitJson: String? = try {
             restTemplate.getForObject(resourceUrl, String::class.java)

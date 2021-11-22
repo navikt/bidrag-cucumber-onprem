@@ -17,9 +17,11 @@ import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class OidcTokenService(private val applicationContext: ApplicationContext, private val fasitManager: FasitManager) : TokenService() {
@@ -29,11 +31,12 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
     }
 
 
-    override fun generateToken(application: String) = generateOidcToken(CucumberTestRun.navUsername)
+    override fun generateToken(application: String) = generateOidcToken(CucumberTestRun.navUsername ?: throw noUserForToken())
+    private fun noUserForToken() = IllegalStateException("No navUsername to generate token for!")
 
-    fun generateOidcToken(navUsername: String?): String {
+    fun generateOidcToken(navUsername: String): String {
         val openIdFasitRessurs = hentOpenIdConnectFasitRessurs()
-        val openAmPassword = hentOpenAmPassword(navUsername, Environment.navAuth, openIdFasitRessurs)
+        val openAmPassword = hentOpenAmPassword(navUsername, openIdFasitRessurs)
         val tokenIdForTestUser = hentTokenIdForTestbruker()
         val codeFraLocationHeader = hentCodeFraLocationHeader(tokenIdForTestUser)
 
@@ -43,9 +46,13 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
     }
 
     private fun hentOpenIdConnectFasitRessurs(): FasitRessurs {
-        val fasitRessursUrl = fasitManager.buildUriString(
-            Url.FASIT, "type=OpenIdConnect", "environment=${Environment.scope}", "alias=$ALIAS_OIDC", "zone=fss", "usage=false"
-        )
+        val fasitRessursUrl = UriComponentsBuilder.fromHttpUrl(Url.FASIT)
+            .query("type=OpenIdConnect")
+            .query("environment=${CucumberTestRun.qEnvironment}")
+            .query("alias=$ALIAS_OIDC")
+            .query("zone=fss")
+            .query("usage=false")
+            .toUriString()
 
         val openIdConnectFasitRessurs = fasitManager.hentFasitRessurs(fasitRessursUrl, ALIAS_OIDC)
 
@@ -54,9 +61,10 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
         return openIdConnectFasitRessurs
     }
 
-    private fun hentOpenAmPassword(navUsername: String?, navAuth: String, openIdFasitManagerRessurs: FasitRessurs): String {
+    private fun hentOpenAmPassword(navUsername: String, openIdFasitManagerRessurs: FasitRessurs): String {
+        val basicAuth = "$navUsername:${Environment.navAuth}"
         val httpEntityWithAuthorizationHeader = initHttpEntity(
-            header(HttpHeaders.AUTHORIZATION, "Basic " + String(Base64.encodeBase64(navAuth.toByteArray(Charsets.UTF_8))))
+            header(HttpHeaders.AUTHORIZATION, "Basic " + String(Base64.encodeBase64(basicAuth.toByteArray(Charsets.UTF_8))))
         )
 
         LOGGER.info("Finding OpenAM password for $navUsername from ${openIdFasitManagerRessurs.passordUrl()}")
@@ -64,15 +72,19 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
         val responseEntity = initRestTemplate(openIdFasitManagerRessurs.passordUrl())
             .exchange("/", HttpMethod.GET, httpEntityWithAuthorizationHeader, String::class.java)
 
-        if (!responseEntity.statusCode.is2xxSuccessful) {
-            LOGGER.error("ERROR finding OpenAM password (${openIdFasitManagerRessurs.passordUrl()}), status: ${responseEntity.statusCode}")
+        if (responseEntity.statusCode != HttpStatus.OK) {
+            LOGGER.error(
+                "ERROR finding OpenAM password (${openIdFasitManagerRessurs.passordUrl()}), status: ${responseEntity.statusCode}, body: ${
+                    responseEntity.body
+                }"
+            )
         }
 
         return responseEntity.body ?: throw IllegalStateException("fant ikke passord for bruker på open am")
     }
 
     private fun hentTokenIdForTestbruker(): String {
-        val testUser = CucumberTestRun.testUsername ?: throw IllegalStateException("Cannot provide security without user")
+        val testUser = CucumberTestRun.testUsername ?: throw IllegalStateException("Cannot provide security without username for test user")
         val testUserAndAgent = "$testUser: agent: ${OidcConfiguration.fetchConfiguration().agentName}"
         val httpEntityWithHeaders = initHttpEntity(
             header(HttpHeaders.CACHE_CONTROL, "no-cache"),
@@ -85,9 +97,11 @@ class OidcTokenService(private val applicationContext: ApplicationContext, priva
 
         val responseEntity = initRestTemplate().exchange(Url.ISSO, HttpMethod.POST, httpEntityWithHeaders, String::class.java)
 
-        if (!responseEntity.statusCode.is2xxSuccessful) {
-            LOGGER.error("ERROR finding token id, status: ${responseEntity.statusCode}")
-        }
+        if (responseEntity.statusCode != HttpStatus.OK) throw IllegalStateException(
+            "Unable to find token id, status: ${responseEntity.statusCode}, body: ${
+                responseEntity.body
+            }"
+        )
 
         val authJson = responseEntity.body ?: throw IllegalStateException("fant ikke json for $testUserAndAgent")
         val authMap = ObjectMapper().readValue(authJson, Map::class.java)
