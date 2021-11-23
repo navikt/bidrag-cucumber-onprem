@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 @DisplayName("Environment")
 internal class EnvironmentTest {
     @BeforeEach
-    fun `reset Cucumber environment`() = Environment.resetCucumberEnvironment()
+    fun `reset Cucumber environment`() = Environment.reset()
 
     @Test
     fun `skal hente passord basert på testUsername`() {

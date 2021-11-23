@@ -24,14 +24,16 @@ object Url {
 }
 
 object Headers {
-    internal const val X_ENHET_HEADER = "X-Enhet"
     internal const val X_OPENAM_PASSW = "X-OpenAM-Password"
     internal const val X_OPENAM_USER = "X-OpenAM-Username"
 }
 
+object Fasit {
+    internal const val ALIAS_BIDRAG_UI = "bidrag-ui"
+    internal const val ALIAS_OIDC = "$ALIAS_BIDRAG_UI-oidc"
+}
+
 // misc configuration
-internal const val ALIAS_BIDRAG_UI = "bidrag-ui"
-internal const val ALIAS_OIDC = "$ALIAS_BIDRAG_UI-oidc"
 internal const val CORRELATION_ID = "correlationId"
 
 internal val ABSOLUTE_FEATURE_PATH = FilePath("features.path").findFolderPath()

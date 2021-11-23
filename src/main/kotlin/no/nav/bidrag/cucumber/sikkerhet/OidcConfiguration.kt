@@ -1,22 +1,18 @@
 package no.nav.bidrag.cucumber.sikkerhet
 
-import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 
 object OidcConfiguration {
 
-    private const val BIDRAG_UI_FEATURE_OIDC = "bidrag-ui-feature-oidc"
-    private const val BIDRAG_UI_OIDC = "bidrag-ui-q2"
-
     fun fetchConfiguration() = if (CucumberTestRun.isFeatureBranch)
         OidcConfigEnvironment(
-            agentName = BIDRAG_UI_FEATURE_OIDC,
+            agentName = "bidrag-ui-feature-oidc",
             tokenNamespace = "feature-q1",
             issoRedirectUrl = "https://bidrag-ui-feature.dev.adeo.no/isso"
         )
     else
         OidcConfigEnvironment(
-            agentName = BIDRAG_UI_OIDC,
+            agentName = "bidrag-ui-q2",
             tokenNamespace = "q2",
             issoRedirectUrl = "https://bidrag-ui.dev.adeo.no/isso"
         )
