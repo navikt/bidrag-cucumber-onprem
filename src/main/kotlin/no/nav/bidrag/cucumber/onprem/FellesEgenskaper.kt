@@ -1,9 +1,9 @@
 package no.nav.bidrag.cucumber.onprem
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjeneste
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
@@ -20,7 +20,7 @@ class FellesEgenskaper : No {
                     "HttpStatus for ${hentRestTjeneste().hentFullUrlMedEventuellWarning()}",
                     hentRestTjeneste().hentHttpStatus(),
                     HttpStatus.valueOf(enHttpStatus),
-                    this::harForventetHttpStatus
+                    this::harForventetVerdi
                 )
             )
         }
@@ -41,9 +41,24 @@ class FellesEgenskaper : No {
                 .`as`("HttpStatus for " + hentRestTjeneste().hentFullUrlMedEventuellWarning())
                 .isNotIn(EnumSet.of(HttpStatus.valueOf(enHttpStatus), HttpStatus.valueOf(enAnnenHttpStatus)))
         }
+
+        Når("jeg kaller endpoint {string} med parameter {string} = {string}") { endpoint: String, param: String, value: String ->
+            hentRestTjeneste().exchangeGet("$endpoint?$param=$value")
+        }
+
+        Så("så skal responsen være ei tom liste") {
+            FellesEgenskaperService.assertWhenNotSanityCheck(
+                Assertion(
+                    "Respons fra ${hentRestTjeneste().hentFullUrlMedEventuellWarning()}",
+                    hentRestTjeneste().hentResponse()?.trim(),
+                    "[]",
+                    this::harForventetVerdi
+                )
+            )
+        }
     }
 
-    private fun harForventetHttpStatus(assertion: Assertion) {
+    private fun harForventetVerdi(assertion: Assertion) {
         assertThat(assertion.value).`as`(assertion.message).isEqualTo(assertion.expectation)
     }
 }
