@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriTemplateHandler
 import java.net.URI
 
-internal class RestTjenesteForApplikasjon {
+internal class RestTjenester {
     companion object {
         @JvmStatic
         private val LOGGER = LoggerFactory.getLogger(CucumberTestRun::class.java)
@@ -37,49 +37,20 @@ internal class RestTjenesteForApplikasjon {
         }
     }
 
-    private val resttjenesteForNavn: MutableMap<String, ResttjenesteMedBaseUrl> = HashMap()
-    private val sisteResttjenester: MutableList<RestTjeneste> = ArrayList()
+    private val restTjenesteForNavn: MutableMap<String, RestTjeneste> = HashMap()
+    private var restTjenesteTilTesting: RestTjeneste? = null
 
-    fun hentEllerKonfigurer(applicationName: String, konfigurer: () -> ResttjenesteMedBaseUrl): ResttjenesteMedBaseUrl {
-        return resttjenesteForNavn.computeIfAbsent(applicationName) { konfigurer() }
-    }
+    fun settOppNaisAppTilTesting(naisApplikasjon: String) {
+        LOGGER.info("Setter opp $naisApplikasjon")
 
-    fun konfigurerResttjeneste(applicationName: String): ResttjenesteMedBaseUrl {
-        val applicationUrl = konfigurerApplikasjonUrlFor(applicationName)
-        val httpHeaderRestTemplate = BidragCucumberSingletons.hentPrototypeFraApplicationContext()
-        httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
-
-        if (CucumberTestRun.isTestUserPresent) {
-            val tokenService = when (CucumberTestRun.hentTokenType()) {
-                TokenType.AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) as TokenService? ?: throw notNullTokenService(
-                    TokenType.AZURE
-                )
-                TokenType.OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) as TokenService? ?: throw notNullTokenService(
-                    TokenType.OIDC
-                )
-            }
-
-            val tokenValue = TokenValue(tokenService.cacheGeneratedToken(applicationName))
-            httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
-        } else {
-            LOGGER.info("No user to provide security for when accessing $applicationName")
+        if (!restTjenesteForNavn.contains(naisApplikasjon)) {
+            restTjenesteForNavn[naisApplikasjon] = RestTjeneste(naisApplikasjon)
         }
 
-        return ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl)
+        restTjenesteTilTesting = restTjenesteForNavn[naisApplikasjon]
     }
 
-    private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No token service for tokenType $tokenType in spring context")
-
-    fun settOppNaisApp(naisApplikasjon: String) {
-        LOGGER.info("Setter opp $naisApplikasjon")
-        sisteResttjenester.add(RestTjeneste(naisApplikasjon))
-    }
-
-    fun hentSisteResttjeneste() = sisteResttjenester.last()
-}
-
-class TokenValue(private val token: String) {
-    fun initBearerToken() = "Bearer $token"
+    fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
 }
 
 internal class BaseUrlTemplateHandler(private val baseUrl: String) : UriTemplateHandler {
@@ -118,12 +89,39 @@ class RestTjeneste(
     companion object {
         @JvmStatic
         private val LOGGER = LoggerFactory.getLogger(RestTjeneste::class.java)
+
+        internal fun konfigurerResttjeneste(applicationName: String): RestTjeneste {
+            val applicationUrl = RestTjenester.konfigurerApplikasjonUrlFor(applicationName)
+            val httpHeaderRestTemplate = BidragCucumberSingletons.hentPrototypeFraApplicationContext()
+            httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
+
+            if (CucumberTestRun.isTestUserPresent) {
+                val tokenService = when (CucumberTestRun.hentTokenType()) {
+                    TokenType.AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) as TokenService?
+                        ?: throw notNullTokenService(
+                            TokenType.AZURE
+                        )
+                    TokenType.OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) as TokenService? ?: throw notNullTokenService(
+                        TokenType.OIDC
+                    )
+                }
+
+                val tokenValue = TokenValue(tokenService.cacheGeneratedToken(applicationName))
+                httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
+            } else {
+                LOGGER.info("No user to provide security for when accessing $applicationName")
+            }
+
+            return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))
+        }
+
+        private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No service for $tokenType in spring context")
     }
 
     private lateinit var fullUrl: FullUrl
     internal var responseEntity: ResponseEntity<String?>? = null
 
-    constructor(naisApplication: String) : this(CucumberTestRun.hentEllerKonfigurerResttjeneste(naisApplication))
+    constructor(naisApplication: String) : this(konfigurerResttjeneste(naisApplication).rest)
 
     fun hentFullUrlMedEventuellWarning() = "$fullUrl${appendWarningWhenExists()}"
     fun hentHttpHeaders(): HttpHeaders = responseEntity?.headers ?: HttpHeaders()
@@ -210,6 +208,10 @@ class RestTjeneste(
 }
 
 class ResttjenesteMedBaseUrl(val template: RestTemplate, val baseUrl: String)
+class TokenValue(private val token: String) {
+    fun initBearerToken() = "Bearer $token"
+}
+
 internal class FullUrl(baseUrl: String, endpointUrl: String) {
     private val fullUrl: String = "$baseUrl$endpointUrl"
 
