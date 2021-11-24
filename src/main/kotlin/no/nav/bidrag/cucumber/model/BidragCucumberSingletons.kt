@@ -6,6 +6,8 @@ import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.SpringConfig
 import org.springframework.context.ApplicationContext
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import kotlin.reflect.KClass
 
 /**
@@ -18,17 +20,46 @@ internal object BidragCucumberSingletons {
 
     fun hentPrototypeFraApplicationContext() = applicationContext?.getBean(HttpHeaderRestTemplate::class.java) ?: doManualInit()
     fun hentFraContext(kClass: KClass<*>) = applicationContext?.getBean(kClass.java)
+    fun addRunStats(scenario: Scenario) = CucumberTestRun.addToRunStats(scenario)
+    private fun fetchObjectMapper() = objectMapper ?: ObjectMapper()
 
     private fun doManualInit(): HttpHeaderRestTemplate {
         val httpComponentsClientHttpRequestFactory = SpringConfig().httpComponentsClientHttpRequestFactorySomIgnorererHttps()
         return HttpHeaderRestTemplate(httpComponentsClientHttpRequestFactory)
     }
 
-    fun addRunStats(scenario: Scenario) = CucumberTestRun.addToRunStats(scenario)
-
     fun scenarioMessage(scenario: Scenario): String {
         val haveScenario = scenario.name != null && scenario.name.isNotBlank()
         return if (haveScenario) "'${scenario.name}'" else "scenario in ${scenario.uri}"
+    }
+
+    fun mapResponseSomMap(responseEntity: ResponseEntity<String?>?): Map<String, Any> {
+        return if (responseEntity?.statusCode == HttpStatus.OK && responseEntity.body != null)
+            mapResponseSomMap(responseEntity.body!!)
+        else
+            HashMap()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun mapResponseSomMap(body: String): Map<String, Any> = try {
+        fetchObjectMapper().readValue(body, Map::class.java) as Map<String, Any>
+    } catch (e: Exception) {
+        CucumberTestRun.holdExceptionForTest(e)
+        throw e
+    }
+
+    fun mapResponseSomListe(responseEntity: ResponseEntity<String?>?): List<Any> {
+        return if (responseEntity?.statusCode == HttpStatus.OK && responseEntity.body != null)
+            mapResponseSomListe(responseEntity.body!!)
+        else
+            ArrayList()
+    }
+
+    private fun mapResponseSomListe(body: String): List<Any> = try {
+        fetchObjectMapper().readValue(body, ArrayList::class.java)
+    } catch (e: Exception) {
+        CucumberTestRun.holdExceptionForTest(e)
+        throw e
     }
 
     fun setApplicationContext(applicationContext: ApplicationContext) {
@@ -42,4 +73,5 @@ internal object BidragCucumberSingletons {
     fun setObjectMapper(objectMapper: ObjectMapper) {
         BidragCucumberSingletons.objectMapper = objectMapper
     }
+
 }

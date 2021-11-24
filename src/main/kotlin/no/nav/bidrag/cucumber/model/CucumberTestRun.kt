@@ -87,6 +87,7 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun hold(logMessages: List<String>) = thisRun().testMessagesHolder.hold(logMessages)
         fun holdTestMessage(message: String) = thisRun().testMessagesHolder.hold(message)
         fun isNoContextPathForApp(applicationName: String) = thisRun().cucumberTestsModel.noContextPathForApps.contains(applicationName)
+        fun settOppNaisApp(naisApplikasjon: String) =  thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
         fun settOppNaisAppTilTesting(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisAppTilTesting(naisApplikasjon)
         fun updateSecurityToken(securityToken: String?) = thisRun().cucumberTestsModel.updateSecurityToken(securityToken)
 
@@ -101,5 +102,6 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun endRun() {
             CUCUMBER_TEST_RUN.remove()
         }
+
     }
 }

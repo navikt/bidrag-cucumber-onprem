@@ -1,6 +1,5 @@
 package no.nav.bidrag.cucumber.model
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.ScenarioManager
@@ -40,14 +39,23 @@ internal class RestTjenester {
     private val restTjenesteForNavn: MutableMap<String, RestTjeneste> = HashMap()
     private var restTjenesteTilTesting: RestTjeneste? = null
 
-    fun settOppNaisAppTilTesting(naisApplikasjon: String) {
+    fun settOppNaisApp(naisApplikasjon: String): RestTjeneste {
         LOGGER.info("Setter opp $naisApplikasjon")
 
+        val restTjeneste: RestTjeneste
+
         if (!restTjenesteForNavn.contains(naisApplikasjon)) {
-            restTjenesteForNavn[naisApplikasjon] = RestTjeneste(naisApplikasjon)
+            restTjeneste = RestTjeneste(naisApplikasjon)
+            restTjenesteForNavn[naisApplikasjon] = restTjeneste
+        } else {
+            restTjeneste = restTjenesteForNavn[naisApplikasjon]!!
         }
 
-        restTjenesteTilTesting = restTjenesteForNavn[naisApplikasjon]
+        return restTjeneste
+    }
+
+    fun settOppNaisAppTilTesting(naisApplikasjon: String) {
+        restTjenesteTilTesting = settOppNaisApp(naisApplikasjon)
     }
 
     fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
@@ -119,7 +127,7 @@ class RestTjeneste(
     }
 
     private lateinit var fullUrl: FullUrl
-    internal var responseEntity: ResponseEntity<String?>? = null
+    private var responseEntity: ResponseEntity<String?>? = null
 
     constructor(naisApplication: String) : this(konfigurerResttjeneste(naisApplication).rest)
 
@@ -127,18 +135,8 @@ class RestTjeneste(
     fun hentHttpHeaders(): HttpHeaders = responseEntity?.headers ?: HttpHeaders()
     fun hentHttpStatus(): HttpStatus = responseEntity?.statusCode ?: HttpStatus.I_AM_A_TEAPOT
     fun hentResponse(): String? = responseEntity?.body
-    fun hentResponseSomMap(): Map<String, Any> = if (responseEntity?.statusCode == HttpStatus.OK && responseEntity?.body != null)
-        mapResponseBody(responseEntity?.body!!)
-    else
-        HashMap()
-
-    @Suppress("UNCHECKED_CAST")
-    private fun mapResponseBody(body: String): Map<String, Any> = try {
-        ObjectMapper().readValue(body, Map::class.java) as Map<String, Any>
-    } catch (e: Exception) {
-        CucumberTestRun.holdExceptionForTest(e)
-        throw e
-    }
+    fun hentResponseSomListe(): List<Any> = BidragCucumberSingletons.mapResponseSomListe(responseEntity)
+    fun hentResponseSomMap() = BidragCucumberSingletons.mapResponseSomMap(responseEntity)
 
     private fun appendWarningWhenExists(): String {
         val warnings = responseEntity?.headers?.get(HttpHeaders.WARNING) ?: emptyList()
