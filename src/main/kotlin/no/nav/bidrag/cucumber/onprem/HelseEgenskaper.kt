@@ -1,7 +1,7 @@
 package no.nav.bidrag.cucumber.onprem
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjeneste
+import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.assertWhenNotSanityCheck
 import org.assertj.core.api.Assertions.assertThat
@@ -10,11 +10,11 @@ import org.assertj.core.api.Assertions.assertThat
 class HelseEgenskaper : No {
     init {
         Når("jeg kaller helsetjenesten") {
-            hentRestTjeneste().exchangeGet("/actuator/health")
+            hentRestTjenesteTilTesting().exchangeGet("/actuator/health")
         }
 
         Og("header {string} skal være {string}") { headerName: String, headerValue: String ->
-            val headere = hentRestTjeneste().hentHttpHeaders()
+            val headere = hentRestTjenesteTilTesting().hentHttpHeaders()
             val header = headere[headerName]
 
             assertWhenNotSanityCheck(
