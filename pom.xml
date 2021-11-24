@@ -11,7 +11,7 @@
 
   <groupId>no.nav.bidrag.cucumber</groupId>
   <artifactId>bidrag-cucumber-onprem</artifactId>
-  <version>0.0.11-SNAPSHOT</version>
+  <version>0.0.12-SNAPSHOT</version>
 
   <name>bidrag-cucumber-onprem</name>
   <description>Nais app for applikasjoner som er deployet "on-premise"</description>
