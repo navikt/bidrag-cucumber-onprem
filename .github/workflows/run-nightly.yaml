@@ -114,7 +114,6 @@ jobs:
   run-tests-for-person:
     runs-on: self-hosted
     name: bidrag-person
-    needs: deploy
 
     env:
       INGRESS_PERSON: https://bidrag-person.dev.intern.nav.no
