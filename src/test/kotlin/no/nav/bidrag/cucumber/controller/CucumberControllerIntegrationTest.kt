@@ -82,17 +82,16 @@ internal class CucumberControllerIntegrationTest {
     }
 
     @Test
-    @Disabled("WIP. kopiert kode. disabled intil videre...")
-    fun `skal ikke feile når det er sanity check selv om det sendes med brukernavn til en testbruker`() {
-        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-beregn-barnebidrag-rest.dev.adeo.no", "bidrag-beregn-barnebidrag-rest")
+    fun `skal ikke feile når det er sanity og det sendes med brukernavn til en testbruker`() {
+        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-person.dev.adeo.no", "bidrag-person")
 
         val testResponse = testRestTemplate.postForEntity(
             "/run",
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@bidrag-beregn-barnebidrag-rest"]
-                  "sanityCheck":true
+                  "ingressesForApps":["https://bidrag-person.dev.adeo.no@bidrag-person"],
+                  "sanityCheck":true, "testUsername": "jumbo"
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),
@@ -103,14 +102,13 @@ internal class CucumberControllerIntegrationTest {
     }
 
     @Test
-    @Disabled("WIP. kopiert kode. disabled intil videre...")
     fun `skal logge eventuelle exception når det feiler under testing`() {
         val testResponse = testRestTemplate.postForEntity(
             "/run",
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@bidrag-beregn-barnebidrag-rest"]
+                  "ingressesForApps":["https://i-am-not-here.dev.adeo.no@bidrag-person"]
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),
