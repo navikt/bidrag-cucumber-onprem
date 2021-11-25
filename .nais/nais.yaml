@@ -14,9 +14,6 @@ spec:
       outbound:
         external:
           - host: {{ access.outbound.bidrag-sak }}
-  envFrom:
-    - secret: test-auth-z992903
-    - secret: nav-auth-j104364
   image: {{ image }}
   liveness:
     path: /bidrag-cucumber-onprem/actuator/health
@@ -42,6 +39,14 @@ spec:
   {{#each ingresses as |url|}}
     - {{url}}
   {{/each}}
+  envFrom:
+    - secret: test-auth-z992903
+    - secret: nav-auth-j104364
+    - secret: sts-auth
   env:
     - name: SAK_SCOPE
       value: {{ scope.sak }}
+    - name: STS_URL
+      value: https://security-token-service.dev.adeo.no
+    - name: STS_USER
+      value: srvbdarkiv

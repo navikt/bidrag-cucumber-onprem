@@ -8,7 +8,6 @@ import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.aop.ExceptionLoggerAspect
 import no.nav.bidrag.cucumber.aop.TestFailedAdvice
 import no.nav.bidrag.cucumber.model.SuppressStackTraceText
-import no.nav.bidrag.cucumber.model.TestMessagesHolder
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.ssl.SSLContexts
