@@ -15,6 +15,7 @@ class StsService(private val basicAuthRestTemplate: HttpHeaderRestTemplate) {
     companion object {
         @JvmStatic
         private val LOGGER = LoggerFactory.getLogger(StsService::class.java)
+        val supportedApplications = setOf("dokarkiv-api")
     }
 
     init {
@@ -34,6 +35,19 @@ class StsService(private val basicAuthRestTemplate: HttpHeaderRestTemplate) {
             LOGGER.warn("Kunne ikke hente token til $stsUser, http status: ${responseEntity.statusCode}!")
         }
 
-        return responseEntity.body?.get("idToken") as String?
+        val token = responseEntity.body?.get("idToken") as String?
+
+        if (token == null || token.isBlank()) {
+            LOGGER.warn(
+                """Ikke et generet token....
+                - null  : ${(token == null)}
+                - blank : ${token?.isBlank()}
+                - length: ${token?.length}
+                - body  : ${responseEntity.body?.keys}
+                """.trimIndent()
+            )
+        }
+
+        return token
     }
 }

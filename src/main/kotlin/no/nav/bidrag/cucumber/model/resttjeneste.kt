@@ -2,9 +2,11 @@ package no.nav.bidrag.cucumber.model
 
 import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.commons.web.EnhetFilter
+import no.nav.bidrag.cucumber.Headers
 import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.service.AzureTokenService
 import no.nav.bidrag.cucumber.service.OidcTokenService
+import no.nav.bidrag.cucumber.service.StsService
 import no.nav.bidrag.cucumber.service.TokenService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -104,23 +106,32 @@ class RestTjeneste(
             httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
 
             if (CucumberTestRun.isTestUserPresent) {
-                val tokenService = when (CucumberTestRun.hentTokenType()) {
-                    TokenType.AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) as TokenService?
-                        ?: throw notNullTokenService(
-                            TokenType.AZURE
-                        )
-                    TokenType.OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) as TokenService? ?: throw notNullTokenService(
-                        TokenType.OIDC
-                    )
-                }
-
-                val tokenValue = TokenValue(tokenService.cacheGeneratedToken(applicationName))
+                val tokenValue = hentSaksbehandlerToken(applicationName)
                 httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
             } else {
                 LOGGER.info("No user to provide security for when accessing $applicationName")
             }
 
+            if (StsService.supportedApplications.contains(applicationName)) {
+                val stsTokenValue = hentStsToken()
+                httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
+            }
+
             return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))
+        }
+
+        private fun hentSaksbehandlerToken(applicationName: String): TokenValue {
+            val tokenService: TokenService = when (CucumberTestRun.hentTokenType()) {
+                TokenType.AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) ?: throw notNullTokenService(TokenType.AZURE)
+                TokenType.OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) ?: throw notNullTokenService(TokenType.OIDC)
+            }
+
+            return TokenValue(tokenService.cacheGeneratedToken(applicationName))
+        }
+
+        private fun hentStsToken(): TokenValue {
+            val stsService: StsService = BidragCucumberSingletons.hentFraContext(StsService::class)
+            return TokenValue(stsService.hentServiceBrukerOidcToken() ?: throw IllegalStateException("Token er null!"))
         }
 
         private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No service for $tokenType in spring context")

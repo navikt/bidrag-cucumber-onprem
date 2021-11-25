@@ -19,7 +19,7 @@ object ArkivManager {
                   "datoMottatt": "${LocalDate.now().minusDays(1)}",
                   "tittel": "test by bidrag-cucumber-onprem",
                   "journalposttype": "INNGAAENDE",
-                  "tema": "BID",
+                  "tema": "BI01",
                   "behandlingstema": "BID",
                   "kanal": "NAV_NO",
                   "journalfoerendeEnhet": "0701",

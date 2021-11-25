@@ -17,8 +17,9 @@ internal object BidragCucumberSingletons {
     private var exceptionLogger: ExceptionLogger? = null
     private var objectMapper: ObjectMapper? = null
 
+    @Suppress("UNCHECKED_CAST")
+    fun <T> hentFraContext(kClass: KClass<*>): T = applicationContext?.getBean(kClass.java) as T
     fun hentPrototypeFraApplicationContext() = applicationContext?.getBean(HttpHeaderRestTemplate::class.java) ?: doManualInit()
-    fun hentFraContext(kClass: KClass<*>) = applicationContext?.getBean(kClass.java)
     private fun fetchObjectMapper() = objectMapper ?: ObjectMapper()
 
     private fun doManualInit(): HttpHeaderRestTemplate {
