@@ -51,10 +51,15 @@ object ScenarioManager {
         val query = "query:(language:lucene,query:'%22$correlationIdForScenario%22')"
         val sort = "sort:!(!(%27@timestamp%27,desc))"
 
-        LOGGER.info("${linkMessage()}: https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)")
+        LOGGER.info(
+            """
+            |> ${linkMessage()}
+            |> https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)
+            """.trimMargin()
+        )
     }
 
-    private fun createCorrelationIdValue(value: String = "bcc"): String {
+    private fun createCorrelationIdValue(value: String = "cuce"): String {
         return CorrelationId.generateTimestamped(value).get()
     }
 

@@ -7,20 +7,20 @@ import java.time.LocalDate
 object ArkivManager {
     private val dokarkivApp = "dokarkiv-api"
 
-    fun opprettJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {
+    fun opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {
         val restTjenesteTilTesting = CucumberTestRun.hentRestTjenesteTilTesting()
         restTjenesteTilTesting.exchangeGet("/sak/$saksnummer/journal?fagomrade=$fagomrade")
 
         if (restTjenesteTilTesting.hentResponseSomListe().isEmpty()) {
             CucumberTestRun.settOppNaisApp(dokarkivApp).exchangePost(
-                endpointUrl = "/rest/journalpostapi/v1/journalpost",
+                endpointUrl = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true",
                 body = """
                 {
                   "datoMottatt": "${LocalDate.now().minusDays(1)}",
                   "tittel": "test by bidrag-cucumber-onprem",
                   "journalposttype": "INNGAAENDE",
-                  "tema": "BI01",
-                  "behandlingstema": "BID",
+                  "tema": "BID",
+                  "behandlingstema": "ab0322",
                   "kanal": "NAV_NO",
                   "journalfoerendeEnhet": "0701",
                   "avsenderMottaker": {
@@ -30,7 +30,12 @@ object ArkivManager {
                   },
                   "sak": {
                     "fagsakId": "$saksnummer",
-                    "sakstype": "FAGSAK"
+                    "sakstype": "FAGSAK",
+                    "fagsaksystem": "BISYS"
+                  },
+                  "bruker": {
+                    "id": "11126222671",
+                    "idType": "FNR"
                   },
                   "dokumenter": [
                     {
@@ -38,7 +43,9 @@ object ArkivManager {
                       "brevkode": "NAV 04-01.04",
                       "dokumentvarianter": [
                         {
-                          "filtype": "PDFA"
+                          "filtype": "PDFA",
+                          "fysiskDokument": "U8O4a25hZCBvbSBkYWdwZW5nZXIgdmVkIHBlcm1pdHRlcmluZw==",
+                          "variantformat": "ARKIV"
                         }
                       ]
                     }

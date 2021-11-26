@@ -12,10 +12,10 @@ class ArkivEgenskaper : No {
     private lateinit var saksnummer: String
 
     init {
-        Og("det finnes en journalpost for saksnummer {string} på fagområdet {string}") { saksnummer: String, fagomrade: String ->
+        Og("det finnes en ferdigstilt journalpost for saksnummer {string} på fagområdet {string}") { saksnummer: String, fagomrade: String ->
             this.fagomrade = fagomrade
             this.saksnummer = saksnummer
-            ArkivManager.opprettJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
+            ArkivManager.opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
         }
 
         Når("jeg kaller endpoint {string} med saksnummer på fagområde") { endpoint: String ->
@@ -49,8 +49,8 @@ class ArkivEgenskaper : No {
                 FellesEgenskaperService.Assertion(
                     message = "Response er ei liste i json som ikke er tom",
                     value = CucumberTestRun.hentRestTjenesteTilTesting().hentResponse()?.trim(),
-                    expectation = "["
-                ) { assertThat(it.value as String).`as`(it.message).startsWith(it.expectation as String).hasSizeGreaterThan(2) }
+                    expectation = "[{"
+                ) { assertThat(it.value as String).`as`(it.message).startsWith(it.expectation as String) }
             )
         }
     }

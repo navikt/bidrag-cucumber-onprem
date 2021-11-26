@@ -6,7 +6,7 @@ Egenskap: bidrag-dokument-arkiv
 
   Bakgrunn: REST grensesnitt for nais applikasjon bidrag-dokument-arkiv sammen med opprettet journalpost på et saksnummer
     Gitt nais applikasjon 'bidrag-dokument-arkiv'
-    Og det finnes en journalpost for saksnummer '1001001' på fagområdet 'BID'
+    Og det finnes en ferdigstilt journalpost for saksnummer '1001001' på fagområdet 'BID'
 
   Scenario: @arkiv-saf: Sjekk at henting av journal resulterer i ei liste (SAF-grensesnitt, testbruker må ha rolle GOSYS_NASJONAL)
     Når jeg kaller endpoint '/sak/{saksnummer}/journal' med saksnummer på fagområde
