@@ -2,6 +2,7 @@ package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
 import no.nav.bidrag.cucumber.model.RestTjeneste
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
 import org.assertj.core.api.Assertions.assertThat
@@ -19,17 +20,17 @@ class ArkivEgenskaper : No {
         }
 
         Når("jeg kaller endpoint {string} med saksnummer på fagområde") { endpoint: String ->
-            RestTjeneste(naisApplication = "bidrag-dokument-arkiv").exchangeGet(
+            hentRestTjenesteTilTesting().exchangeGet(
                 "${endpoint.replace("{saksnummer}", saksnummer)}?fagomrade=$fagomrade"
             )
         }
 
-        Og("så skal responsen inneholde et objekt med feltet for saksnummer") {
+        Og("så skal responsen inneholde en journalført journalpost") {
             FellesEgenskaperService.assertWhenNotSanityCheck(
                 FellesEgenskaperService.Assertion(
-                    message = "En json liste som har objekt med saksnummer",
-                    value = RestTjeneste(naisApplication = "bidrag-dokument-arkiv").hentResponse(),
-                    expectation = """"saksnummer":"$saksnummer""""
+                    message = "En json liste med en journalført journalpost",
+                    value = hentRestTjenesteTilTesting().hentResponse(),
+                    expectation = """"journalstatus":"J""""
                 ) { assertThat(it.value as String?).`as`(it.message).startsWith("[{").contains(it.expectation as String) }
             )
         }
@@ -37,8 +38,8 @@ class ArkivEgenskaper : No {
         Så("så skal responsen være ei tom liste") {
             FellesEgenskaperService.assertWhenNotSanityCheck(
                 FellesEgenskaperService.Assertion(
-                    message = "Respons fra ${CucumberTestRun.hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
-                    value = CucumberTestRun.hentRestTjenesteTilTesting().hentResponse()?.trim(),
+                    message = "Respons fra ${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
+                    value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[]",
                 ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
             )
@@ -48,7 +49,7 @@ class ArkivEgenskaper : No {
             FellesEgenskaperService.assertWhenNotSanityCheck(
                 FellesEgenskaperService.Assertion(
                     message = "Response er ei liste i json som ikke er tom",
-                    value = CucumberTestRun.hentRestTjenesteTilTesting().hentResponse()?.trim(),
+                    value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[{"
                 ) { assertThat(it.value as String).`as`(it.message).startsWith(it.expectation as String) }
             )

@@ -1,7 +1,8 @@
 package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
+import no.nav.bidrag.cucumber.Headers.NAV_CALL_ID
+import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.model.CucumberTestRun
-import no.nav.bidrag.cucumber.model.RestTjeneste
 import java.time.LocalDate
 
 object ArkivManager {
@@ -51,8 +52,8 @@ object ArkivManager {
                     }
                   ]
                 }
-                """.trimIndent()
-            )
+                """.trimIndent(),
+                customHeaders = arrayOf(NAV_CALL_ID to ScenarioManager.fetchCorrelationIdForScenario()))
         }
     }
 }

@@ -47,7 +47,7 @@ internal class RestTjenester {
         val restTjeneste: RestTjeneste
 
         if (!restTjenesteForNavn.contains(naisApplikasjon)) {
-            restTjeneste = RestTjeneste(naisApplikasjon)
+            restTjeneste = RestTjeneste.konfigurerResttjeneste(naisApplikasjon)
             restTjenesteForNavn[naisApplikasjon] = restTjeneste
         } else {
             restTjeneste = restTjenesteForNavn[naisApplikasjon]!!
@@ -60,7 +60,11 @@ internal class RestTjenester {
         restTjenesteTilTesting = settOppNaisApp(naisApplikasjon)
     }
 
+    fun isApplicationConfigured(applicationName: String) = restTjenesteForNavn.contains(applicationName)
     fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
+    fun hentRestTjeneste(applicationName: String) = restTjenesteForNavn[applicationName] ?: throw IllegalStateException(
+        "RestTjeneste $applicationName er ikke funnet!"
+    )
 }
 
 internal class BaseUrlTemplateHandler(private val baseUrl: String) : UriTemplateHandler {
@@ -101,6 +105,10 @@ class RestTjeneste(
         private val LOGGER = LoggerFactory.getLogger(RestTjeneste::class.java)
 
         internal fun konfigurerResttjeneste(applicationName: String): RestTjeneste {
+            if (CucumberTestRun.isApplicationConfigured(applicationName)) {
+                return CucumberTestRun.hentRestTjenste(applicationName)
+            }
+
             val applicationUrl = RestTjenester.konfigurerApplikasjonUrlFor(applicationName)
             val httpHeaderRestTemplate = BidragCucumberSingletons.hentPrototypeFraApplicationContext()
             httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
@@ -140,8 +148,6 @@ class RestTjeneste(
     private lateinit var fullUrl: FullUrl
     private var responseEntity: ResponseEntity<String?>? = null
 
-    constructor(naisApplication: String) : this(konfigurerResttjeneste(naisApplication).rest)
-
     fun hentFullUrlMedEventuellWarning() = "$fullUrl${appendWarningWhenExists()}"
     fun hentHttpHeaders(): HttpHeaders = responseEntity?.headers ?: HttpHeaders()
     fun hentHttpStatus(): HttpStatus = responseEntity?.statusCode ?: HttpStatus.I_AM_A_TEAPOT
@@ -158,7 +164,7 @@ class RestTjeneste(
     fun exchangeGet(endpointUrl: String): ResponseEntity<String?> {
         fullUrl = FullUrl(rest.baseUrl, endpointUrl)
 
-        val header = initHttpHeadersWithCorrelationIdAndEnhet()
+        val header = initHttpHeadersWithCorrelationIdEnhetAnd()
 
         exchange(HttpEntity(null, header), endpointUrl, HttpMethod.GET)
 
@@ -174,22 +180,24 @@ class RestTjeneste(
         return if (CucumberTestRun.isSanityCheck) "is sanity check" else "is NOT sanity check"
     }
 
-    private fun initHttpHeadersWithCorrelationIdAndEnhet(): HttpHeaders {
+    private fun initHttpHeadersWithCorrelationIdEnhetAnd(customHeaders: Array<out Pair<String, String>> = emptyArray()): HttpHeaders {
         val headers = HttpHeaders()
-        headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.getCorrelationIdForScenario())
+        headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.fetchCorrelationIdForScenario())
         headers.add(EnhetFilter.X_ENHET_HEADER, "4802")
+
+        customHeaders.forEach { headers.add(it.first, it.second) }
 
         return headers
     }
 
-    fun exchangePost(endpointUrl: String, body: String) {
-        val jsonEntity = httpEntity(endpointUrl, body)
+    fun exchangePost(endpointUrl: String, body: String, vararg customHeaders: Pair<String, String>) {
+        val jsonEntity = httpEntity(endpointUrl, body, customHeaders)
         exchange(jsonEntity, endpointUrl, HttpMethod.POST)
     }
 
-    private fun httpEntity(endpointUrl: String, body: Any): HttpEntity<*> {
+    private fun httpEntity(endpointUrl: String, body: Any, customHeaders: Array<out Pair<String, String>>): HttpEntity<*> {
         this.fullUrl = FullUrl(rest.baseUrl, endpointUrl)
-        val headers = initHttpHeadersWithCorrelationIdAndEnhet()
+        val headers = initHttpHeadersWithCorrelationIdEnhetAnd(customHeaders)
         headers.contentType = MediaType.APPLICATION_JSON
 
         return HttpEntity(body, headers)

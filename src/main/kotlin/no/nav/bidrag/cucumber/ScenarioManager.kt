@@ -12,7 +12,7 @@ object ScenarioManager {
     @JvmStatic
     private val LOGGER = LoggerFactory.getLogger(ScenarioManager::class.java)
 
-    private var correlationIdForScenario: String? = null
+    internal var correlationIdForScenario: String? = null
     private var scenario: Scenario? = null
 
     fun use(scenario: Scenario) {
@@ -53,8 +53,8 @@ object ScenarioManager {
 
         LOGGER.info(
             """
-            |> ${linkMessage()}
-            |> https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)
+            =|>   ${linkMessage()}
+            =|>   https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)
             """.trimMargin()
         )
     }
@@ -64,7 +64,7 @@ object ScenarioManager {
     }
 
     private fun linkMessage() = "Link for correlation-id ($correlationIdForScenario)"
-    fun getCorrelationIdForScenario() = correlationIdForScenario ?: createCorrelationIdValue("unknown")
+    fun fetchCorrelationIdForScenario() = correlationIdForScenario ?: createCorrelationIdValue("unknown")
     fun errorLog(message: String, e: Exception) {
         LOGGER.error("$message - ${e.javaClass.simpleName}")
         CucumberTestRun.holdExceptionForTest(e)

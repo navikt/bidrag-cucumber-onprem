@@ -13,7 +13,7 @@ Egenskap: bidrag-dokument-arkiv
     Så skal http status være 200
     Og så skal responsen være ei liste som ikke er tom
 
-  Scenario: @Arkiv-saf Finn opprettet journalpost via SAF query (SAF-grensesnitt, testbruker må ha rolle GOSYS_NASJONAL)
+  Scenario: @arkiv-saf Finn opprettet journalpost via SAF query (SAF-grensesnitt, testbruker må ha rolle GOSYS_NASJONAL)
     Når jeg kaller endpoint '/sak/{saksnummer}/journal' med saksnummer på fagområde
     Så skal http status være 200
-    Og så skal responsen inneholde et objekt med feltet for saksnummer
+    Og så skal responsen inneholde en journalført journalpost

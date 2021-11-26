@@ -29,6 +29,7 @@ object Url {
 object Headers {
     internal const val BASIC_PASS = "password"
     internal const val BASIC_USER = "username"
+    internal const val NAV_CALL_ID = "NAV-Call-id"
     internal const val NAV_CONSUMER_TOKEN = "Nav-Consumer-Token"
     internal const val X_OPENAM_PASSW = "X-OpenAM-Password"
     internal const val X_OPENAM_USER = "X-OpenAM-Username"
