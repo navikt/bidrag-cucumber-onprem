@@ -44,15 +44,5 @@ class FellesEgenskaper : No {
         Når("jeg kaller endpoint {string} med parameter {string} = {string}") { endpoint: String, param: String, value: String ->
             hentRestTjenesteTilTesting().exchangeGet("$endpoint?$param=$value")
         }
-
-        Så("så skal responsen være ei tom liste") {
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                Assertion(
-                    message = "Respons fra ${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
-                    value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
-                    expectation = "[]",
-                ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
-            )
-        }
     }
 }

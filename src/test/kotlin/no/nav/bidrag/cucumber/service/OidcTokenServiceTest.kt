@@ -1,5 +1,6 @@
 package no.nav.bidrag.cucumber.service
 
+import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.Fasit
 import no.nav.bidrag.cucumber.NAV_AUTH
 import no.nav.bidrag.cucumber.TEST_AUTH
@@ -29,7 +30,7 @@ internal class OidcTokenServiceTest {
     private lateinit var applicationContextMock: ApplicationContext
 
     @MockBean
-    private lateinit var restTemplateMock: RestTemplate
+    private lateinit var restTemplateMock: HttpHeaderRestTemplate
 
     @Autowired
     private lateinit var oidcTokenService: OidcTokenService

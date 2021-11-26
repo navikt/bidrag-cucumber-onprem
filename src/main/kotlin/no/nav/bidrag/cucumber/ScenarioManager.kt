@@ -2,7 +2,6 @@ package no.nav.bidrag.cucumber
 
 import io.cucumber.java8.Scenario
 import no.nav.bidrag.commons.CorrelationId
-import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -13,22 +12,27 @@ object ScenarioManager {
     @JvmStatic
     private val LOGGER = LoggerFactory.getLogger(ScenarioManager::class.java)
 
-    private var correlationIdForScenario: String? = null
+    internal var correlationIdForScenario: String? = null
     private var scenario: Scenario? = null
 
     fun use(scenario: Scenario) {
-        LOGGER.info("Starting ${BidragCucumberSingletons.scenarioMessage(scenario)}")
         this.scenario = scenario
         createCorrelationId()
         MDC.put(CORRELATION_ID, correlationIdForScenario)
+        LOGGER.info("Starting ${scenarioMessage(scenario)}")
     }
 
     fun reset(scenario: Scenario) {
-        LOGGER.info("Finished ${BidragCucumberSingletons.scenarioMessage(scenario)}")
-        BidragCucumberSingletons.addRunStats(scenario)
+        LOGGER.info("Finished ${scenarioMessage(scenario)}")
+        CucumberTestRun.addToRunStats(scenario)
         this.scenario = null
         this.correlationIdForScenario = null
         MDC.clear()
+    }
+
+    private fun scenarioMessage(scenario: Scenario): String {
+        val haveScenario = scenario.name != null && scenario.name.isNotBlank()
+        return if (haveScenario) "'${scenario.name}'" else "scenario in ${scenario.uri}"
     }
 
     fun log(message: String) {
@@ -47,15 +51,20 @@ object ScenarioManager {
         val query = "query:(language:lucene,query:'%22$correlationIdForScenario%22')"
         val sort = "sort:!(!(%27@timestamp%27,desc))"
 
-        LOGGER.info("${linkMessage()}: https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)")
+        LOGGER.info(
+            """
+            =|>   ${linkMessage()}
+            =|>   https://logs.adeo.no/app/kibana#/discover?_g=($time)&_a=($columns,$index,interval:auto,$query,$sort)
+            """.trimMargin()
+        )
     }
 
-    private fun createCorrelationIdValue(value: String = "bcc"): String {
+    private fun createCorrelationIdValue(value: String = "cuce"): String {
         return CorrelationId.generateTimestamped(value).get()
     }
 
     private fun linkMessage() = "Link for correlation-id ($correlationIdForScenario)"
-    fun getCorrelationIdForScenario() = correlationIdForScenario ?: createCorrelationIdValue("unknown")
+    fun fetchCorrelationIdForScenario() = correlationIdForScenario ?: createCorrelationIdValue("unknown")
     fun errorLog(message: String, e: Exception) {
         LOGGER.error("$message - ${e.javaClass.simpleName}")
         CucumberTestRun.holdExceptionForTest(e)

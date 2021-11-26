@@ -108,7 +108,7 @@ jobs:
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot-onprem\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
         env:
-          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag @arkiv-swagger or @bidrag-dokument-arkiv feilet"
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag on bidrag-dokument-arkiv feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
   run-tests-for-person:

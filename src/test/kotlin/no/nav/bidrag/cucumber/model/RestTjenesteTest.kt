@@ -40,8 +40,8 @@ internal class RestTjenesteTest {
 
         cucumberTestsModel.initCucumberEnvironment()
 
-        val restTjeneste = RestTjeneste("nais-app")
-        val annenRestTjeneste = RestTjeneste("annen-nais-app")
+        val restTjeneste = RestTjeneste.konfigurerResttjeneste("nais-app")
+        val annenRestTjeneste = RestTjeneste.konfigurerResttjeneste("annen-nais-app")
 
         assertAll(
             { assertThat(restTjeneste.rest.baseUrl).`as`("tjeneste-app").isEqualTo("https://somewhere.com/nais-app") },
@@ -59,8 +59,8 @@ internal class RestTjenesteTest {
 
         cucumberTestsModel.initCucumberEnvironment()
 
-        val restTjeneste = RestTjeneste("nais-tag")
-        val annenRestTjeneste = RestTjeneste("annen-nais-tag")
+        val restTjeneste = RestTjeneste.konfigurerResttjeneste("nais-tag")
+        val annenRestTjeneste = RestTjeneste.konfigurerResttjeneste("annen-nais-tag")
 
         assertAll(
             { assertThat(restTjeneste.rest.baseUrl).`as`("tjeneste-app").isEqualTo("https://somewhere.com/nais-tag") },

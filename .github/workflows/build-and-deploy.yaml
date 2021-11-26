@@ -148,12 +148,14 @@ jobs:
     needs: deploy
 
     env:
-      INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.adeo.no
+      INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.intern.nav.no
+      INGRESS_SAF: https://dokarkiv-q2.dev.adeo.no
 
     steps:
       - run: |
-          echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_SAF=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - name: "@arkiv-swagger"
         run: |
@@ -173,6 +175,19 @@ jobs:
             -d '{
               "tags":["@bidrag-dokument-arkiv"], "navUsername": "j104364", "testUsername": "z992903",
               "ingressesForApps":["${{ env.INGRESS_ARKIV }}@no-tag:bidrag-dokument-arkiv"]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+      - name: "@arkiv-saf"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":["@arkiv-saf"], "navUsername": "j104364", "testUsername": "z992903",
+              "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
+                "${{ env.INGRESS_ARKIV }}@no-tag:bidrag-dokument-arkiv",
+                "${{ env.INGRESS_SAF }}@no-tag:dokarkiv-api"
+              ]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 

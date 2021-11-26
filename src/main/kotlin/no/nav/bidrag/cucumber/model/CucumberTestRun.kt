@@ -82,12 +82,17 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun addToRunStats(scenario: Scenario) = thisRun().runStats.add(scenario)
         fun fetchIngress(applicationName: String) = thisRun().cucumberTestsModel.fetchIngress(applicationName)
         fun fetchTestMessagesWithRunStats() = thisRun().testMessagesHolder.fetchTestMessages() + "\n\n" + thisRun().runStats.get()
+        fun hentRestTjenste(applicationName: String) = thisRun().restTjenester.hentRestTjeneste(applicationName)
         fun hentRestTjenesteTilTesting() = thisRun().restTjenester.hentRestTjenesteTilTesting()
         fun hentTokenType() = thisRun().cucumberTestsModel.tokenType
         fun hold(logMessages: List<String>) = thisRun().testMessagesHolder.hold(logMessages)
         fun holdTestMessage(message: String) = thisRun().testMessagesHolder.hold(message)
+        fun isApplicationConfigured(applicationName: String) = thisRun().restTjenester.isApplicationConfigured(applicationName)
         fun isNoContextPathForApp(applicationName: String) = thisRun().cucumberTestsModel.noContextPathForApps.contains(applicationName)
+        fun settOppNaisApp(naisApplikasjon: String) =  thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
+
         fun settOppNaisAppTilTesting(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisAppTilTesting(naisApplikasjon)
+
         fun updateSecurityToken(securityToken: String?) = thisRun().cucumberTestsModel.updateSecurityToken(securityToken)
 
         fun holdExceptionForTest(throwable: Throwable) {

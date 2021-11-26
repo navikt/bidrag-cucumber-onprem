@@ -11,8 +11,10 @@ abstract class TokenService {
             Environment.securityToken!!
         } else if (CucumberTestRun.withSecurityToken) {
             CucumberTestRun.securityToken!!
-        } else {
+        } else if (CucumberTestRun.isNotSanityCheck) {
             generateToken(application)
+        } else {
+            "sanity check: no token"
         }
 
         CucumberTestRun.updateSecurityToken(token)

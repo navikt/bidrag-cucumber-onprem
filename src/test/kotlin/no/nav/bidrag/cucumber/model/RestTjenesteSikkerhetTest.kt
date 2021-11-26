@@ -47,7 +47,7 @@ internal class RestTjenesteSikkerhetTest {
         ).initEnvironment()
 
         whenever(azureTokenServiceMock.generateToken("nais-app")).thenReturn("of azure-token")
-        RestTjeneste("nais-app")
+        RestTjeneste.konfigurerResttjeneste("nais-app")
 
         val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
         verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
@@ -70,7 +70,7 @@ internal class RestTjenesteSikkerhetTest {
         ).initCucumberEnvironment()
 
         whenever(oidcTokenServiceMock.generateToken("nais-app")).thenReturn("of oidc-token")
-        RestTjeneste("nais-app")
+        RestTjeneste.konfigurerResttjeneste("nais-app")
 
         val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
         verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
@@ -93,7 +93,7 @@ internal class RestTjenesteSikkerhetTest {
             )
         ).initCucumberEnvironment()
 
-        RestTjeneste("nais-app")
+        RestTjeneste.konfigurerResttjeneste("nais-app")
 
         val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
         verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
