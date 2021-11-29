@@ -1,6 +1,6 @@
 # language: no
 @arkiv-saf
-Egenskap: bidrag-dokument-arkiv
+Egenskap: bidrag-dokument-arkiv SAF
 
   Tester REST API til endepunkt i bidrag-dokument-arkiv sammen med data i dokumentarkiv
 

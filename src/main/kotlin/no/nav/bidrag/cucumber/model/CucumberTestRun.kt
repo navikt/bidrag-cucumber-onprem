@@ -90,9 +90,7 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun isApplicationConfigured(applicationName: String) = thisRun().restTjenester.isApplicationConfigured(applicationName)
         fun isNoContextPathForApp(applicationName: String) = thisRun().cucumberTestsModel.noContextPathForApps.contains(applicationName)
         fun settOppNaisApp(naisApplikasjon: String) =  thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
-
         fun settOppNaisAppTilTesting(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisAppTilTesting(naisApplikasjon)
-
         fun updateSecurityToken(securityToken: String?) = thisRun().cucumberTestsModel.updateSecurityToken(securityToken)
 
         fun holdExceptionForTest(throwable: Throwable) {

@@ -3,9 +3,9 @@ package no.nav.bidrag.cucumber.onprem
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import org.slf4j.LoggerFactory
 
-object FellesEgenskaperService {
+object FellesEgenskaperManager {
     @JvmStatic
-    private val LOGGER = LoggerFactory.getLogger(FellesEgenskaperService::class.java)
+    private val LOGGER = LoggerFactory.getLogger(FellesEgenskaperManager::class.java)
 
     fun assertWhenNotSanityCheck(assertion: Assertion) {
         LOGGER.info(
