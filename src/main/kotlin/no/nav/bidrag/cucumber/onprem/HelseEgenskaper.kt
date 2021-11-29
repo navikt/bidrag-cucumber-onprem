@@ -2,8 +2,8 @@ package no.nav.bidrag.cucumber.onprem
 
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.assertWhenNotSanityCheck
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager.Assertion
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager.assertWhenNotSanityCheck
 import org.assertj.core.api.Assertions.assertThat
 
 @Suppress("unused") // used by cucumber

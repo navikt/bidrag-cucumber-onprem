@@ -3,7 +3,7 @@ package no.nav.bidrag.cucumber.onprem
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService.Assertion
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager.Assertion
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
@@ -15,7 +15,7 @@ class FellesEgenskaper : No {
         Gitt("nais applikasjon {string}") { naisApplikasjon: String -> CucumberTestRun.settOppNaisAppTilTesting(naisApplikasjon) }
 
         Så("skal http status være {int}") { enHttpStatus: Int ->
-            FellesEgenskaperService.assertWhenNotSanityCheck(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
                 Assertion(
                     message = "HttpStatus for ${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
                     value = hentRestTjenesteTilTesting().hentHttpStatus(),
@@ -28,7 +28,13 @@ class FellesEgenskaper : No {
             val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
             val verdiFraResponse = responseObject[key]?.toString()
 
-            assertThat(verdiFraResponse).`as`("json response").isEqualTo(value)
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "json response",
+                    value = verdiFraResponse,
+                    expectation = value
+                ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
+            )
         }
 
         Når("det gjøres et kall til {string}") { endpointUrl: String ->

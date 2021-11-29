@@ -90,13 +90,9 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     fun fetchIngress(applicationName: String): String {
         LOGGER.info("Finding ingress for '$applicationName' in $ingressesForApps")
 
-        return ingressesForApps.map {
-            it.replace("@no-tag:", "@")
-        }.filter {
-            it.substring(it.indexOf('@') + 1) == applicationName
-        }.map {
-            it.split("@")[0]
-        }.first()
+        return ingressesForApps.filter { it.endsWith(applicationName) }
+            .map { it.split("@")[0]  }
+            .first()
     }
 
     private fun transformAssertedTagsToString(tags: List<String>): String {
@@ -123,8 +119,10 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
         .filter { file: File -> isTagPresent(file, tag) }
         .findFirst().isEmpty
 
-    internal fun initCucumberEnvironment() {
+    internal fun initCucumberEnvironment(): CucumberTestsModel {
         Environment.initCucumberEnvironment(this)
+
+        return this
     }
 
     fun updateSecurityToken(securityToken: String?) {

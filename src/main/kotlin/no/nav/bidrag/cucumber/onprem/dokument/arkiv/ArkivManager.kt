@@ -3,24 +3,35 @@ package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 import no.nav.bidrag.cucumber.Headers.NAV_CALL_ID
 import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
 object ArkivManager {
-    private val dokarkivApp = "dokarkiv-api"
+    @JvmStatic
+    private val LOGGER = LoggerFactory.getLogger(ArkivManager::class.java)
 
     fun opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {
-        val restTjenesteTilTesting = CucumberTestRun.hentRestTjenesteTilTesting()
-        restTjenesteTilTesting.exchangeGet("/sak/$saksnummer/journal?fagomrade=$fagomrade")
+        val appForBidDokArkiv = "bidrag-dokument-arkiv"
+        LOGGER.info("Eksisterer journalpost for saksnummer $saksnummer i $appForBidDokArkiv?")
+        val bidragDokumentArkiv = CucumberTestRun.settOppNaisApp(appForBidDokArkiv)
 
-        if (restTjenesteTilTesting.hentResponseSomListe().isEmpty()) {
-            CucumberTestRun.settOppNaisApp(dokarkivApp).exchangePost(
+        bidragDokumentArkiv.exchangeGet(
+            endpointUrl = "/sak/$saksnummer/journal?fagomrade=$fagomrade",
+            failOnNotFound = false
+        )
+
+        if (bidragDokumentArkiv.hentResponseSomListe().isEmpty()) {
+            val appForDokarkiv = "dokarkiv-api"
+            LOGGER.info("Oppretter journalpost med $appForDokarkiv")
+
+            CucumberTestRun.settOppNaisApp(appForDokarkiv).exchangePost(
                 endpointUrl = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true",
                 body = """
                 {
                   "datoMottatt": "${LocalDate.now().minusDays(1)}",
                   "tittel": "test by bidrag-cucumber-onprem",
                   "journalposttype": "INNGAAENDE",
-                  "tema": "BID",
+                  "tema": "$fagomrade",
                   "behandlingstema": "ab0322",
                   "kanal": "NAV_NO",
                   "journalfoerendeEnhet": "0701",
@@ -53,7 +64,10 @@ object ArkivManager {
                   ]
                 }
                 """.trimIndent(),
-                customHeaders = arrayOf(NAV_CALL_ID to ScenarioManager.fetchCorrelationIdForScenario()))
+                customHeaders = arrayOf(NAV_CALL_ID to ScenarioManager.fetchCorrelationIdForScenario())
+            )
+        } else {
+            LOGGER.info("Fant ${bidragDokumentArkiv.hentResponseSomListe().size} journalpost(er) i $appForBidDokArkiv")
         }
     }
 }

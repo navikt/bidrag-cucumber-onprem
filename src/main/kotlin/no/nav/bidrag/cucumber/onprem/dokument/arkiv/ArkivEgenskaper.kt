@@ -1,10 +1,8 @@
 package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.model.RestTjeneste
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import org.assertj.core.api.Assertions.assertThat
 
 @Suppress("unused") // used by cucumber
@@ -26,8 +24,8 @@ class ArkivEgenskaper : No {
         }
 
         Og("så skal responsen inneholde en journalført journalpost") {
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                FellesEgenskaperService.Assertion(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
                     message = "En json liste med en journalført journalpost",
                     value = hentRestTjenesteTilTesting().hentResponse(),
                     expectation = """"journalstatus":"J""""
@@ -36,8 +34,8 @@ class ArkivEgenskaper : No {
         }
 
         Så("så skal responsen være ei tom liste") {
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                FellesEgenskaperService.Assertion(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
                     message = "Respons fra ${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
                     value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[]",
@@ -46,8 +44,8 @@ class ArkivEgenskaper : No {
         }
 
         Og("så skal responsen være ei liste som ikke er tom") {
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                FellesEgenskaperService.Assertion(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
                     message = "Response er ei liste i json som ikke er tom",
                     value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[{"

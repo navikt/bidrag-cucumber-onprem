@@ -4,7 +4,7 @@ import com.jayway.jsonpath.JsonPath
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
+import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import org.assertj.core.api.Assertions.assertThat
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -36,8 +36,8 @@ class BeregnEgenskaper : No {
                 resultatBelop = resultatBelop.removeSuffix(".0")
             }
 
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                FellesEgenskaperService.Assertion(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
                     message = "Resultatbeløp",
                     value = resultatBelop,
                     expectation = belop
@@ -50,8 +50,8 @@ class BeregnEgenskaper : No {
             val response = hentRestTjenesteTilTesting().hentResponse()
             val kode = parseJson(response, sti) ?: "null"
 
-            FellesEgenskaperService.assertWhenNotSanityCheck(
-                FellesEgenskaperService.Assertion(
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
                     message = "Resultatkode",
                     value = resultatkode,
                     expectation = kode

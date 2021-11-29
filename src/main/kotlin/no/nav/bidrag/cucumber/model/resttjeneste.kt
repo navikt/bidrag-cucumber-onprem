@@ -41,6 +41,12 @@ internal class RestTjenester {
     private val restTjenesteForNavn: MutableMap<String, RestTjeneste> = HashMap()
     private var restTjenesteTilTesting: RestTjeneste? = null
 
+    fun isApplicationConfigured(applicationName: String) = restTjenesteForNavn.contains(applicationName)
+    fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
+    fun hentRestTjeneste(applicationName: String) = restTjenesteForNavn[applicationName] ?: throw IllegalStateException(
+        "RestTjeneste $applicationName er ikke funnet!"
+    )
+
     fun settOppNaisApp(naisApplikasjon: String): RestTjeneste {
         LOGGER.info("Setter opp $naisApplikasjon")
 
@@ -59,12 +65,6 @@ internal class RestTjenester {
     fun settOppNaisAppTilTesting(naisApplikasjon: String) {
         restTjenesteTilTesting = settOppNaisApp(naisApplikasjon)
     }
-
-    fun isApplicationConfigured(applicationName: String) = restTjenesteForNavn.contains(applicationName)
-    fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
-    fun hentRestTjeneste(applicationName: String) = restTjenesteForNavn[applicationName] ?: throw IllegalStateException(
-        "RestTjeneste $applicationName er ikke funnet!"
-    )
 }
 
 internal class BaseUrlTemplateHandler(private val baseUrl: String) : UriTemplateHandler {
@@ -130,16 +130,20 @@ class RestTjeneste(
 
         private fun hentSaksbehandlerToken(applicationName: String): TokenValue {
             val tokenService: TokenService = when (CucumberTestRun.hentTokenType()) {
-                TokenType.AZURE -> BidragCucumberSingletons.hentFraContext(AzureTokenService::class) ?: throw notNullTokenService(TokenType.AZURE)
-                TokenType.OIDC -> BidragCucumberSingletons.hentFraContext(OidcTokenService::class) ?: throw notNullTokenService(TokenType.OIDC)
+                TokenType.AZURE -> BidragCucumberSingletons.hentEllerInit(AzureTokenService::class) ?: throw notNullTokenService(TokenType.AZURE)
+                TokenType.OIDC -> BidragCucumberSingletons.hentEllerInit(OidcTokenService::class) ?: throw notNullTokenService(TokenType.OIDC)
             }
 
             return TokenValue(tokenService.cacheGeneratedToken(applicationName))
         }
 
         private fun hentStsToken(): TokenValue {
-            val stsService: StsService = BidragCucumberSingletons.hentFraContext(StsService::class)
-            return TokenValue(stsService.hentServiceBrukerOidcToken() ?: throw IllegalStateException("Token er null!"))
+            val stsService: StsService = BidragCucumberSingletons.hentEllerInit(StsService::class)
+
+            return if (CucumberTestRun.isNotSanityCheck)
+                TokenValue(stsService.hentServiceBrukerOidcToken() ?: throw IllegalStateException("Token er null!"))
+            else
+                TokenValue("sanity check, no token")
         }
 
         private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No service for $tokenType in spring context")
@@ -161,12 +165,16 @@ class RestTjeneste(
         return if (warnings.isNotEmpty()) " - ${warnings[0]}" else ""
     }
 
-    fun exchangeGet(endpointUrl: String): ResponseEntity<String?> {
-        fullUrl = FullUrl(rest.baseUrl, endpointUrl)
+    fun exchangeGet(endpointUrl: String, failOnNotFound: Boolean = true): ResponseEntity<String?> {
 
         val header = initHttpHeadersWithCorrelationIdEnhetAnd()
 
-        exchange(HttpEntity(null, header), endpointUrl, HttpMethod.GET)
+        exchange(
+            jsonEntity = HttpEntity(null, header),
+            endpointUrl = endpointUrl,
+            httpMethod = HttpMethod.GET,
+            failOnNotFound = failOnNotFound
+        )
 
         LOGGER.info(
             if (responseEntity?.body != null) "response with body and status ${responseEntity!!.statusCode}"
@@ -191,37 +199,42 @@ class RestTjeneste(
     }
 
     fun exchangePost(endpointUrl: String, body: String, vararg customHeaders: Pair<String, String>) {
-        val jsonEntity = httpEntity(endpointUrl, body, customHeaders)
+        val jsonEntity = httpEntity(body, customHeaders)
         exchange(jsonEntity, endpointUrl, HttpMethod.POST)
     }
 
-    private fun httpEntity(endpointUrl: String, body: Any, customHeaders: Array<out Pair<String, String>>): HttpEntity<*> {
-        this.fullUrl = FullUrl(rest.baseUrl, endpointUrl)
+    private fun httpEntity(body: Any, customHeaders: Array<out Pair<String, String>>): HttpEntity<*> {
         val headers = initHttpHeadersWithCorrelationIdEnhetAnd(customHeaders)
         headers.contentType = MediaType.APPLICATION_JSON
 
         return HttpEntity(body, headers)
     }
 
-    private fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod) {
+    private fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod, failOnNotFound: Boolean = true) {
+        fullUrl = FullUrl(rest.baseUrl, endpointUrl)
         LOGGER.info("$httpMethod: $fullUrl")
 
         try {
             responseEntity = rest.template.exchange(endpointUrl, httpMethod, jsonEntity, String::class.java)
         } catch (e: Exception) {
-            ScenarioManager.errorLog("$httpMethod FEILET! ($fullUrl)", e)
-
             responseEntity = if (e is HttpStatusCodeException) {
-                ResponseEntity.status(e.statusCode).body<String>("${e.javaClass.simpleName}: ${e.message}")
+                ResponseEntity.status(e.statusCode).body<String>("${e::class.simpleName}: ${e.message}")
             } else {
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<String>("${e.javaClass.simpleName}: ${e.message}")
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<String>("${e::class.simpleName}: ${e.message}")
             }
 
-            if (CucumberTestRun.isNotSanityCheck) {
-                throw e
+            if (isError(e, failOnNotFound)) {
+                ScenarioManager.errorLog("$httpMethod FEILET! ($fullUrl)", e)
+
+                if (CucumberTestRun.isNotSanityCheck) {
+                    throw e
+                }
             }
         }
     }
+
+    private fun isError(e: Exception, failOn404: Boolean) = if (isNotFound(e)) failOn404 else true
+    private fun isNotFound(e: Exception) = e is HttpStatusCodeException && e.statusCode == HttpStatus.NOT_FOUND
 }
 
 class ResttjenesteMedBaseUrl(val template: RestTemplate, val baseUrl: String)
