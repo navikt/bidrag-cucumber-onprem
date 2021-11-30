@@ -76,6 +76,34 @@ jobs:
           MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tags @bidrag-beregn-* feilet"
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
+  run-tests-for-dokument:
+    runs-on: self-hosted
+    name: bidrag-dokument
+
+    steps:
+      - name: "@bda-samt-bdj"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":["@bda-samt-bdj"], "navUsername": "j104364", "testUsername": "z992903",
+              "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
+                "https://bidrag-dokument-arkiv.dev.intern.nav.no@no-tag:bidrag-dokument-arkiv",
+                "https://dokarkiv-q2.dev.adeo.no@no-tag:dokarkiv-api",
+                "https://bidrag-dokument.dev.intern.nav.no@no-tag:bidrag-dokument",
+                "https://bidrag-dokument-journalpost.dev.adeo.no@no-tag:bidrag-dokument-journalpost",
+                "https://bidrag-testdata.dev.adeo.no@no-tag:bidrag-testdata"
+              ]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+      - run: |
+          curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot-onprem\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
+        if: ${{ failure() }}
+        env:
+          MELDING: "<https://github.com/navikt/bidrag-cucumber-onprem/actions|Cucumber tests> for tag on bidrag-dokument feilet"
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
   run-tests-for-dokument-arkiv:
     runs-on: self-hosted
     name: bidrag-dokument-arkiv
@@ -115,9 +143,6 @@ jobs:
     runs-on: self-hosted
     name: bidrag-person
 
-    env:
-      INGRESS_PERSON: https://bidrag-person.dev.intern.nav.no
-
     steps:
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
@@ -125,7 +150,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "navUsername": "j104364", "testUsername": "z992903",
-              "ingressesForApps":["${{ env.INGRESS_PERSON }}@bidrag-person"]
+              "ingressesForApps":["https://bidrag-person.dev.intern.nav.no@bidrag-person"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
