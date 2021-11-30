@@ -3,7 +3,9 @@ package no.nav.bidrag.cucumber.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
+import no.nav.bidrag.cucumber.BidragCucumberOnprem
 import no.nav.bidrag.cucumber.SpringConfig
+import no.nav.bidrag.cucumber.service.StsService
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,9 +20,22 @@ internal object BidragCucumberSingletons {
     private var objectMapper: ObjectMapper? = null
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> hentFraContext(kClass: KClass<*>): T = applicationContext?.getBean(kClass.java) as T
+    fun <T> hentEllerInit(kClass: KClass<*>): T = applicationContext?.getBean(kClass.java) as T? ?: init(kClass)
     fun hentPrototypeFraApplicationContext() = applicationContext?.getBean(HttpHeaderRestTemplate::class.java) ?: doManualInit()
     private fun fetchObjectMapper() = objectMapper ?: ObjectMapper()
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> init(kClass: KClass<*>): T {
+        if (kClass == StsService::class) {
+            return StsService(HttpHeaderRestTemplate()) as T
+        }
+
+        if (kClass == ExceptionLogger::class) {
+            return ExceptionLogger("${BidragCucumberOnprem::class.simpleName}") as T
+        }
+
+        throw IllegalStateException("Mangler manuell initialisering av ${kClass.simpleName}")
+    }
 
     private fun doManualInit(): HttpHeaderRestTemplate {
         val httpComponentsClientHttpRequestFactory = SpringConfig().httpComponentsClientHttpRequestFactorySomIgnorererHttps()

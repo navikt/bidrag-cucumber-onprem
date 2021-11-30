@@ -12,7 +12,7 @@ object ScenarioManager {
     @JvmStatic
     private val LOGGER = LoggerFactory.getLogger(ScenarioManager::class.java)
 
-    internal var correlationIdForScenario: String? = null
+    private var correlationIdForScenario: String? = null
     private var scenario: Scenario? = null
 
     fun use(scenario: Scenario) {
