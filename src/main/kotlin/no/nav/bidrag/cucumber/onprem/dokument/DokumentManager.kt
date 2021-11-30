@@ -24,39 +24,64 @@ object DokumentManager {
 
         if (midlertidigBrevlager.hentResponseSomListe().isEmpty()) {
             val appForTestdata = "bidrag-testdata"
+            CucumberTestRun.settOppNaisApp(appForTestdata)
             LOGGER.info("Oppretter journalpost med $appForTestdata")
 
-            CucumberTestRun.settOppNaisApp(appForTestdata).exchangePost(
-                endpointUrl = "/journalpost",
-                body = """
-                    {
-                    "avsenderNavn": "Cucumber Test",
-                    "beskrivelse": "bidrag-cucumber-onprem",
-                    "dokumentType": "I",
-                    "dokumentdato": "2019-01-01",
-                    "dokumentreferanse": "1234567890",
-                    "fagomrade": "BID",
-                    "journalstatus": "J",
-                    "gjelder": "29118012345",
-                    "journaldato": "2019-01-01",
-                    "mottattDato": "2019-01-01",
-                    "skannetDato": "2019-01-01",
-                    "saksnummer": "$saksnummer"
-                    }
-                """.trimIndent(),
-                customHeaders = arrayOf(HttpHeaders.CONTENT_TYPE to MediaType.APPLICATION_JSON_VALUE)
-            )
-
-            FellesEgenskaperManager.assertWhenNotSanityCheck(
-                FellesEgenskaperManager.Assertion(
-                    message = "Response fra opprettet testdata",
-                    value = midlertidigBrevlager.hentHttpStatus(),
-                    expectation = HttpStatus.CREATED
-                ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
-            )
+            opprettBidragssak(appForTestdata = appForTestdata, saksnummer = saksnummer)
+            opprettJournalpostForSak(appForTestdata = appForTestdata, saksnummer = saksnummer)
         } else {
             LOGGER.info("Fant ${midlertidigBrevlager.hentResponseSomListe().size} journalpost(er) i $appForBidDokJournalpost")
         }
+    }
+
+    @Suppress("SameParameterValue")
+    private fun opprettBidragssak(appForTestdata: String, saksnummer: String) {
+        CucumberTestRun.hentRestTjenste(appForTestdata).exchangePost(
+            endpointUrl = "/sak/$saksnummer",
+            body = """
+            {
+              "saksnummer": "$saksnummer",
+              "enhetsnummer": "4833"
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Suppress("SameParameterValue")
+    private fun opprettJournalpostForSak(
+        appForTestdata: String,
+        saksnummer: String
+    ) {
+        val testdataApp = CucumberTestRun.hentRestTjenste(appForTestdata)
+
+        testdataApp.exchangePost(
+            endpointUrl = "/journalpost",
+            body = """
+                        {
+                        "avsenderNavn": "Cucumber Test",
+                        "beskrivelse": "bidrag-cucumber-onprem",
+                        "dokumentType": "I",
+                        "dokumentdato": "2019-01-01",
+                        "dokumentreferanse": "1234567890",
+                        "fagomrade": "BID",
+                        "journalstatus": "J",
+                        "gjelder": "29118012345",
+                        "journaldato": "2019-01-01",
+                        "mottattDato": "2019-01-01",
+                        "skannetDato": "2019-01-01",
+                        "saksnummer": "$saksnummer"
+                        }
+                    """.trimIndent(),
+            customHeaders = arrayOf(HttpHeaders.CONTENT_TYPE to MediaType.APPLICATION_JSON_VALUE)
+        )
+
+        FellesEgenskaperManager.assertWhenNotSanityCheck(
+            FellesEgenskaperManager.Assertion(
+                message = "Response fra opprettet testdata",
+                value = testdataApp.hentHttpStatus(),
+                expectation = HttpStatus.CREATED
+            ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
+        )
     }
 
     fun sjekkAtJournalposterSomHentesErBadeFraArkivOgBidragDokumentJournalpost(fagomrade: String, saksnummer: String) {
