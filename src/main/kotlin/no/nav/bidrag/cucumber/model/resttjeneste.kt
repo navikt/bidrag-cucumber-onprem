@@ -1,6 +1,7 @@
 package no.nav.bidrag.cucumber.model
 
 import no.nav.bidrag.commons.CorrelationId
+import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.Headers
 import no.nav.bidrag.cucumber.ScenarioManager
@@ -109,23 +110,31 @@ class RestTjeneste(
                 return CucumberTestRun.hentRestTjenste(applicationName)
             }
 
-            val applicationUrl = RestTjenester.konfigurerApplikasjonUrlFor(applicationName)
-            val httpHeaderRestTemplate = BidragCucumberSingletons.hentPrototypeFraApplicationContext()
-            httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
+            try {
+                val applicationUrl = RestTjenester.konfigurerApplikasjonUrlFor(applicationName)
+                val httpHeaderRestTemplate = BidragCucumberSingletons.hentPrototypeFraApplicationContext()
+                httpHeaderRestTemplate.uriTemplateHandler = BaseUrlTemplateHandler(applicationUrl)
 
-            if (CucumberTestRun.isTestUserPresent) {
-                val tokenValue = hentSaksbehandlerToken(applicationName)
-                httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
-            } else {
-                LOGGER.info("No user to provide security for when accessing $applicationName")
+                if (CucumberTestRun.isTestUserPresent) {
+                    val tokenValue = hentSaksbehandlerToken(applicationName)
+                    httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { tokenValue.initBearerToken() }
+                } else {
+                    LOGGER.info("No user to provide security for when accessing $applicationName")
+                }
+
+                if (StsService.supportedApplications.contains(applicationName)) {
+                    val stsTokenValue = hentStsToken()
+                    httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
+                }
+
+                return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))
+            } catch (throwable: Throwable) {
+                CucumberTestRun.holdExceptionForTest(throwable)
+                BidragCucumberSingletons.hentEllerInit<ExceptionLogger>(ExceptionLogger::class)
+                    .logException(throwable, "konfigurering av resttjeneste")
+
+                throw throwable
             }
-
-            if (StsService.supportedApplications.contains(applicationName)) {
-                val stsTokenValue = hentStsToken()
-                httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
-            }
-
-            return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))
         }
 
         private fun hentSaksbehandlerToken(applicationName: String): TokenValue {

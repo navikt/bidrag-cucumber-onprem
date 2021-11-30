@@ -3,6 +3,7 @@ package no.nav.bidrag.cucumber.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
+import no.nav.bidrag.cucumber.BidragCucumberOnprem
 import no.nav.bidrag.cucumber.SpringConfig
 import no.nav.bidrag.cucumber.service.StsService
 import org.springframework.context.ApplicationContext
@@ -27,6 +28,10 @@ internal object BidragCucumberSingletons {
     private fun <T> init(kClass: KClass<*>): T {
         if (kClass == StsService::class) {
             return StsService(HttpHeaderRestTemplate()) as T
+        }
+
+        if (kClass == ExceptionLogger::class) {
+            return ExceptionLogger("${BidragCucumberOnprem::class.simpleName}") as T
         }
 
         throw IllegalStateException("Mangler manuell initialisering av ${kClass.simpleName}")
