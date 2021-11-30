@@ -52,5 +52,15 @@ class ArkivEgenskaper : No {
                 ) { assertThat(it.value as String).`as`(it.message).startsWith(it.expectation as String) }
             )
         }
+
+        Og("så skal responsen inneholde en journalpost med JOARK prefix") {
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                FellesEgenskaperManager.Assertion(
+                    message = "Responsen inneholder en journalpost med JOARK-prefix",
+                    value = hentRestTjenesteTilTesting().hentResponse(),
+                    expectation = """"journalpostId":"JOARK-""",
+                ) { assertThat(it.value as String).`as`(it.message).contains(it.expectation as String) }
+            )
+        }
     }
 }
