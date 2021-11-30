@@ -27,7 +27,7 @@ object DokumentManager {
             LOGGER.info("Oppretter journalpost med $appForTestdata")
 
             CucumberTestRun.settOppNaisApp(appForTestdata).exchangePost(
-                endpointUrl = "",
+                endpointUrl = "/journalpost",
                 body = """
                     {
                     "avsenderNavn": "Cucumber Test",

@@ -149,6 +149,7 @@ jobs:
 
     env:
       INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.intern.nav.no
+      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
       INGRESS_DOKUMENT: https://bidrag-dokument.dev.intern.nav.no
       INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.adeo.no
       INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
@@ -157,6 +158,7 @@ jobs:
       - run: |
           echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_DOKUMENT=https://bidrag-dokument-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
@@ -168,8 +170,9 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bda-samt-bdj"], "navUsername": "j104364", "testUsername": "z992903",
-              "ingressesForApps":[
+              "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@no-tag:bidrag-dokument-arkiv",
+                "${{ env.INGRESS_DOKARKIV }}@no-tag:dokarkiv-api",
                 "${{ env.INGRESS_DOKUMENT }}@no-tag:bidrag-dokument",
                 "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@no-tag:bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@no-tag:bidrag-testdata"
