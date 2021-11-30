@@ -1,9 +1,7 @@
 package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
 import io.cucumber.java8.No
-import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.model.RestTjeneste
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperService
 import org.assertj.core.api.Assertions.assertThat
 
@@ -52,6 +50,16 @@ class ArkivEgenskaper : No {
                     value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[{"
                 ) { assertThat(it.value as String).`as`(it.message).startsWith(it.expectation as String) }
+            )
+        }
+
+        Og("så skal responsen inneholde en journalpost med JOARK prefix") {
+            FellesEgenskaperService.assertWhenNotSanityCheck(
+                FellesEgenskaperService.Assertion(
+                    message = "Responsen inneholder en journalpost med JOARK-prefix",
+                    value = hentRestTjenesteTilTesting().hentResponse(),
+                    expectation = """"journalpostId":"JOARK-""",
+                ) { assertThat(it.value as String).`as`(it.message).contains(it.expectation as String) }
             )
         }
     }

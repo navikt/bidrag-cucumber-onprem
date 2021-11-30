@@ -17,3 +17,8 @@ Egenskap: bidrag-dokument-arkiv
     Når jeg kaller endpoint '/sak/{saksnummer}/journal' med saksnummer på fagområde
     Så skal http status være 200
     Og så skal responsen inneholde en journalført journalpost
+
+  Scenario: @arkiv-saf Sjekk at hentet journalpost har riktig prefix i journalpost id (SAF-grensesnitt, testbruker må ha rolle GOSYS_NASJONAL)
+    Når jeg kaller endpoint '/sak/{saksnummer}/journal' med saksnummer på fagområde
+    Så skal http status være 200
+    Og så skal responsen inneholde en journalpost med JOARK prefix
