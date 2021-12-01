@@ -44,6 +44,8 @@ spec:
     - secret: nav-auth-j104364
     - secret: sts-auth
   env:
+    - name: CUCUMBER_PUBLISH_ENABLED
+      value: "true"
     - name: SAK_SCOPE
       value: {{ scope.sak }}
     - name: STS_URL
