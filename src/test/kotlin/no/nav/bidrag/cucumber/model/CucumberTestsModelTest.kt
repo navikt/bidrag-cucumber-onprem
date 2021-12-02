@@ -17,7 +17,7 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal hente tags basert på ingressesForApps`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("https://somewhere.out.there@bidrag-cucumber-onprem"))
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("https://somewhere.out.there@tag:bidrag-cucumber-onprem"))
 
         assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags").isEqualTo("@bidrag-cucumber-onprem and not @ignored")
     }
@@ -25,7 +25,7 @@ internal class CucumberTestsModelTest {
     @Test
     fun `skal også bruke tags som ikke er listet i ingressesForApps`() {
         val cucumberTestsModel = CucumberTestsModel(
-            ingressesForApps = listOf("https://somewhere.out.there@bidrag-cucumber-onprem"), tags = listOf("@bidrag-beregn-barnebidrag-rest")
+            ingressesForApps = listOf("https://somewhere.out.there@tag:bidrag-cucumber-onprem"), tags = listOf("@bidrag-beregn-barnebidrag-rest")
         )
 
         assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags")
@@ -34,7 +34,7 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal bare plukke tags fra ingressesForApps`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@bidrag-cucumber-onprem", "here@no-tag:this-app"))
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@tag:bidrag-cucumber-onprem", "here@:this-app"))
 
         assertThat(cucumberTestsModel.fetchTags()).`as`("cucumberTests.fetchTags")
             .isEqualTo("@bidrag-cucumber-onprem and not @ignored")
@@ -42,7 +42,7 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal feile når tag ikke finnes blant feature files`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@not-available"))
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("somewhere@tag:not-available"))
 
         assertThatIllegalStateException().isThrownBy { cucumberTestsModel.fetchTags() }
             .withMessageContaining("@not-available er ukjent")
@@ -51,10 +51,10 @@ internal class CucumberTestsModelTest {
 
     @Test
     fun `skal feile hvis det ikke finnes noen tags`() {
-        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("shit@no-tag:not-available"), tags = emptyList())
+        val cucumberTestsModel = CucumberTestsModel(ingressesForApps = listOf("shit@not-available"), tags = emptyList())
 
         assertThatIllegalStateException().isThrownBy { cucumberTestsModel.fetchTags() }
-            .withMessage("Ingen tags er oppgitt. Bruk liste med tags eller liste med ingresser som ikke har prefiksen 'no-tag:' etter @")
+            .withMessage("Ingen tags er oppgitt. Bruk liste med tags eller liste med ingresser som har prefiksen 'tag:' etter @")
     }
 
     @Test
