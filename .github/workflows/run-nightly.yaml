@@ -48,7 +48,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "ingressesForApps":["${{ env.INGRESS_BARNEBIDRAG }}@bidrag-beregn-barnebidrag-rest"]
+              "ingressesForApps":["${{ env.INGRESS_BARNEBIDRAG }}@tag:bidrag-beregn-barnebidrag-rest"]
           }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: bidrag-beregn-forskudd-rest
@@ -57,7 +57,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "ingressesForApps":["${{ env.INGRESS_FORSKUDD }}@bidrag-beregn-forskudd-rest"]
+              "ingressesForApps":["${{ env.INGRESS_FORSKUDD }}@tag:bidrag-beregn-forskudd-rest"]
           }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: bidrag-beregn-saertilskudd-rest
@@ -66,7 +66,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "ingressesForApps":["${{ env.INGRESS_SAERTILSKUDD }}@bidrag-beregn-saertilskudd-rest"]
+              "ingressesForApps":["${{ env.INGRESS_SAERTILSKUDD }}@tag:bidrag-beregn-saertilskudd-rest"]
           }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
@@ -89,11 +89,11 @@ jobs:
             -d '{
               "tags":["@bda-samt-bdj"], "navUsername": "j104364", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
-                "https://bidrag-dokument-arkiv.dev.intern.nav.no@no-tag:bidrag-dokument-arkiv",
-                "https://dokarkiv-q2.dev.adeo.no@no-tag:dokarkiv-api",
-                "https://bidrag-dokument.dev.intern.nav.no@no-tag:bidrag-dokument",
-                "https://bidrag-dokument-journalpost.dev.adeo.no@no-tag:bidrag-dokument-journalpost",
-                "https://bidrag-testdata.dev.adeo.no@no-tag:bidrag-testdata"
+                "https://bidrag-dokument-arkiv.dev.intern.nav.no@bidrag-dokument-arkiv",
+                "https://dokarkiv-q2.dev.adeo.no@dokarkiv-api",
+                "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",
+                "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
+                "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
               ]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -119,7 +119,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@arkiv-swagger"],
-              "ingressesForApps":["${{ env.INGRESS_ARKIV }}@no-tag:bidrag-dokument-arkiv"]
+              "ingressesForApps":["${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bidrag-dokument-arkiv"
@@ -129,7 +129,20 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bidrag-dokument-arkiv"], "navUsername": "j104364", "testUsername": "z992903",
-              "ingressesForApps":["${{ env.INGRESS_ARKIV }}@no-tag:bidrag-dokument-arkiv"]
+              "ingressesForApps":["${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv"]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+      - name: "@arkiv-saf"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":["@arkiv-saf"], "navUsername": "j104364", "testUsername": "z992903",
+              "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
+                "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
+                "${{ env.INGRESS_SAF }}@dokarkiv-api"
+              ]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
@@ -150,7 +163,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "navUsername": "j104364", "testUsername": "z992903",
-              "ingressesForApps":["https://bidrag-person.dev.intern.nav.no@bidrag-person"]
+              "ingressesForApps":["https://bidrag-person.dev.intern.nav.no@tag:bidrag-person"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |

@@ -48,7 +48,7 @@ internal class CucumberControllerIntegrationTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@bidrag-beregn-barnebidrag-rest"]
+                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@tag:bidrag-beregn-barnebidrag-rest"]
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),
@@ -67,7 +67,7 @@ internal class CucumberControllerIntegrationTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-cucumber-onprem-feature.dev.adeo.no@bidrag-cucumber-onprem"]
+                  "ingressesForApps":["https://bidrag-cucumber-onprem-feature.dev.adeo.no@tag:bidrag-cucumber-onprem"]
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),
@@ -90,7 +90,7 @@ internal class CucumberControllerIntegrationTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-person.dev.adeo.no@bidrag-person"],
+                  "ingressesForApps":["https://bidrag-person.dev.adeo.no@tag:bidrag-person"],
                   "sanityCheck":true, "testUsername": "jumbo"
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
@@ -108,7 +108,7 @@ internal class CucumberControllerIntegrationTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://i-am-not-here.dev.adeo.no@bidrag-person"]
+                  "ingressesForApps":["https://i-am-not-here.dev.adeo.no@tag:bidrag-person"]
                 }
                 """.trimMargin().trim(), initJsonAsMediaType()
             ),

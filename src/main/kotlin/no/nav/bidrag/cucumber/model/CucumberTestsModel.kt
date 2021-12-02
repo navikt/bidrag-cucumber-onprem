@@ -65,8 +65,8 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
 
     fun fetchTags(): String {
         val collectTags = ingressesForApps
-            .filterNot { it.contains("@no-tag:") }
-            .map { it.split("@")[1] }
+            .filter { it.contains("@tag:") }
+            .map { it.split("@tag:")[1] }
             .map { "@$it" } as MutableList<String>
 
         collectTags.addAll(tags)
@@ -74,7 +74,7 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
 
         if (tagsAsStrings.isEmpty()) {
             throw IllegalStateException(
-                "Ingen tags er oppgitt. Bruk liste med tags eller liste med ingresser som ikke har prefiksen 'no-tag:' etter @"
+                "Ingen tags er oppgitt. Bruk liste med tags eller liste med ingresser som har prefiksen 'tag:' etter @"
             )
         }
 
@@ -90,8 +90,10 @@ data class CucumberTestsModel(internal val cucumberTestsApi: CucumberTestsApi) {
     fun fetchIngress(applicationName: String): String {
         LOGGER.info("Finding ingress for '$applicationName' in $ingressesForApps")
 
-        return ingressesForApps.filter { it.endsWith(applicationName) }
-            .map { it.split("@")[0]  }
+        return ingressesForApps
+            .map { it.replace("@tag:", "@") }
+            .filter { it.trim().endsWith("@$applicationName") }
+            .map { it.split("@")[0] }
             .first()
     }
 
