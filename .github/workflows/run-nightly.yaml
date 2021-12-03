@@ -22,7 +22,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "ingressesForApps":["${{ env.INGRESS_CUCUMBER }}@bidrag-cucumber-onprem"]
+              "ingressesForApps":["${{ env.INGRESS_CUCUMBER }}@tag:bidrag-cucumber-onprem"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
