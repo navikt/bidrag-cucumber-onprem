@@ -1,0 +1,36 @@
+name: bump snapshot version
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  bump_snapshot_version:
+    runs-on: ubuntu-latest
+    name: Bump SNAPSHOT version
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: tag new snapshot version
+        run: |
+          git fetch --tags  # checkout action does not get these
+          OLD_V=$(git tag --sort=-v:refname --list "snapshot-[0-9]*" | head -n 1)
+          echo "Old snapshot: $OLD_V"
+
+          # if there is no version tag yet, let's start at 0.0.0
+          if [ -z "$OLD_V" ]; then
+            echo "No existing version, starting at 0.0.0"
+            OLD_V="0.0.0"
+          fi
+
+          NEW_v=$(docker run --rm -v "$PWD":/app treeder/bump --input "$OLD_V" patch)
+          echo "New snapshot: $NEW_V"
+
+          git remote set-url origin "$(echo "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" | sed "s;';;g")"
+          git config user.email "$AUTHOR_EMAIL"
+          git config user.name "$AUTHOR_NAME"
+
+          git tag -a "snapshot-$NEW_V" -m "snapshot version $NEW_V"
+          git push --follow-tags
