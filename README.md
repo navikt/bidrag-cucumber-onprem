@@ -150,7 +150,7 @@ mvn exec:java                                        \
     -DTEST_USER="<azure bruker ala z123456>          \
     -DSECURITY_TOKEN="<abc...xyz>                    \
     -DINGRESSES_FOR_APPS=<ingress@app1,ingress@app2> \
-    -DTAGS=@<tag1>,@<tag2>                           \
+    -DTAGS=<@tag1>,<@tagp2>                          \
     -Dexec.mainClass=no.nav.bidrag.cucumber.BidragCucumberOnprem
 ```
 
@@ -168,14 +168,14 @@ mvn exec:java                                        \
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@<tag>"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}'
+    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag>"]}' \
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@<tag>"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
+    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
   ```
 
 ##### Kjøring med IntelliJ
@@ -205,14 +205,14 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@<tag>"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}'
+    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}'
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@<tag>"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
+    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
   ```
 
 ##### Kjøring med swagger
