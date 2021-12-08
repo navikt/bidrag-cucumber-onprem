@@ -34,17 +34,20 @@ object DokumentManager {
         }
     }
 
-    @Suppress("SameParameterValue")
-    private fun opprettBidragssak(appForTestdata: String, saksnummer: String) {
-        CucumberTestRun.hentRestTjenste(appForTestdata).exchangePost(
-            endpointUrl = "/sak/$saksnummer",
-            body = """
+    internal fun opprettBidragssak(appForTestdata: String, saksnummer: String) {
+        try {
+            CucumberTestRun.hentRestTjenste(appForTestdata).exchangePost(
+                endpointUrl = "/sak/$saksnummer",
+                body = """
             {
               "saksnummer": "$saksnummer",
               "enhetsnummer": "4833"
             }
             """.trimIndent()
-        )
+            )
+        } catch (throwable: Throwable) {
+            LOGGER.warn("Unable to create bidragssak: ${throwable::class.simpleName}: ${throwable.message}")
+        }
     }
 
     @Suppress("SameParameterValue")
