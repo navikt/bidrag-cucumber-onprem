@@ -3,6 +3,7 @@ package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
+import no.nav.bidrag.cucumber.onprem.dokument.DokumentManager
 import org.assertj.core.api.Assertions.assertThat
 
 @Suppress("unused") // used by cucumber
@@ -14,6 +15,7 @@ class ArkivEgenskaper : No {
         Og("det finnes en ferdigstilt journalpost for saksnummer {string} på fagområdet {string}") { saksnummer: String, fagomrade: String ->
             this.fagomrade = fagomrade
             this.saksnummer = saksnummer
+            DokumentManager.opprettBidragssak("bidrag-testdata", saksnummer)
             ArkivManager.opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
         }
 

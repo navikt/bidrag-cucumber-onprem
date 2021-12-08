@@ -35,16 +35,21 @@ object DokumentManager {
     }
 
     @Suppress("SameParameterValue")
-    private fun opprettBidragssak(appForTestdata: String, saksnummer: String) {
-        CucumberTestRun.hentRestTjenste(appForTestdata).exchangePost(
-            endpointUrl = "/sak/$saksnummer",
-            body = """
+    internal fun opprettBidragssak(appForTestdata: String, saksnummer: String) {
+        try {
+            CucumberTestRun.hentRestTjenste(appForTestdata).exchangePost(
+                endpointUrl = "/sak/$saksnummer",
+                body = """
             {
               "saksnummer": "$saksnummer",
               "enhetsnummer": "4833"
             }
             """.trimIndent()
-        )
+            )
+        } catch (throwable: Throwable) {
+            CucumberTestRun.holdExceptionForTest(throwable)
+            throw throwable
+        }
     }
 
     @Suppress("SameParameterValue")
