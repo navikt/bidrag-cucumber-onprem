@@ -42,10 +42,10 @@ internal class OidcTokenServiceTest {
 
     @Test
     fun `skal generere oidc token`() {
-        CucumberTestRun(CucumberTestsApi(navUsername = "j104364", testUsername = "z992903"))
+        CucumberTestRun(CucumberTestsApi(navUsername = "c151787", testUsername = "z992903"))
             .initEnvironment()
 
-        System.setProperty("${NAV_AUTH}_J104364", "mySecret")
+        System.setProperty("${NAV_AUTH}_C151787", "mySecret")
         System.setProperty("${TEST_AUTH}_Z992903", "testSecret")
 
         whenever(restTemplateMock.getForObject(anyString(), eq(String::class.java))).thenReturn(
