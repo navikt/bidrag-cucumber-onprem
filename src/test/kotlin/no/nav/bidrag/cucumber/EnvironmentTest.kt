@@ -22,9 +22,9 @@ internal class EnvironmentTest {
 
     @Test
     fun `skal hente passord basert på brukernavn (username)`() {
-        CucumberTestsModel(navUsername = "j104364").initCucumberEnvironment()
+        CucumberTestsModel(navUsername = "c151787").initCucumberEnvironment()
 
-        System.setProperty("NAV_AUTH_J104364", "707")
+        System.setProperty("NAV_AUTH_C151787", "707")
         assertThat(Environment.navAuth).isEqualTo("707")
     }
 }

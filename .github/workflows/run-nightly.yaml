@@ -87,7 +87,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bda-samt-bdj"], "navUsername": "j104364", "testUsername": "z992903",
+              "tags":["@bda-samt-bdj"], "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "https://bidrag-dokument-arkiv.dev.intern.nav.no@bidrag-dokument-arkiv",
                 "https://dokarkiv-q2.dev.adeo.no@dokarkiv-api",
@@ -128,7 +128,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bidrag-dokument-arkiv"], "navUsername": "j104364", "testUsername": "z992903",
+              "tags":["@bidrag-dokument-arkiv"], "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -138,7 +138,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@arkiv-saf"], "navUsername": "j104364", "testUsername": "z992903",
+              "tags":["@arkiv-saf"], "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
                 "${{ env.INGRESS_SAF }}@dokarkiv-api"
@@ -162,7 +162,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "j104364", "testUsername": "z992903",
+              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["https://bidrag-person.dev.intern.nav.no@tag:bidrag-person"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
