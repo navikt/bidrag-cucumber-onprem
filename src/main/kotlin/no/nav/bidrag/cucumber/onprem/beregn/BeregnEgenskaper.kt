@@ -3,6 +3,7 @@ package no.nav.bidrag.cucumber.onprem.beregn
 import com.jayway.jsonpath.JsonPath
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.ABSOLUTE_FEATURE_PATH
+import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import org.assertj.core.api.Assertions.assertThat
@@ -37,7 +38,7 @@ class BeregnEgenskaper : No {
             }
 
             FellesEgenskaperManager.assertWhenNotSanityCheck(
-                FellesEgenskaperManager.Assertion(
+                Assertion(
                     message = "Resultatbeløp",
                     value = resultatBelop,
                     expectation = belop
@@ -51,7 +52,7 @@ class BeregnEgenskaper : No {
             val kode = parseJson(response, sti) ?: "null"
 
             FellesEgenskaperManager.assertWhenNotSanityCheck(
-                FellesEgenskaperManager.Assertion(
+                Assertion(
                     message = "Resultatkode",
                     value = resultatkode,
                     expectation = kode

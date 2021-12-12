@@ -3,7 +3,7 @@ package no.nav.bidrag.cucumber.onprem
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager.Assertion
+import no.nav.bidrag.cucumber.model.Assertion
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet

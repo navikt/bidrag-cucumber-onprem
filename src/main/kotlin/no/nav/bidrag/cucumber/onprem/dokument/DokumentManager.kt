@@ -1,5 +1,6 @@
 package no.nav.bidrag.cucumber.onprem.dokument
 
+import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import org.assertj.core.api.Assertions.assertThat
@@ -79,7 +80,7 @@ object DokumentManager {
         )
 
         FellesEgenskaperManager.assertWhenNotSanityCheck(
-            FellesEgenskaperManager.Assertion(
+            Assertion(
                 message = "Response fra opprettet testdata",
                 value = testdataApp.hentHttpStatus(),
                 expectation = HttpStatus.CREATED
@@ -93,7 +94,7 @@ object DokumentManager {
         bidragDokument.exchangeGet("/sak/$saksnummer/journal?fagomrade=$fagomrade")
 
         FellesEgenskaperManager.assertWhenNotSanityCheck(
-            FellesEgenskaperManager.Assertion(
+            Assertion(
                 message = "Minst 2 journalposter",
                 value = bidragDokument.hentResponseSomListe(),
                 expectation = 1
@@ -101,7 +102,7 @@ object DokumentManager {
         )
 
         FellesEgenskaperManager.assertWhenNotSanityCheck(
-            FellesEgenskaperManager.Assertion(
+            Assertion(
                 message = "En journalpost hentet fra arkiv",
                 value = bidragDokument.hentResponse(),
                 expectation = """"journalpostId":"JOARK-"""
@@ -109,7 +110,7 @@ object DokumentManager {
         )
 
         FellesEgenskaperManager.assertWhenNotSanityCheck(
-            FellesEgenskaperManager.Assertion(
+            Assertion(
                 message = "En journalpost hentet fra bidrag-dokument-journalpost",
                 value = bidragDokument.hentResponse(),
                 expectation = """"journalpostId":"BID-"""
