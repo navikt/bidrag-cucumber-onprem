@@ -83,7 +83,8 @@ class CucumberControllerRestTemplateMockBeanTest {
 
         assertAll(
             { assertThat(testMessages).contains("Starting") },
-            { assertThat(testMessages).contains("Link") },
+            { assertThat(testMessages).contains("correlationId") },
+            { assertThat(testMessages).contains("logs.adeo.no") },
             { assertThat(testMessages).contains("Finished") },
             { assertThat(testMessages).contains("Scenario") }
         )

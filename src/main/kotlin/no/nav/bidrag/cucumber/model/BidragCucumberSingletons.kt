@@ -5,7 +5,9 @@ import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.BidragCucumberOnprem
 import no.nav.bidrag.cucumber.SpringConfig
+import no.nav.bidrag.cucumber.service.OidcTokenService
 import no.nav.bidrag.cucumber.service.StsService
+import no.nav.bidrag.cucumber.service.TokenService
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,13 +28,9 @@ internal object BidragCucumberSingletons {
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> init(kClass: KClass<*>): T {
-        if (kClass == StsService::class) {
-            return StsService(HttpHeaderRestTemplate()) as T
-        }
-
-        if (kClass == ExceptionLogger::class) {
-            return ExceptionLogger("${BidragCucumberOnprem::class.simpleName}") as T
-        }
+        if (kClass == StsService::class) return StsService(HttpHeaderRestTemplate()) as T
+        if (kClass == ExceptionLogger::class) return ExceptionLogger("${BidragCucumberOnprem::class.simpleName}") as T
+        if (kClass == OidcTokenService::class) return DummyTokenService() as T
 
         throw IllegalStateException("Mangler manuell initialisering av ${kClass.simpleName}")
     }
@@ -43,14 +41,14 @@ internal object BidragCucumberSingletons {
     }
 
     fun mapResponseSomMap(responseEntity: ResponseEntity<String?>?): Map<String, Any> {
-        return if (responseEntity?.statusCode == HttpStatus.OK && responseEntity.body != null)
-            mapResponseSomMap(responseEntity.body!!)
+        return if (responseEntity?.statusCode?.is2xxSuccessful == true && responseEntity.body != null)
+            mapJsonSomMap(responseEntity.body!!)
         else
             HashMap()
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun mapResponseSomMap(body: String): Map<String, Any> = try {
+    internal fun mapJsonSomMap(body: String): Map<String, Any> = try {
         fetchObjectMapper().readValue(body, Map::class.java) as Map<String, Any>
     } catch (e: Exception) {
         CucumberTestRun.holdExceptionForTest(e)
@@ -71,6 +69,13 @@ internal object BidragCucumberSingletons {
         throw e
     }
 
+    fun mapTilJson(avviksdetaljer: Map<String, String>) = try {
+        fetchObjectMapper().writeValueAsString(avviksdetaljer)
+    } catch (e: Exception) {
+        CucumberTestRun.holdExceptionForTest(e)
+        throw e
+    }
+
     fun setApplicationContext(applicationContext: ApplicationContext) {
         BidragCucumberSingletons.applicationContext = applicationContext
     }
@@ -83,4 +88,9 @@ internal object BidragCucumberSingletons {
         BidragCucumberSingletons.objectMapper = objectMapper
     }
 
+    private class DummyTokenService : TokenService() {
+        override fun generateToken(application: String): String {
+            return "dummy token for $application"
+        }
+    }
 }

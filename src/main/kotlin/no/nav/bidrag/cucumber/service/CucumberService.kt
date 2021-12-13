@@ -8,6 +8,7 @@ import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.SuppressStackTraceText
 import no.nav.bidrag.cucumber.model.TestFailedException
+import no.nav.bidrag.cucumber.onprem.TestDataManager
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 
@@ -30,6 +31,10 @@ class CucumberService(
         val suppressedStackTraceLog = suppressStackTraceText.suppress(
             CucumberTestRun.fetchTestMessagesWithRunStats()
         )
+
+        if (CucumberTestRun.isTestDataPresent()) {
+            TestDataManager.slettTestData()
+        }
 
         CucumberTestRun.endRun()
 
