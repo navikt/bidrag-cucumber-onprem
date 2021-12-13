@@ -27,17 +27,17 @@ class CucumberService(
     internal fun run(cucumberTestRun: CucumberTestRun): String {
         val result = runCucumberTests(cucumberTestRun.tags)
 
-        val suppressedStackText = suppressStackTraceText.suppress(
+        val suppressedStackTraceLog = suppressStackTraceText.suppress(
             CucumberTestRun.fetchTestMessagesWithRunStats()
         )
 
         CucumberTestRun.endRun()
 
         if (result != 0.toByte()) {
-            throw TestFailedException("Cucumber tests failed! (tags: ${cucumberTestRun.tags})!", suppressedStackText)
+            throw TestFailedException("Cucumber tests failed! (tags: ${cucumberTestRun.tags})!", suppressedStackTraceLog)
         }
 
-        return suppressedStackText
+        return suppressedStackTraceLog
     }
 
     private fun runCucumberTests(tags: String): Byte {
