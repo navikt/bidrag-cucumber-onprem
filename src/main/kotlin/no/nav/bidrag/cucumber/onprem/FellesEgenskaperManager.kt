@@ -1,5 +1,6 @@
 package no.nav.bidrag.cucumber.onprem
 
+import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import org.slf4j.LoggerFactory
 
@@ -9,24 +10,15 @@ object FellesEgenskaperManager {
 
     fun assertWhenNotSanityCheck(assertion: Assertion) {
         LOGGER.info(
-            "Assertion, actual: '${assertion.value}' - (${assertion.value?.javaClass}), " +
-                    "wanted: '${assertion.expectation}' (${assertion.expectation?.javaClass}), " +
-                    "sanity check: ${CucumberTestRun.isSanityCheck}"
+            """
+            Assertion, actual: '${assertion.value}' ${assertion.value?.javaClass.let { "- ($it)" }},
+            used as expecteation: '${assertion.expectation}' ${assertion.expectation?.javaClass.let { "- ($it)" }},
+            sanity check: ${CucumberTestRun.isSanityCheck}
+            """.trimIndent()
         )
 
         if (CucumberTestRun.isNotSanityCheck) {
             assertion.doVerify()
-        }
-    }
-
-    data class Assertion(val message: String, val value: Any?, val expectation: Any?, val verify: (input: Assertion) -> Unit) {
-        fun doVerify() {
-            try {
-                verify(this)
-            } catch (throwable: Throwable) {
-                CucumberTestRun.holdExceptionForTest(throwable)
-                throw throwable
-            }
         }
     }
 }

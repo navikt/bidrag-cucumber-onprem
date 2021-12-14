@@ -173,7 +173,7 @@ class RestTjeneste(
 
     fun exchangeGet(endpointUrl: String, failOnNotFound: Boolean = true): ResponseEntity<String?> {
 
-        val header = initHttpHeadersWithCorrelationIdEnhetAnd()
+        val header = initHttpHeadersWithCorrelationIdAndEnhet()
 
         exchange(
             jsonEntity = HttpEntity(null, header),
@@ -194,7 +194,7 @@ class RestTjeneste(
         return if (CucumberTestRun.isSanityCheck) "is sanity check" else "is NOT sanity check"
     }
 
-    private fun initHttpHeadersWithCorrelationIdEnhetAnd(customHeaders: Array<out Pair<String, String>> = emptyArray()): HttpHeaders {
+    private fun initHttpHeadersWithCorrelationIdAndEnhet(customHeaders: Array<out Pair<String, String>> = emptyArray()): HttpHeaders {
         val headers = HttpHeaders()
         headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.fetchCorrelationIdForScenario())
         headers.add(EnhetFilter.X_ENHET_HEADER, "4802")
@@ -210,13 +210,13 @@ class RestTjeneste(
     }
 
     private fun httpEntity(body: Any, customHeaders: Array<out Pair<String, String>>): HttpEntity<*> {
-        val headers = initHttpHeadersWithCorrelationIdEnhetAnd(customHeaders)
+        val headers = initHttpHeadersWithCorrelationIdAndEnhet(customHeaders)
         headers.contentType = MediaType.APPLICATION_JSON
 
         return HttpEntity(body, headers)
     }
 
-    private fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod, failOnNotFound: Boolean = true) {
+    internal fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod, failOnNotFound: Boolean = true) {
         fullUrl = FullUrl(rest.baseUrl, endpointUrl)
         LOGGER.info("$httpMethod: $fullUrl")
 
@@ -224,13 +224,13 @@ class RestTjeneste(
             responseEntity = rest.template.exchange(endpointUrl, httpMethod, jsonEntity, String::class.java)
         } catch (e: Exception) {
             responseEntity = if (e is HttpStatusCodeException) {
-                ResponseEntity.status(e.statusCode).body<String>("${e::class.simpleName}: ${e.message}")
+                ResponseEntity.status(e.statusCode).body<String>(failure(jsonEntity.body, e))
             } else {
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<String>("${e::class.simpleName}: ${e.message}")
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<String>(failure(jsonEntity.body, e))
             }
 
             if (isError(e, failOnNotFound)) {
-                ScenarioManager.errorLog("$httpMethod FEILET! ($fullUrl)", e)
+                ScenarioManager.errorLog(">>> $httpMethod FEILET! ($fullUrl) ${failure(jsonEntity.body, e)}", e)
 
                 if (CucumberTestRun.isNotSanityCheck) {
                     throw e
@@ -241,6 +241,15 @@ class RestTjeneste(
 
     private fun isError(e: Exception, failOn404: Boolean) = if (isNotFound(e)) failOn404 else true
     private fun isNotFound(e: Exception) = e is HttpStatusCodeException && e.statusCode == HttpStatus.NOT_FOUND
+    private fun failure(body: Any?, e: Exception) = """-
+    - input body: $body
+    - exception : "${e::class.simpleName}: ${e.message}"
+    """.trimIndent()
+
+    @Suppress("UNCHECKED_CAST")
+    fun hentResponseSomListeAvStrenger(): List<String> {
+        return BidragCucumberSingletons.mapResponseSomListe(responseEntity) as List<String>
+    }
 }
 
 class ResttjenesteMedBaseUrl(val template: RestTemplate, val baseUrl: String)

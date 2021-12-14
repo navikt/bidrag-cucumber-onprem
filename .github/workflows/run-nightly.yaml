@@ -97,6 +97,31 @@ jobs:
               ]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+      - name: "@sakjournal"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":["@sakjournal"], "navUsername": "c151787", "testUsername": "z992903",
+              "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
+                "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument"
+              ]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+      - name: "@avviksbehandling, todo: fix tests and unignore"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":["@avviksbehandling"], "navUsername": "c151787", "testUsername": "z992903",
+              "ingressesForApps":[
+                "${{ env.INGRESS_DOKUMENT }}@bidrag-dokument",
+                "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
+              ]
+            }' | tee .cucumber-result
+          # cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - run: |
           curl -X POST --data-urlencode "payload={\"channel\": \"#team-bidrag-dev\", \"username\": \"webhookbot-onprem\", \"text\": \"$MELDING\", \"icon_emoji\": \":boom:\"}" $WEBHOOK_URL
         if: ${{ failure() }}
