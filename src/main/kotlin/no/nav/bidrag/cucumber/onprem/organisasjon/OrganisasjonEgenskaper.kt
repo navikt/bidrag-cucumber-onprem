@@ -3,6 +3,7 @@ package no.nav.bidrag.cucumber.onprem.organisasjon
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 
+@Suppress("unused") // used by cucumber
 class OrganisasjonEgenskaper : No {
   init {
     Når("jeg henter informasjon om saksbehandler med ident {string}") { ident: String ->
