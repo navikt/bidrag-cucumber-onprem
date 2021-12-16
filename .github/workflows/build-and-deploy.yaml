@@ -10,6 +10,19 @@ env:
   INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.dev.adeo.no
 
 jobs:
+
+  restart-testdata:
+    name: restart kubernetes pods bidrag-testdata
+    runs-on: self-hosted
+
+    steps:
+      - name: restart bidrag-testdata
+        if: github.ref == 'refs/heads/main'
+        run: "curl -X 'POST' 'https://bidrag-testdata.dev.adeo.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
+      - name: restart bidrag-testdata-feature
+        if: github.ref != 'refs/heads/main'
+        run: "curl -X 'POST' 'https://bidrag-testdata-feature.dev.adeo.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
+
   build:
     name: Build with maven and docker
     runs-on: ubuntu-latest
@@ -325,6 +338,29 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
+  run-tests-for-sjablon:
+    runs-on: self-hosted
+    name: bidrag-sjablon
+    needs: deploy
+
+    env:
+      INGRESS_SJABLON: https://bidrag-sjablon.dev.adeo.no
+
+    steps:
+      - run: |
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_SJABLON=https://bidrag-sjablon-feature.dev.adeo.no" >> $GITHUB_ENV
+        if: github.ref != 'refs/heads/main'
+      - run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "navUsername": "c151787", "testUsername": "z992903",
+              "ingressesForApps":["${{ env.INGRESS_SJABLON }}@tag:bidrag-sjablon"]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+
   bump_dev_version:
     runs-on: ubuntu-latest
     name: Bump SNAPSHOT version
@@ -337,6 +373,7 @@ jobs:
       - run-tests-for-person
       - run-tests-for-organisasjon
       - run-tests-for-sak
+      - run-tests-for-sjablon
 
     steps:
       - uses: actions/checkout@v2
