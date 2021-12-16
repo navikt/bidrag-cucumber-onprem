@@ -344,12 +344,12 @@ jobs:
     needs: deploy
 
     env:
-      INGRESS_SJABLON: https://bidrag-sjablon.dev.intern.nav.no
+      INGRESS_SJABLON: https://bidrag-sjablon.dev.adeo.no
 
     steps:
       - run: |
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_SJABLON=https://bidrag-sjablon-feature.dev.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_SJABLON=https://bidrag-sjablon-feature.dev.adeo.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
