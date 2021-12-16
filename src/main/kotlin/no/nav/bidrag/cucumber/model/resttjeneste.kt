@@ -199,7 +199,13 @@ class RestTjeneste(
         headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.fetchCorrelationIdForScenario())
         headers.add(EnhetFilter.X_ENHET_HEADER, "4802")
 
-        customHeaders.forEach { headers.add(it.first, it.second) }
+        customHeaders.forEach {
+            if (headers.containsKey(it.first)) {
+                headers.remove(it.first)
+            }
+
+            headers.add(it.first, it.second)
+        }
 
         return headers
     }
