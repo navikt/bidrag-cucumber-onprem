@@ -35,7 +35,6 @@ Egenskap: avvik for bidrag-dokument (/journal/*/avvik REST API)
       | INNG_TIL_UTG_DOKUMENT |
       | FEILFORE_SAK          |
 
-  @ignored
   Scenario: bidrag-dokument: Sjekk at man kan bestille original
     Gitt avvikstype 'BESTILL_ORIGINAL'
     Når jeg oppretter avvik på opprettet journalpost
