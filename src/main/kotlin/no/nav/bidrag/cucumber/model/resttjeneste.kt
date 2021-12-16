@@ -190,6 +190,11 @@ class RestTjeneste(
         return responseEntity ?: ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build()
     }
 
+    fun exchangePatch(endpointUrl: String, journalpostJson: String) {
+        val jsonEntity = httpEntity(journalpostJson, emptyArray())
+        exchange(jsonEntity, endpointUrl, HttpMethod.PATCH)
+    }
+
     private fun sanityCheck(): String {
         return if (CucumberTestRun.isSanityCheck) "is sanity check" else "is NOT sanity check"
     }
