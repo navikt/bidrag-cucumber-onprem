@@ -18,5 +18,18 @@ class TestDataEgenskaper : No {
                 TestDataManager.opprettTestData(nokkel = nokkel, json = json)
             }
         }
+
+        Og("lag bidragssak {string} når den ikke finnes fra før:") { saksnummer: String, bidragssakJson: String ->
+            CucumberTestRun.settOppNaisApp("bidrag-testdata").exchangePost("/sak/$saksnummer", bidragssakJson)
+        }
+
+        Gitt("jeg endrer journalpost med nøkkel {string}:") { nokkel: String, journalpostJson: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
+                endpointUrl = "/journal/$journalpostId",
+                journalpostJson = journalpostJson
+            )
+        }
     }
 }
