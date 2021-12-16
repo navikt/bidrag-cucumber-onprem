@@ -24,12 +24,12 @@
     <cucumber.version>7.1.0</cucumber.version>
     <json-path.version>2.6.0</json-path.version>
     <mockito-kotlin.version>4.0.0</mockito-kotlin.version>
-    <springdoc-openapi-ui.version>1.5.13</springdoc-openapi-ui.version>
-    <snakeyaml.version>1.29</snakeyaml.version>
+    <springdoc-openapi-ui.version>1.6.1</springdoc-openapi-ui.version>
+    <snakeyaml.version>1.30</snakeyaml.version>
 
     <!-- build -->
     <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
-    <kotlin.version>1.6.0</kotlin.version>
+    <kotlin.version>1.6.10</kotlin.version>
     <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
