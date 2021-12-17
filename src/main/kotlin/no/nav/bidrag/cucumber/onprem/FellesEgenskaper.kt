@@ -27,7 +27,7 @@ class FellesEgenskaper : No {
 
         Og("responsen skal inneholde {string} = {string}") { key: String, value: String ->
             val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
-            val verdiFraResponse = responseObject[key]?.toString()
+            val verdiFraResponse = responseObject[key]
 
             FellesEgenskaperManager.assertWhenNotSanityCheck(
                 Assertion(
@@ -35,6 +35,18 @@ class FellesEgenskaper : No {
                     value = verdiFraResponse,
                     expectation = value
                 ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
+            )
+        }
+
+        Og("responsen skal ikke inneholde {string} = {string}") { key: String, value: String ->
+            val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
+            val verdiFraResponse = responseObject[key]
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "json response skal ikke ha feltet '$key'",
+                    value = verdiFraResponse
+                ) { assertThat(it.value).`as`(it.message).isNull() }
             )
         }
 

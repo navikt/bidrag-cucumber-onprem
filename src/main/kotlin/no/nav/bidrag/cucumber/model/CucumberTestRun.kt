@@ -88,6 +88,7 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun addToRunStats(scenario: Scenario) = thisRun().runStats.add(scenario)
         fun fetchIngress(applicationName: String) = thisRun().cucumberTestsModel.fetchIngress(applicationName)
         fun fetchTestMessagesWithRunStats() = thisRun().testMessagesHolder.fetchTestMessages() + "\n\n" + thisRun().runStats.get()
+        fun hentKonfigurertNaisApp(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
         fun hentRestTjenste(applicationName: String) = thisRun().restTjenester.hentRestTjeneste(applicationName)
         fun hentRestTjenesteTilTesting() = thisRun().restTjenester.hentRestTjenesteTilTesting()
         fun hentTokenType() = thisRun().cucumberTestsModel.tokenType
@@ -95,9 +96,8 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun holdTestMessage(message: String) = thisRun().testMessagesHolder.hold(message)
         fun isApplicationConfigured(applicationName: String) = thisRun().restTjenester.isApplicationConfigured(applicationName)
         fun isNoContextPathForApp(applicationName: String) = thisRun().cucumberTestsModel.noContextPathForApps.contains(applicationName)
-        fun opprettTestdataForNokkel(nokkel: String) = thisRun().testData.harIkkeLagretTestdata(nokkel)
-        fun settOppNaisApp(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
         fun settOppNaisAppTilTesting(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisAppTilTesting(naisApplikasjon)
+        fun skalOpprettTestdataForNokkel(nokkel: String) = thisRun().testData.harIkkeLagretTestdata(nokkel)
         fun updateSecurityToken(securityToken: String?) = thisRun().cucumberTestsModel.updateSecurityToken(securityToken)
 
         fun holdExceptionForTest(throwable: Throwable) {
@@ -121,7 +121,7 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
             cucumberTestRun.runStats.addExceptionLogging(exceptionLog)
         }
 
-        fun nyeTestData(nokkel: String, journalpostId: String, saksnummer: String) = thisRun().testData.nye(
+        fun nyeTestData(nokkel: String, journalpostId: String, saksnummer: String?) = thisRun().testData.nye(
             nokkel = nokkel,
             journalpostId = journalpostId,
             saksnummer = saksnummer

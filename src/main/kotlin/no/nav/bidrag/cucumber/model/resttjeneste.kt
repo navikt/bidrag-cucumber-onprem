@@ -171,7 +171,7 @@ class RestTjeneste(
         return if (warnings.isNotEmpty()) " - ${warnings[0]}" else ""
     }
 
-    fun exchangeGet(endpointUrl: String, failOnNotFound: Boolean = true): ResponseEntity<String?> {
+    fun exchangeGet(endpointUrl: String, failOnNotFound: Boolean = true, failOnBadRequest: Boolean = true): ResponseEntity<String?> {
 
         val header = initHttpHeadersWithCorrelationIdAndEnhet()
 
@@ -179,7 +179,8 @@ class RestTjeneste(
             jsonEntity = HttpEntity(null, header),
             endpointUrl = endpointUrl,
             httpMethod = HttpMethod.GET,
-            failOnNotFound = failOnNotFound
+            failOnNotFound = failOnNotFound,
+            failOnBadRequest = failOnBadRequest
         )
 
         LOGGER.info(
@@ -190,8 +191,8 @@ class RestTjeneste(
         return responseEntity ?: ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build()
     }
 
-    fun exchangePatch(endpointUrl: String, journalpostJson: String) {
-        val jsonEntity = httpEntity(journalpostJson, emptyArray())
+    fun exchangePatch(endpointUrl: String, journalpostJson: String, customHeaders: Array<out Pair<String, String>> = emptyArray()) {
+        val jsonEntity = httpEntity(journalpostJson, customHeaders)
         exchange(jsonEntity, endpointUrl, HttpMethod.PATCH)
     }
 
@@ -227,7 +228,13 @@ class RestTjeneste(
         return HttpEntity(body, headers)
     }
 
-    internal fun exchange(jsonEntity: HttpEntity<*>, endpointUrl: String, httpMethod: HttpMethod, failOnNotFound: Boolean = true) {
+    internal fun exchange(
+        jsonEntity: HttpEntity<*>,
+        endpointUrl: String,
+        httpMethod: HttpMethod,
+        failOnNotFound: Boolean = true,
+        failOnBadRequest: Boolean = true
+    ) {
         fullUrl = FullUrl(rest.baseUrl, endpointUrl)
         LOGGER.info("$httpMethod: $fullUrl")
 
@@ -240,7 +247,7 @@ class RestTjeneste(
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<String>(failure(jsonEntity.body, e))
             }
 
-            if (isError(e, failOnNotFound)) {
+            if (isError(e = e, failOn404 = failOnNotFound, failOnBadRequest = failOnBadRequest)) {
                 ScenarioManager.errorLog(">>> $httpMethod FEILET! ($fullUrl) ${failure(jsonEntity.body, e)}", e)
 
                 if (CucumberTestRun.isNotSanityCheck) {
@@ -250,7 +257,19 @@ class RestTjeneste(
         }
     }
 
-    private fun isError(e: Exception, failOn404: Boolean) = if (isNotFound(e)) failOn404 else true
+    private fun isError(e: Exception, failOn404: Boolean, failOnBadRequest: Boolean): Boolean {
+        if (isNotFound(e)) {
+            return failOn404
+        }
+
+        if (isBadRequest(e)) {
+            return failOnBadRequest
+        }
+
+        return true
+    }
+
+    private fun isBadRequest(e: Exception) = e is HttpStatusCodeException && e.statusCode == HttpStatus.BAD_REQUEST
     private fun isNotFound(e: Exception) = e is HttpStatusCodeException && e.statusCode == HttpStatus.NOT_FOUND
     private fun failure(body: Any?, e: Exception) = """-
     - input body: $body

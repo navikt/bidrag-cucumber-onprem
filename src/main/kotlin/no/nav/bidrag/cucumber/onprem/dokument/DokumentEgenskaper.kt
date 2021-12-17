@@ -2,6 +2,7 @@ package no.nav.bidrag.cucumber.onprem.dokument
 
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.No
+import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.SoftAssertions
@@ -79,6 +80,43 @@ class DokumentEgenskaper : No {
             val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             val saksnummer = CucumberTestRun.thisRun().testData.hentSaksnummer(nokkel)
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId?saksnummer=$saksnummer")
+        }
+
+        Gitt("at jeg henter journalpost med path {string}") { endpointUrl: String ->
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = endpointUrl, failOnNotFound = false, failOnBadRequest = false)
+        }
+
+        Og("at jeg henter opprettet journalpost med nokkel {string}") { nokkel: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
+        }
+
+        Og("jeg registrerer endring på opprettet journalpost med nøkkel {string}:") { nokkel: String, json: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
+                endpointUrl = "/journal/$journalpostId",
+                journalpostJson = json
+            )
+        }
+
+        Og("jeg registrerer endring på opprettet journalpost med nøkkel {string} og enhet {string}:") { nokkel: String, enhet: String, json: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
+                endpointUrl = "/journal/$journalpostId",
+                journalpostJson = json,
+                customHeaders = arrayOf(EnhetFilter.X_ENHET_HEADER to enhet)
+            )
+        }
+
+        Og("at jeg henter endret journalpost for nøkkel {string}") { nokkel: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
+        }
+
+        Og("en journalpostHendelse for nokkel {string} skal være produsert") { nokkel: String ->
+            KafkaManager.sjekkAtJournalpostHendelseErRegistrert(
+                journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            )
         }
     }
 }

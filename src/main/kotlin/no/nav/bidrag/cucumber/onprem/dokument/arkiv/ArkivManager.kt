@@ -13,7 +13,7 @@ object ArkivManager {
     fun opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {
         val appForBidDokArkiv = "bidrag-dokument-arkiv"
         LOGGER.info("Eksisterer journalpost for saksnummer $saksnummer i $appForBidDokArkiv?")
-        val bidragDokumentArkiv = CucumberTestRun.settOppNaisApp(appForBidDokArkiv)
+        val bidragDokumentArkiv = CucumberTestRun.hentKonfigurertNaisApp(appForBidDokArkiv)
 
         bidragDokumentArkiv.exchangeGet(
             endpointUrl = "/sak/$saksnummer/journal?fagomrade=$fagomrade",
@@ -24,7 +24,7 @@ object ArkivManager {
             val appForDokarkiv = "dokarkiv-api"
             LOGGER.info("Oppretter journalpost med $appForDokarkiv")
 
-            CucumberTestRun.settOppNaisApp(appForDokarkiv).exchangePost(
+            CucumberTestRun.hentKonfigurertNaisApp(appForDokarkiv).exchangePost(
                 endpointUrl = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true",
                 body = """
                 {

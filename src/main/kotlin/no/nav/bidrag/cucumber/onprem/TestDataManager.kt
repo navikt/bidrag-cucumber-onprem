@@ -20,28 +20,52 @@ object TestDataManager {
     @JvmStatic
     private val LOGGER = LoggerFactory.getLogger(TestDataManager::class.java)
 
-    fun opprettTestData(json: String, nokkel: String) {
-        val saksnummer = mapJsonSomMap(json)["saksnummer"] as String? ?: throw IllegalStateException("Ikke saksnummer i $json")
-        val testDataApp = CucumberTestRun.settOppNaisApp(bidragTestdata)
+    fun opprettTestDataNarTestdataIkkeErOpprettetTidligere(json: String, nokkel: String) {
+        try {
+            if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)) {
+                val saksnummer = mapJsonSomMap(json)["saksnummer"] as String? ?: throwExceptionWhenJournalfort(json)
+                val testDataApp = CucumberTestRun.hentKonfigurertNaisApp(bidragTestdata)
 
-        testDataApp.exchangePost(endpointUrl = "/journalpost", body = json)
+                testDataApp.exchangePost(endpointUrl = "/journalpost", body = json)
 
-        FellesEgenskaperManager.assertWhenNotSanityCheck(
-            Assertion(
-                message = "En journalpost er opprettet",
-                value = testDataApp.hentHttpStatus(),
-                expectation = HttpStatus.CREATED
-            ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
-        )
+                FellesEgenskaperManager.assertWhenNotSanityCheck(
+                    Assertion(
+                        message = "En journalpost er opprettet",
+                        value = testDataApp.hentHttpStatus(),
+                        expectation = HttpStatus.CREATED
+                    ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
+                )
 
-        val responseSomMap = testDataApp.hentResponseSomMap()
-        LOGGER.info("Opprettet journalpost for $nokkel: $responseSomMap")
+                val responseSomMap = testDataApp.hentResponseSomMap()
+                LOGGER.info("Opprettet journalpost for $nokkel: $responseSomMap")
 
-        CucumberTestRun.nyeTestData(
-            nokkel = nokkel,
-            journalpostId = (responseSomMap["journalpostId"] as String?) ?: "na",
-            saksnummer = saksnummer
-        )
+                CucumberTestRun.nyeTestData(
+                    nokkel = nokkel,
+                    journalpostId = (responseSomMap["journalpostId"] as String?) ?: "na",
+                    saksnummer = saksnummer
+                )
+            }
+        } catch (t: Throwable) {
+            if (CucumberTestRun.isNotSanityCheck) {
+                LOGGER.warn("Oppretting av testdata feilet - ${t::class.simpleName}: ${t.message}")
+                throw t
+            }
+        }
+    }
+
+    private fun throwExceptionWhenJournalfort(json: String): String? {
+        val journalstatus = mapJsonSomMap(json)["journalstatus"] as String? ?: throw IllegalStateException("Ikke journalstatus i $json")
+        val saksnummer = mapJsonSomMap(json)["saksnummer"] as String?
+
+        if (saksnummer == null) {
+            if (journalstatus == "M") {
+                return null
+            }
+
+            throw IllegalStateException("Ikke saksnummer i $json")
+        }
+
+        return saksnummer
     }
 
     internal fun hentDataForTest(nokkel: String?): Data {
@@ -55,8 +79,8 @@ object TestDataManager {
         headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.createCorrelationIdValue("slett-testdata"))
 
         CucumberTestRun.hentRestTjenste("bidrag-testdata").exchange(
-            endpointUrl = "/journal/slett/testdata",
             jsonEntity = HttpEntity(null, headers),
+            endpointUrl = "/journal/slett/testdata",
             httpMethod = HttpMethod.DELETE
         )
     }
