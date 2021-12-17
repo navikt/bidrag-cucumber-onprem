@@ -6,10 +6,18 @@ internal class TestData {
 
     fun isDataPresent() = dataForNokkel.isNotEmpty()
     fun harIkkeLagretTestdata(nokkel: String) = !dataForNokkel.contains(nokkel) || dataForNokkel[nokkel]?.journalpostId == null
-    fun hentJournalpostId(nokkel: String) = dataForNokkel[nokkel]?.journalpostId ?: throw IllegalStateException("Ingen testdata på $nokkel!")
-    fun hentSaksnummer(nokkel: String) = dataForNokkel[nokkel]?.saksnummer ?: throw IllegalStateException("Ingen testdata på $nokkel!")
-    fun nye(nokkel: String, journalpostId: String, saksnummer: String) {
+    fun hentJournalpostId(nokkel: String) = dataForNokkel[nokkel]?.journalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
+    fun hentSaksnummer(nokkel: String) = dataForNokkel[nokkel]?.saksnummer ?: throwIllegalStateException("Ingen testdata på $nokkel!")
+    fun nye(nokkel: String, journalpostId: String, saksnummer: String?) {
         dataForNokkel[nokkel] = Data(journalpostId = journalpostId, saksnummer = saksnummer, opprinneligeData = dataForNokkel[nokkel])
+    }
+
+    private fun throwIllegalStateException(message: String): String {
+        if (CucumberTestRun.isSanityCheck) {
+            return "BID--1"
+        }
+
+        throw IllegalStateException(message)
     }
 }
 
@@ -18,7 +26,7 @@ internal data class Data(
     val journalpostId: String? = null,
     val saksnummer: String? = null
 ) {
-    constructor(journalpostId: String, saksnummer: String, opprinneligeData: Data?) : this(journalpostId = journalpostId, saksnummer = saksnummer) {
+    constructor(journalpostId: String, saksnummer: String?, opprinneligeData: Data?) : this(journalpostId = journalpostId, saksnummer = saksnummer) {
         avvik.avvikstype = opprinneligeData?.avvik?.avvikstype
         avvik.beskrivelse = opprinneligeData?.avvik?.beskrivelse
 

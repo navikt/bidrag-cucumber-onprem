@@ -16,7 +16,7 @@ object DokumentManager {
     fun opprettJournalfortJournalpostNarDenIkkeFinnesFraFor(saksnummer: String, fagomrade: String) {
         val appForBidDokJournalpost = "bidrag-dokument-journalpost"
         LOGGER.info("Eksisterer journalpost for saksnummer $saksnummer i $appForBidDokJournalpost?")
-        val midlertidigBrevlager = CucumberTestRun.settOppNaisApp(appForBidDokJournalpost)
+        val midlertidigBrevlager = CucumberTestRun.hentKonfigurertNaisApp(appForBidDokJournalpost)
 
         midlertidigBrevlager.exchangeGet(
             endpointUrl = "/sak/$saksnummer/journal?fagomrade=$fagomrade",
@@ -25,7 +25,7 @@ object DokumentManager {
 
         if (midlertidigBrevlager.hentResponseSomListe().isEmpty()) {
             val appForTestdata = "bidrag-testdata"
-            CucumberTestRun.settOppNaisApp(appForTestdata)
+            CucumberTestRun.hentKonfigurertNaisApp(appForTestdata)
             LOGGER.info("Oppretter journalpost med $appForTestdata")
 
             opprettBidragssak(appForTestdata = appForTestdata, saksnummer = saksnummer)
