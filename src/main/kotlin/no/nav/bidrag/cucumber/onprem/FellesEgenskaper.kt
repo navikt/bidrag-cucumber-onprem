@@ -74,17 +74,12 @@ class FellesEgenskaper : No {
             )
         }
 
-        Så("skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
-            val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
-            @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
+        Og("så skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
+            sjekkAtResponseHarObjektMedFelt(objekt, key, value)
+        }
 
-            FellesEgenskaperManager.assertWhenNotSanityCheck(
-                Assertion(
-                    message = "$objekt skal inneholde $key",
-                    value = objektFraResponse?.get(key)?.toString(),
-                    expectation = value
-                ) { assertThat(it.value).`as`(it.message).isEqualTo(it.value) }
-            )
+        Så("skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
+            sjekkAtResponseHarObjektMedFelt(objekt, key, value)
         }
 
         Og("responsen skal inneholde et objekt med navn {string} som har feltene:") { objekt: String, felter: DataTable ->
@@ -97,5 +92,18 @@ class FellesEgenskaper : No {
                 assertThat(manglerFelt).`as`("Response skal ikke mangle noen av $felter").isEmpty()
             }
         }
+    }
+
+    private fun sjekkAtResponseHarObjektMedFelt(objekt: String, key: String, value: String) {
+        val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
+        @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
+
+        FellesEgenskaperManager.assertWhenNotSanityCheck(
+            Assertion(
+                message = "$objekt skal inneholde $key",
+                value = objektFraResponse?.get(key)?.toString(),
+                expectation = value
+            ) { assertThat(it.value).`as`(it.message).isEqualTo(it.value) }
+        )
     }
 }

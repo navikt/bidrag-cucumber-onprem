@@ -28,4 +28,4 @@ Egenskap: Avvikshendelse ENDRE_FAGOMRADE på journalposter som er mottaksregistr
     Når jeg behandler avvik på opprettet journalpost
     Så skal http status være 200
     Og jeg henter journalpost
-    Og skal responsen inneholde et objekt med navn 'journalstatus' som har feltet 'fagomrade' = 'FAR'
+    Og så skal responsen inneholde et objekt med navn 'journalstatus' som har feltet 'fagomrade' = 'FAR'
