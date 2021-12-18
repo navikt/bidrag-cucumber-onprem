@@ -96,6 +96,7 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
         fun holdTestMessage(message: String) = thisRun().testMessagesHolder.hold(message)
         fun isApplicationConfigured(applicationName: String) = thisRun().restTjenester.isApplicationConfigured(applicationName)
         fun isNoContextPathForApp(applicationName: String) = thisRun().cucumberTestsModel.noContextPathForApps.contains(applicationName)
+        fun settOppNaisApp(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisApp(naisApplikasjon)
         fun settOppNaisAppTilTesting(naisApplikasjon: String) = thisRun().restTjenester.settOppNaisAppTilTesting(naisApplikasjon)
         fun skalOpprettTestdataForNokkel(nokkel: String) = thisRun().testData.harIkkeLagretTestdata(nokkel)
         fun updateSecurityToken(securityToken: String?) = thisRun().cucumberTestsModel.updateSecurityToken(securityToken)

@@ -7,7 +7,8 @@ internal class TestData {
 
     fun isDataPresent() = dataForNokkel.isNotEmpty()
     fun harIkkeLagretTestdata(nokkel: String) = !dataForNokkel.contains(nokkel) || dataForNokkel[nokkel]?.journalpostId == null
-    fun hentJournalpostId(nokkel: String) = dataForNokkel[nokkel]?.journalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
+    fun hentJournalpostId(nokkel: String?) = dataForNokkel[nokkel]?.journalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
+    fun hentJournalpostIdUtenPrefix(nokkel: String?) = hentJournalpostId(nokkel).split("-")[1]
     fun hentSaksnummer(nokkel: String) = dataForNokkel[nokkel]?.saksnummer ?: throwIllegalStateException("Ingen testdata på $nokkel!")
     fun nye(nokkel: String, journalpostId: String, saksnummer: String?) {
         dataForNokkel[nokkel] = Data(journalpostId = journalpostId, saksnummer = saksnummer, opprinneligeData = dataForNokkel[nokkel])
@@ -20,6 +21,7 @@ internal class TestData {
 
         throw IllegalStateException(message)
     }
+
 }
 
 internal data class Data(

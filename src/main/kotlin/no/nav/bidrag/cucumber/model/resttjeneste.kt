@@ -44,7 +44,7 @@ internal class RestTjenester {
     fun isApplicationConfigured(applicationName: String) = restTjenesteForNavn.contains(applicationName)
     fun hentRestTjenesteTilTesting() = restTjenesteTilTesting ?: throw IllegalStateException("RestTjeneste til testing er null!")
     fun hentRestTjeneste(applicationName: String) = restTjenesteForNavn[applicationName] ?: throw IllegalStateException(
-        "RestTjeneste $applicationName er ikke funnet!"
+        "RestTjeneste $applicationName er ikke funnet blant konfigurerte applikasjoner: ${restTjenesteForNavn.keys}!"
     )
 
     fun settOppNaisApp(naisApplikasjon: String): RestTjeneste {
@@ -216,9 +216,9 @@ class RestTjeneste(
         return headers
     }
 
-    fun exchangePost(endpointUrl: String, body: String, vararg customHeaders: Pair<String, String>) {
+    fun exchangePost(endpointUrl: String, body: String, failOnBadRequest: Boolean = true, vararg customHeaders: Pair<String, String>) {
         val jsonEntity = httpEntity(body, customHeaders)
-        exchange(jsonEntity, endpointUrl, HttpMethod.POST)
+        exchange(jsonEntity = jsonEntity, endpointUrl = endpointUrl, httpMethod = HttpMethod.POST, failOnBadRequest = failOnBadRequest)
     }
 
     private fun httpEntity(body: Any, customHeaders: Array<out Pair<String, String>>): HttpEntity<*> {

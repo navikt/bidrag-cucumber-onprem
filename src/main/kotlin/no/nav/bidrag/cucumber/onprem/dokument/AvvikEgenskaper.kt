@@ -52,6 +52,21 @@ class AvvikEgenskaper : No {
             )
         }
 
+        Og("så skal listen med avvikstyper ikke inneholde {string}") { avvikstype: String ->
+            val avvikstyper = CucumberTestRun.hentRestTjenesteTilTesting().hentResponseSomListeAvStrenger()
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "Avvikstyper som hentes skal ikke inneholde $avvikstype",
+                    value = avvikstyper,
+                    expectation = avvikstype
+                ) {
+                    @Suppress("UNCHECKED_CAST")
+                    assertThat(it.value as List<*>).`as`(it.message).doesNotContain(it.expectation)
+                }
+            )
+        }
+
         Så("listen med avvikstyper skal kun inneholde:") { avvikstyper: DataTable ->
             val forventedeAvvikstyper = avvikstyper.asList()
             val funnetAvvikstyper = CucumberTestRun.hentRestTjenesteTilTesting().hentResponseSomListeAvStrenger()
@@ -96,6 +111,7 @@ class AvvikEgenskaper : No {
                 CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                     endpointUrl = "/journal/${data.journalpostId}/avvik",
                     customHeaders = arrayOf(EnhetFilter.X_ENHET_HEADER to (data.avvik.avviksdetaljer[ENHETSNUMMER_FOR_AVVIK] ?: "-1")),
+                    failOnBadRequest = false,
                     body = """{"avvikType":"${data.avvik.avvikstype}"""" +
                             (data.avvik.mapAvviksdetaljer()?.let { ""","detaljer":$it""" } ?: "") +
                             (data.avvik.hentBeskrivelse()?.let { ""","beskrivelse":"$it"""" } ?: "") +
