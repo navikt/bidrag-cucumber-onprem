@@ -7,7 +7,7 @@ import no.nav.bidrag.cucumber.model.Data
 @Suppress("unused") // used by cucumber
 class TestDataEgenskaper : No {
     init {
-        Og("nokkel for testdata {string}") { nokkel: String ->
+        Og("nøkkel for testdata {string}") { nokkel: String ->
             CucumberTestRun.thisRun().testData.nokkel = nokkel
             CucumberTestRun.thisRun().testData.dataForNokkel[nokkel] = Data()
         }

@@ -20,16 +20,35 @@ class AvvikEgenskaper : No {
     }
 
     init {
-        Og("enhetsnummer for avvik er {string}") { enhetsnummer: String ->
-            val nokkel = CucumberTestRun.thisRun().testData.nokkel
-            CucumberTestRun.thisRun().testData.dataForNokkel[nokkel]?.avvik?.leggTilDetalj(ENHETSNUMMER_FOR_AVVIK, enhetsnummer)
-        }
-
         Når("jeg ber om gyldige avviksvalg for opprettet journalpost med nøkkel {string}") { nokkel: String ->
             CucumberTestRun.thisRun().testData.nokkel = nokkel
             val testData = CucumberTestRun.thisRun().testData
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
                 endpointUrl = "/journal/${testData.hentJournalpostId(nokkel)}/avvik?saksnummer=${testData.hentSaksnummer(nokkel)}"
+            )
+        }
+
+        Når("jeg ber om gyldige avviksvalg for mottaksregistrert journalpost") {
+            val testData = CucumberTestRun.thisRun().testData
+            val nokkel = testData.nokkel ?: throw IllegalStateException("mangler nøkkel for testdata")
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
+                endpointUrl = "/journal/${testData.hentJournalpostId(nokkel)}/avvik?journalstatus=M"
+            )
+        }
+
+        Så("skal listen med avvikstyper inneholde {string}") { avvikstype: String ->
+            val avvikstyper = CucumberTestRun.hentRestTjenesteTilTesting().hentResponseSomListeAvStrenger()
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "Avvikstyper som hentes skal inneholde $avvikstype",
+                    value = avvikstyper,
+                    expectation = avvikstype
+                ) {
+                    @Suppress("UNCHECKED_CAST")
+                    assertThat(it.value as List<*>).`as`(it.message).contains(it.expectation)
+                }
             )
         }
 
@@ -60,7 +79,7 @@ class AvvikEgenskaper : No {
 
         Gitt("avvikstype {string}") { avvikstype: String ->
             try {
-                val nokkel = CucumberTestRun.thisRun().testData.nokkel
+                val nokkel = CucumberTestRun.thisRun().testData.nokkel ?: throw IllegalStateException("ingen nøkkel til å holde data for journalpost")
                 TestDataManager.hentDataForTest(nokkel).avvik.avvikstype = avvikstype
             } catch (e: Exception) {
                 CucumberTestRun.holdExceptionForTest(e)
@@ -69,7 +88,7 @@ class AvvikEgenskaper : No {
             }
         }
 
-        Når("jeg oppretter avvik på opprettet journalpost") {
+        Når("jeg behandler avvik på opprettet journalpost") {
             try {
                 val nokkel = CucumberTestRun.thisRun().testData.nokkel
                 val data = TestDataManager.hentDataForTest(nokkel)
@@ -108,7 +127,7 @@ class AvvikEgenskaper : No {
         }
 
         Og("avvikstypen har beskrivelse {string}") { beskrivelse: String ->
-            val nokkel = CucumberTestRun.thisRun().testData.nokkel
+            val nokkel = CucumberTestRun.thisRun().testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
             val avviksdata = TestDataManager.hentDataForTest(nokkel).avvik
             avviksdata.beskrivelse = beskrivelse
         }

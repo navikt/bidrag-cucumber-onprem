@@ -76,17 +76,11 @@ class DokumentEgenskaper : No {
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId?saksnummer=$saksnummer")
         }
 
-        Og("jeg henter journalpost for nokkel {string}") { nokkel: String ->
-            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
-            val saksnummer = CucumberTestRun.thisRun().testData.hentSaksnummer(nokkel)
-            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId?saksnummer=$saksnummer")
-        }
-
         Gitt("at jeg henter journalpost med path {string}") { endpointUrl: String ->
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = endpointUrl, failOnNotFound = false, failOnBadRequest = false)
         }
 
-        Og("at jeg henter opprettet journalpost med nokkel {string}") { nokkel: String ->
+        Og("at jeg henter opprettet journalpost med nøkkel {string}") { nokkel: String ->
             val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
         }
@@ -113,10 +107,16 @@ class DokumentEgenskaper : No {
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
         }
 
-        Og("en journalpostHendelse for nokkel {string} skal være produsert") { nokkel: String ->
+        Og("en journalpostHendelse for nøkkel {string} skal være produsert") { nokkel: String ->
             KafkaManager.sjekkAtJournalpostHendelseErRegistrert(
                 journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             )
+        }
+
+        Og("jeg henter journalpost") {
+            val nokkel = CucumberTestRun.thisRun().testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
         }
     }
 }
