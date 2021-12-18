@@ -1,6 +1,7 @@
 package no.nav.bidrag.cucumber.model
 
 internal class TestData {
+    var avvikstype: String? = null
     var nokkel: String? = null
     val dataForNokkel: MutableMap<String, Data> = HashMap()
 

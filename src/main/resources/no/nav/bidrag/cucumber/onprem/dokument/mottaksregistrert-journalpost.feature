@@ -32,7 +32,7 @@ Egenskap: journalposter som har journalstatus mottaksregistrert i bidrag-dokumen
         "journalstatus": "M"
         }
         """
-    Og at jeg henter opprettet journalpost med nokkel 'MOTTAKSREGISTRERING'
+    Og at jeg henter opprettet journalpost med nøkkel 'MOTTAKSREGISTRERING'
     Så skal http status være 200
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'M'
 
@@ -54,7 +54,7 @@ Egenskap: journalposter som har journalstatus mottaksregistrert i bidrag-dokumen
         "saksnummer": "0000003"
         }
         """
-    Og at jeg henter opprettet journalpost med nokkel 'JOURNALFØRT'
+    Og at jeg henter opprettet journalpost med nøkkel 'JOURNALFØRT'
     Så skal http status være 200
     Og responsen skal ikke inneholde 'journalstatus' = 'J'
 
@@ -94,7 +94,7 @@ Egenskap: journalposter som har journalstatus mottaksregistrert i bidrag-dokumen
     Og at jeg henter endret journalpost for nøkkel 'REGISTRERING'
     Så skal http status være 200
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'M'
-    Og en journalpostHendelse for nokkel 'REGISTRERING' skal være produsert
+    Og en journalpostHendelse for nøkkel 'REGISTRERING' skal være produsert
 
   Scenario: Registrer (journalfør) journalpost som har status mottaksregistrert
     Gitt opprettet journalpost på nøkkel 'JOURNALFOR':
@@ -133,7 +133,7 @@ Egenskap: journalposter som har journalstatus mottaksregistrert i bidrag-dokumen
     Og at jeg henter endret journalpost for nøkkel 'JOURNALFOR'
     Så skal http status være 200
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
-#    Og en journalpostHendelse for nokkel 'JOURNALFOR' skal være produsert
+#    Og en journalpostHendelse for nøkkel 'JOURNALFOR' skal være produsert
 
   Scenario: Registrer (journalfør) journalpost som har status mottaksregistrert
     Gitt opprettet journalpost på nøkkel 'JOURNALFOR_DOK':

@@ -6,7 +6,7 @@ Egenskap: bidrag-dokument (/sak/*/journal REST API)
 
   Bakgrunn: Spesifiser resttjeneste og testdata grunnlag.
     Gitt nais applikasjon 'bidrag-dokument'
-    Og nokkel for testdata 'JOURNALPOSTER_BD'
+    Og nøkkel for testdata 'JOURNALPOSTER_BD'
     Og opprett journalpost når den ikke finnes:
         """
         {
@@ -81,7 +81,7 @@ Egenskap: bidrag-dokument (/sak/*/journal REST API)
             }
             """
     Så skal http status være 200
-    Og jeg henter journalpost for nokkel 'JOURNALPOSTER_BD'
+    Og jeg henter journalpost for nøkkel 'JOURNALPOSTER_BD'
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'dokumentDato' = '2001-01-01'
 
   Scenario: Sjekk at dokumentDato kan oppdateres til 2001-02-01
@@ -103,5 +103,5 @@ Egenskap: bidrag-dokument (/sak/*/journal REST API)
             }
             """
     Så skal http status være 200
-    Og jeg henter journalpost for nokkel 'JOURNALPOSTER_BD'
+    Og jeg henter journalpost for nøkkel 'JOURNALPOSTER_BD'
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'dokumentDato' = '2001-02-01'
