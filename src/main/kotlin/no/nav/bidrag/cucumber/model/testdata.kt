@@ -37,9 +37,7 @@ internal data class Data(
     }
 }
 
-const val ENHETSNUMMER_FOR_AVVIK = "enhetsnummer"
-
-internal data class Avvik(
+    internal data class Avvik(
     var avvikstype: String? = null,
     val avviksdetaljer: MutableMap<String, String> = HashMap(),
     var beskrivelse: String? = null

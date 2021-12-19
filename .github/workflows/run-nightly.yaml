@@ -162,7 +162,10 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut", "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-org"],
+              "tags":[
+                "@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut", "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-org",
+                "@bdok-mot-avvik-best-reskan", "@bdok-mot-avvik-best-splitt"
+              ],
               "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",

@@ -5,7 +5,6 @@ import io.cucumber.java8.No
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
-import no.nav.bidrag.cucumber.model.ENHETSNUMMER_FOR_AVVIK
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import no.nav.bidrag.cucumber.onprem.TestDataManager
 import org.assertj.core.api.Assertions.assertThat
@@ -110,7 +109,7 @@ class AvvikEgenskaper : No {
 
                 CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                     endpointUrl = "/journal/${data.journalpostId}/avvik",
-                    customHeaders = arrayOf(EnhetFilter.X_ENHET_HEADER to (data.avvik.avviksdetaljer[ENHETSNUMMER_FOR_AVVIK] ?: "-1")),
+                    customHeaders = arrayOf(EnhetFilter.X_ENHET_HEADER to (data.avvik.avviksdetaljer["enhetsnummer"] ?: "-1")),
                     failOnBadRequest = false,
                     body = """{"avvikType":"${data.avvik.avvikstype}"""" +
                             (data.avvik.mapAvviksdetaljer()?.let { ""","detaljer":$it""" } ?: "") +
