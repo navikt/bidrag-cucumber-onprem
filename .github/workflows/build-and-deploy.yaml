@@ -249,8 +249,8 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut", "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-org",
-                "@bdok-mot-avvik-best-reskan", "@bdok-mot-avvik-best-splitt"
+                "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-reskan", "@bdok-mot-avvik-best-splitt",
+                "@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
@@ -308,6 +308,40 @@ jobs:
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
                 "${{ env.INGRESS_SAF }}@dokarkiv-api",
+                "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
+              ]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+
+  run-tests-for-dokument-journalpost:
+    runs-on: self-hosted
+    name: bidrag-dokument-journalpost
+    needs: run-tests-for-dokument # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument
+
+    env:
+      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
+      INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.adeo.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+
+    steps:
+      - run: |
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+      - name: "@bdj-mot-avvik-*"
+        run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "tags":[
+                "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan"
+              ],
+              "navUsername": "c151787", "testUsername": "z992903",
+              "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
+                "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
+                "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
               ]
             }' | tee .cucumber-result
@@ -414,6 +448,7 @@ jobs:
       - run-tests-for-bidrag-beregn
       - run-tests-for-dokument
       - run-tests-for-dokument-arkiv
+      - run-tests-for-dokument-journalpost
       - run-tests-for-person
       - run-tests-for-organisasjon
       - run-tests-for-sak
