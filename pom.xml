@@ -168,6 +168,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
+
     <dependency>
       <!-- Implementasjon: Logback -->
       <groupId>ch.qos.logback</groupId>
