@@ -92,6 +92,37 @@ class FellesEgenskaper : No {
                 assertThat(manglerFelt).`as`("Response skal ikke mangle noen av $felter").isEmpty()
             }
         }
+
+        Og("responsen skal inneholde et objekt med navn {string} som har et felt {string} med feltet {string}") { objekt: String, objektFelt: String, felt: String ->
+            val journalpostResponse = hentRestTjenesteTilTesting().hentResponseSomMap()
+            val journalpostMap = journalpostResponse[objekt] as Map<*, *>?
+            val feltMap = journalpostMap?.get(objektFelt)
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "Response skal inneholde feltet $felt",
+                    value = feltMap,
+                    expectation = felt
+                ) {
+                    @Suppress("UNCHECKED_CAST")
+                    assertThat(it.value as Map<String, *>?).`as`(it.message).containsKey(felt)
+                }
+            )
+        }
+
+        Og("responsen skal inneholde et objekt med navn {string} som har et felt {string} med feltene:") { objekt: String, objektFelt: String, forventedeFelter: DataTable ->
+            if (CucumberTestRun.isNotSanityCheck) {
+                val journalpostResponse = hentRestTjenesteTilTesting().hentResponseSomMap()
+                val journalpostMap = journalpostResponse[objekt] as Map<*, *>?
+                @Suppress("UNCHECKED_CAST") val reelleFelter = (journalpostMap?.get(objektFelt) as List<Map<*, *>>?)?.first()
+
+                assertThat(reelleFelter).isNotNull
+                val manglerFelt = ArrayList<String>()
+                forventedeFelter.asList().forEach { if (!reelleFelter!!.containsKey(it)) manglerFelt.add(it) }
+
+                assertThat(manglerFelt).`as`("Response med $objektFelt skal ikke mangle noen av $forventedeFelter").isEmpty()
+            }
+        }
     }
 
     private fun sjekkAtResponseHarObjektMedFelt(objekt: String, key: String, value: String) {

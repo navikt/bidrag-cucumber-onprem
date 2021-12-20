@@ -71,7 +71,8 @@ class DokumentEgenskaper : No {
         Gitt("jeg henter journalpost for sak {string} som har id {string}") { saksnummer: String, journalpostId: String ->
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
                 endpointUrl = "/journal/$journalpostId?saksnummer=$saksnummer",
-                failOnNotFound = false
+                failOnNotFound = false,
+                failOnBadRequest = false
             )
         }
 
