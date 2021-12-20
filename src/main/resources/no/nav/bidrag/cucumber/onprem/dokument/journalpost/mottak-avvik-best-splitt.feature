@@ -1,10 +1,10 @@
 # language: no
-@bdok-mot-avvik-best-splitt
-Egenskap: Avvikshendelse BESTILL_SPLITTING på journalposter som er mottaksregistrert  - bidrag-dokument (REST API: /journal/*/avvik?journalstatus=M)
+@bdj-mot-avvik-best-splitt
+Egenskap: Avvikshendelse BESTILL_SPLITTING på journalposter som er mottaksregistrert - bidrag-dokument-journalpost (REST API: /journal/*/avvik?journalstatus=M)
 
   Bakgrunn: Gitt resttjeneste og testdata
-    Gitt nais applikasjon 'bidrag-dokument'
-    Og nøkkel for testdata 'BDOK_MOT_BEST_SPLITT'
+    Gitt nais applikasjon 'bidrag-dokument-journalpost'
+    Og nøkkel for testdata 'BDJ_MOT_BEST_SPLITT'
     Og avvikstype 'BESTILL_SPLITTING'
     Og opprett journalpost når den ikke finnes:
       """
@@ -19,11 +19,11 @@ Egenskap: Avvikshendelse BESTILL_SPLITTING på journalposter som er mottaksregis
         }
       """
 
-  Scenario: bidrag-dokument - Skal finne avviket BESTILL_SPLITTING på mottaksregistrert journalpost
+  Scenario: bidrag-dokument-journalpost - Skal finne avviket BESTILL_SPLITTING på mottaksregistrert journalpost
     Når jeg ber om gyldige avviksvalg for mottaksregistrert journalpost
     Så skal listen med avvikstyper inneholde 'BESTILL_SPLITTING'
 
-  Scenario: bidrag-dokument - Behandle 'BESTILL_SPLITTING' som fører til at journalposten som nå er slettet
+  Scenario: bidrag-dokument-journalpost - Behandle 'BESTILL_SPLITTING' som fører til at journalposten som nå er slettet
     Gitt avviksdetaljer 'enhetsnummer' = '4806'
     Og avvikstypen har beskrivelse 'etter avsnitt 2'
     Så skal http status være 200
