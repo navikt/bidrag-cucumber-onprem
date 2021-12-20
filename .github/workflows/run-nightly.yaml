@@ -248,7 +248,7 @@ jobs:
             -d '{
               "tags":[
                 "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan", "@bdj-mot-avvik-best-splitt",
-                "@bdj-mot-avvik-endre-fagomrade"
+                "@bdj-mot-avvik-endre-fagomrade", "@bdj-mot-avvik-inn2ut"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
