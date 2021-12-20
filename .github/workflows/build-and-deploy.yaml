@@ -454,6 +454,29 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
+  run-tests-for-testdata:
+    runs-on: self-hosted
+    name: bidrag-sjablon
+    needs: deploy
+
+    env:
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+
+    steps:
+      - run: |
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+        if: github.ref != 'refs/heads/main'
+      - run: |
+          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
+            -H 'accept: */*' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "navUsername": "c151787", "testUsername": "z992903",
+              "ingressesForApps":["${{ env.INGRESS_TESTDATA }}@tag:bidrag-testdata"]
+            }' | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
+
   bump_dev_version:
     runs-on: ubuntu-latest
     name: Bump SNAPSHOT version
@@ -468,6 +491,7 @@ jobs:
       - run-tests-for-organisasjon
       - run-tests-for-sak
       - run-tests-for-sjablon
+      - run-tests-for-testdata
 
     steps:
       - uses: actions/checkout@v2
