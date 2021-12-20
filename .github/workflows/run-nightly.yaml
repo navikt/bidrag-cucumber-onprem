@@ -232,7 +232,7 @@ jobs:
   run-tests-for-dokument-journalpost:
     runs-on: self-hosted
     name: bidrag-dokument-journalpost
-    needs: restart-testdata
+    needs: run-tests-for-dokument  # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument
 
     env:
       INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
@@ -247,7 +247,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan"
+                "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan", "@bdj-mot-avvik-best-splitt"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
