@@ -48,6 +48,14 @@ class DokumentEgenskaper : No {
             )
         }
 
+        Når("jeg henter journalposter for nøkkel {string} og fagområde {string}") { nokkel: String, fagomrade: String ->
+            val saksnummer = CucumberTestRun.thisRun().testData.hentSaksnummer(nokkel)
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
+                endpointUrl = "/sak/$saksnummer/journal?fagomrade=$fagomrade"
+            )
+        }
+
         @Suppress("UNCHECKED_CAST")
         Og("hvert element i listen skal ha følgende properties satt:") { props: DataTable ->
             val verifyer = SoftAssertions()
@@ -117,6 +125,35 @@ class DokumentEgenskaper : No {
             val nokkel = CucumberTestRun.thisRun().testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
             val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
+        }
+
+        Og("hver journal i listen skal ha {string} = {string}") { key: String, value: String ->
+            if (CucumberTestRun.isNotSanityCheck) {
+                @Suppress("UNCHECKED_CAST") val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
+                    .hentResponseSomListe() as List<Map<String, Any>>
+
+                val verifyer = SoftAssertions()
+
+                responseObject.forEach {
+                    verifyer.assertThat(it.get(key)).`as`("id: ${it.get("journalpostId")}").isEqualTo(value)
+                }
+
+                verifyer.assertAll()
+            }
+        }
+        Og("hver journal i listen skal ha objektet {string} med feltene") { objektNavn: String, properties: DataTable ->
+            if (CucumberTestRun.isNotSanityCheck) {
+                val verifyer = SoftAssertions()
+                @Suppress("UNCHECKED_CAST") val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
+                    .hentResponseSomListe() as List<Map<String, Map<String, Any>>>
+
+                responseObject.forEach { jp ->
+                    val objekt = jp[objektNavn] as Map<String, *>
+                    properties.asList().forEach { verifyer.assertThat(objekt).`as`("id: ${jp["journalpostId"]}").containsKey(it) }
+                }
+
+                verifyer.assertAll()
+            }
         }
     }
 }
