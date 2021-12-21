@@ -64,11 +64,21 @@ class FellesEgenskaper : No {
             hentRestTjenesteTilTesting().exchangeGet("$endpoint?$param=$value")
         }
 
-        Og("så skal responsen være en liste") {
+        Og("så skal responsen være ei liste") {
             FellesEgenskaperManager.assertWhenNotSanityCheck(
                 Assertion(
                     message = "respons fra '${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}' skal være ei liste",
-                    value = hentRestTjenesteTilTesting().hentResponse(),
+                    value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
+                    expectation = "["
+                ) { assertThat(it.value as String?).`as`(it.message).startsWith(it.expectation as String) }
+            )
+        }
+
+        Og("så skal responsen være ei liste med innhold") {
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "respons fra '${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}' skal være ei liste",
+                    value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
                     expectation = "[{"
                 ) { assertThat(it.value as String?).`as`(it.message).startsWith(it.expectation as String) }
             )

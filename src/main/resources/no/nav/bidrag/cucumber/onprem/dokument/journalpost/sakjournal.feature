@@ -34,17 +34,17 @@ Egenskap: bidrag-dokument-journalpost (/sak/(saksnummer)/journal REST API)
   Scenario: Sjekk at vi får en liste med journalposter for en gitt sak
     Når jeg henter journalposter for nøkkel 'SAKJOURNAL' og fagområde 'BID'
     Så skal http status være 200
-    Og så skal responsen være en liste
+    Og så skal responsen være ei liste
 
   Scenario: Sjekk at vi får en journalpost for et farskap på gitt sak
     Når jeg henter journalposter for nøkkel 'SAKJOURNAL' og fagområde 'FAR'
     Så skal http status være 200
-    Og så skal responsen være en liste
+    Og så skal responsen være ei liste med innhold
     Og hver journal i listen skal ha 'fagomrade' = 'FAR'
 
   Scenario: Sjekk at vi får gjelderAktor i journalpost for et farskap på gitt sak
     Når jeg henter journalposter for nøkkel 'SAKJOURNAL' og fagområde 'FAR'
     Så skal http status være 200
-    Og så skal responsen være en liste
+    Og så skal responsen være ei liste med innhold
     Og hver journal i listen skal ha objektet 'gjelderAktor' med feltene
       | ident |

@@ -41,7 +41,7 @@ Egenskap: bidrag-dokument (/sak/*/journal REST API)
   Scenario: Sjekk at vi får en sakjournal for en sak
     Og jeg henter journalposter for nøkkel 'JOURNALPOSTER_BD' og fagområde
     Så skal http status være 200
-    Og så skal responsen være en liste
+    Og så skal responsen være ei liste med innhold
     Og hvert element i listen skal ha følgende properties satt:
       | fagomrade    |
       | dokumenter   |
