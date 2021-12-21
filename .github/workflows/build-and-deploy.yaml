@@ -396,7 +396,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@avvik-best-org", "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut"
+                "@avvik-best-org", "@avvik-best-reskan", "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
