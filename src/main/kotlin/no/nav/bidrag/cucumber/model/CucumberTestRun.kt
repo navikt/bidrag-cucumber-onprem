@@ -122,10 +122,13 @@ class CucumberTestRun(private val cucumberTestsModel: CucumberTestsModel) {
             cucumberTestRun.runStats.addExceptionLogging(exceptionLog)
         }
 
-        fun nyeTestData(nokkel: String, journalpostId: String, saksnummer: String?) = thisRun().testData.nye(
+        fun nyeTestData(nokkel: String, journalpostId: String, saksnummer: String?, fagomrade: String?) = thisRun().testData.nye(
             nokkel = nokkel,
-            journalpostId = journalpostId,
-            saksnummer = saksnummer
+            data = Data(
+                journalpostId = journalpostId,
+                saksnummer = saksnummer,
+                fagomrade = fagomrade
+            )
         )
 
         fun endRun() {

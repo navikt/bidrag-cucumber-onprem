@@ -39,10 +39,13 @@ object TestDataManager {
                 val responseSomMap = testDataApp.hentResponseSomMap()
                 LOGGER.info("Opprettet journalpost for $nokkel: $responseSomMap")
 
+                val fagomrade = mapJsonSomMap(json)["fagomrade"] as String?
+
                 CucumberTestRun.nyeTestData(
                     nokkel = nokkel,
                     journalpostId = (responseSomMap["journalpostId"] as String?) ?: "na",
-                    saksnummer = saksnummer
+                    saksnummer = saksnummer,
+                    fagomrade = fagomrade
                 )
             }
         } catch (t: Throwable) {

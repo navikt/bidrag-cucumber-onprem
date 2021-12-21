@@ -39,7 +39,7 @@ Egenskap: bidrag-dokument (/sak/*/journal REST API)
 
   @ignored # ignorert i bidrag-cucumber-backend grunnet sikkerhet i q2... fortsetter ignorering
   Scenario: Sjekk at vi får en sakjournal for en sak
-    Og jeg henter journalposter for nøkkel 'JOURNALPOSTER_BD' og fagområde
+    Og jeg henter sakjournal for opprettede testdata
     Så skal http status være 200
     Og så skal responsen være ei liste med innhold
     Og hvert element i listen skal ha følgende properties satt:

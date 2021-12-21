@@ -103,6 +103,36 @@ class FellesEgenskaper : No {
             }
         }
 
+        Og("så skal responsen inneholde ei liste med et objekt som har feltet {string} = true") { feltnavn: String ->
+            @Suppress("UNCHECKED_CAST") val journalposter = hentRestTjenesteTilTesting().hentResponseSomListe() as List<Map<String, *>>
+            val testdata = CucumberTestRun.thisRun().testData
+            val nokkel = testdata.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata!")
+            val jpIdFraTestdata = testdata.hentJournalpostId(nokkel)
+
+            val journalpost = journalposter.find {
+                val jpid = it["journalpostId"]
+
+                jpIdFraTestdata == jpid
+            }
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "Skal finne journalpost på $nokkel med journalpostId $jpIdFraTestdata",
+                    value = journalpost
+                ) { assertThat(it.value).`as`(it.message).isNotNull }
+            )
+
+            if (journalpost != null) {
+                FellesEgenskaperManager.assertWhenNotSanityCheck(
+                    Assertion(
+                        message = "journalpost er feilfort",
+                        value = journalpost[feltnavn],
+                        expectation = true
+                    ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
+                )
+            }
+        }
+
         Og("responsen skal inneholde et objekt med navn {string} som har et felt {string} med feltet {string}") { objekt: String, objektFelt: String, felt: String ->
             val journalpostResponse = hentRestTjenesteTilTesting().hentResponseSomMap()
             val journalpostMap = journalpostResponse[objekt] as Map<*, *>?

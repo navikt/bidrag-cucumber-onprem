@@ -396,7 +396,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@bavvik-endre-fagomrade"
+                "@avvik-endre-fagomrade", "@avvik-feilfore-sak"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
