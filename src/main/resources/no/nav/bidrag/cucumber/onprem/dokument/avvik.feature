@@ -25,7 +25,7 @@ Egenskap: avvik for bidrag-dokument (/journal/*/avvik REST API)
             """
 
   Scenario: bidrag-dokument: Sjekk avviksvalg for gitt journalpost
-    Når jeg ber om gyldige avviksvalg for opprettet journalpost med nøkkel 'TEST_AVVIKSBEHANDLING'
+    Når jeg ber om gyldige avviksvalg for opprettet journalpost
     Så skal http status være 200
     Og listen med avvikstyper skal kun inneholde:
       | BESTILL_ORIGINAL      |
