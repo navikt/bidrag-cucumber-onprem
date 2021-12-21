@@ -139,7 +139,7 @@ class DokumentEgenskaper : No {
                 val verifyer = SoftAssertions()
 
                 responseObject.forEach {
-                    verifyer.assertThat(it.get(key)).`as`("id: ${it.get("journalpostId")}").isEqualTo(value)
+                    verifyer.assertThat(it.get(key)).`as`("id: ${it["journalpostId"]}").isEqualTo(value)
                 }
 
                 verifyer.assertAll()
