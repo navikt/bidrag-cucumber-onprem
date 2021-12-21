@@ -40,8 +40,11 @@ class DokumentEgenskaper : No {
             )
         }
 
-        Og("jeg henter journalposter for nøkkel {string} og fagområde") { nokkel: String, fagomrade: String ->
-            val saksnummer = CucumberTestRun.thisRun().testData.hentSaksnummer(nokkel)
+        Og("jeg henter sakjournal for opprettede testdata") {
+            val testData = CucumberTestRun.thisRun().testData
+            val nokkel = testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
+            val saksnummer = testData.hentSaksnummer(nokkel)
+            val fagomrade = testData.dataForNokkel[nokkel]?.fagomrade ?: throw IllegalStateException("Ingen data for $nokkel")
 
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
                 endpointUrl = "/sak/$saksnummer/journal?fagomrade=$fagomrade"
@@ -136,12 +139,13 @@ class DokumentEgenskaper : No {
                 val verifyer = SoftAssertions()
 
                 responseObject.forEach {
-                    verifyer.assertThat(it.get(key)).`as`("id: ${it.get("journalpostId")}").isEqualTo(value)
+                    verifyer.assertThat(it.get(key)).`as`("id: ${it["journalpostId"]}").isEqualTo(value)
                 }
 
                 verifyer.assertAll()
             }
         }
+
         Og("hver journal i listen skal ha objektet {string} med feltene") { objektNavn: String, properties: DataTable ->
             if (CucumberTestRun.isNotSanityCheck) {
                 val verifyer = SoftAssertions()

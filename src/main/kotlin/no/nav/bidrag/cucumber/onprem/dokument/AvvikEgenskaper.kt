@@ -19,9 +19,10 @@ class AvvikEgenskaper : No {
     }
 
     init {
-        Når("jeg ber om gyldige avviksvalg for opprettet journalpost med nøkkel {string}") { nokkel: String ->
-            CucumberTestRun.thisRun().testData.nokkel = nokkel
+        Når("jeg ber om gyldige avviksvalg for opprettet journalpost") {
             val testData = CucumberTestRun.thisRun().testData
+            val nokkel = testData.nokkel ?: throw IllegalStateException("mangler nøkkel for testdata")
+
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
                 endpointUrl = "/journal/${testData.hentJournalpostId(nokkel)}/avvik?saksnummer=${testData.hentSaksnummer(nokkel)}"
             )
@@ -151,6 +152,18 @@ class AvvikEgenskaper : No {
             val nokkel = CucumberTestRun.thisRun().testData.nokkel
             val avviksdata = TestDataManager.hentDataForTest(nokkel).avvik
             avviksdata.avviksdetaljer[detalj] = detaljverdi
+        }
+
+        Og("listen med avvikstyper skal inneholde {string}") { avvikstype: String ->
+            val avvikstyper = CucumberTestRun.hentRestTjenesteTilTesting().hentResponseSomListe()
+
+            FellesEgenskaperManager.assertWhenNotSanityCheck(
+                Assertion(
+                    message = "Liste over avvikstyper skal inneholde $avvikstype",
+                    value = avvikstyper,
+                    expectation = avvikstype
+                ) { assertThat(it.value as List<*>).`as`(it.message).contains(it.expectation) }
+            )
         }
     }
 }
