@@ -396,10 +396,11 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut"
+                "@avvik-best-org", "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
-              "ingressesForApps":[
+              "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
+                "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
                 "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
               ]
