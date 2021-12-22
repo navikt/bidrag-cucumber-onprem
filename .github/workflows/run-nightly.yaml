@@ -87,6 +87,7 @@ jobs:
     runs-on: self-hosted
     name: bidrag-dokument
     needs: restart-testdata
+    if: ${{ always() }}
 
     steps:
       - name: "@bda-samt-bdj"
@@ -106,6 +107,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@sakjournal"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -118,6 +120,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@avviksbehandling"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -131,6 +134,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdok-journalpost"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -144,6 +148,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdok-mottaksregistrert"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -157,6 +162,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdok-mot-avvik-*"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -200,6 +206,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bidrag-dokument-arkiv"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -210,6 +217,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@arkiv-saf"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -233,6 +241,7 @@ jobs:
     runs-on: self-hosted
     name: bidrag-dokument-journalpost
     needs: run-tests-for-dokument  # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument
+    if: ${{ always() }}
 
     env:
       INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
@@ -259,6 +268,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdj-mottaksregistrert"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -273,6 +283,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdj-sakjournal"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -287,6 +298,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@bdj-journalpost"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
@@ -301,6 +313,7 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@avvik-*"
+        if: ${{ always() }}
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
             -H 'accept: */*' \
