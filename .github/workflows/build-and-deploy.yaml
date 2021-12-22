@@ -506,11 +506,13 @@ jobs:
 
     env:
       INGRESS_ARKIVERING: https://bidrag-dokument-arkivering.dev.adeo.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
 
     steps:
       - run: |
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_ARKIVERING=https://bidrag-dokument-arkivering-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
@@ -519,7 +521,7 @@ jobs:
             -d '{
               "tags":["@bidrag-dokument-arkivering"],
               "noContextPathForApps": ["bidrag-dokument-arkivering"],
-              "ingressesForApps":["${{ env.INGRESS_ARKIVERING }}@tag:bidrag-dokument-arkivering"]
+              "ingressesForApps":["${{ env.INGRESS_ARKIVERING }}@tag:bidrag-dokument-arkivering", "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
