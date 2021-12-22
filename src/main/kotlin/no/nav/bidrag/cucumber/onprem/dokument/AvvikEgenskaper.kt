@@ -97,9 +97,8 @@ class AvvikEgenskaper : No {
                 val nokkel = CucumberTestRun.thisRun().testData.nokkel ?: throw IllegalStateException("ingen nøkkel til å holde data for journalpost")
                 TestDataManager.hentDataForTest(nokkel).avvik.avvikstype = avvikstype
             } catch (e: Exception) {
-                CucumberTestRun.holdExceptionForTest(e)
-            } finally {
-                LOGGER.info("Svelger cucumber.io exception?")
+                CucumberTestRun.holdExceptionForTest(e) // egen try/catch da enkelte exception blir svelga av cucumber.io
+                throw e
             }
         }
 
@@ -120,9 +119,8 @@ class AvvikEgenskaper : No {
 
                 )
             } catch (e: Exception) {
-                CucumberTestRun.holdExceptionForTest(e)
-            } finally {
-                LOGGER.info("Svelger cucumber.io exception?")
+                CucumberTestRun.holdExceptionForTest(e) // egen try/catch da enkelte exception blir svelga av cucumber.io
+                throw e
             }
         }
 
@@ -164,6 +162,17 @@ class AvvikEgenskaper : No {
                     expectation = avvikstype
                 ) { assertThat(it.value as List<*>).`as`(it.message).contains(it.expectation) }
             )
+        }
+
+        Og("listen med journalposter skal ikke inneholde id for journalposten") {
+            val testData = CucumberTestRun.thisRun().testData
+            @Suppress("UNCHECKED_CAST") val journalpostMapSomListe = CucumberTestRun.hentRestTjenesteTilTesting()
+                .hentResponseSomListe() as List<Map<String, *>>
+
+            val listeMedAlleJournalpostId = journalpostMapSomListe.map { it["journalpostId"].toString() }
+            val listeMedGenerertJournalpostId = listeMedAlleJournalpostId.filter { testData.hentJournalpostId(testData.nokkel) == it }
+
+            assertThat(listeMedGenerertJournalpostId).`as`("filtrert liste fra $listeMedAlleJournalpostId").isEmpty()
         }
     }
 }
