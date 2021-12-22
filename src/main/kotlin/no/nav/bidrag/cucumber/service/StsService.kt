@@ -15,7 +15,7 @@ class StsService(private val basicAuthRestTemplate: HttpHeaderRestTemplate) {
     companion object {
         @JvmStatic
         private val LOGGER = LoggerFactory.getLogger(StsService::class.java)
-        val supportedApplications = setOf("dokarkiv-api")
+        val supportedApplications = setOf("dokarkiv-api", "bidrag-dokument-arkivering")
     }
 
     init {

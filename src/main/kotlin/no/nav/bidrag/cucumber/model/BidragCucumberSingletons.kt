@@ -48,8 +48,15 @@ internal object BidragCucumberSingletons {
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal fun mapJsonSomMap(body: String): Map<String, Any> = try {
-        fetchObjectMapper().readValue(body, Map::class.java) as Map<String, Any>
+    internal fun mapJsonSomMap(body: String): MutableMap<String, Any> = try {
+        fetchObjectMapper().readValue(body, MutableMap::class.java) as MutableMap<String, Any>
+    } catch (e: Exception) {
+        CucumberTestRun.holdExceptionForTest(e)
+        throw e
+    }
+    @Suppress("UNCHECKED_CAST")
+    internal fun mapTilJsonString(body: Map<String, Any>): String = try {
+        fetchObjectMapper().writeValueAsString(body) as String
     } catch (e: Exception) {
         CucumberTestRun.holdExceptionForTest(e)
         throw e
