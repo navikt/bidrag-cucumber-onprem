@@ -123,7 +123,11 @@ class RestTjeneste(
 
                 if (StsService.supportedApplications.contains(applicationName)) {
                     val stsTokenValue = hentStsToken()
-                    httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
+                    if (!CucumberTestRun.isTestUserPresent){
+                        httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { stsTokenValue.initBearerToken() }
+                    } else {
+                        httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
+                    }
                 }
 
                 return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))

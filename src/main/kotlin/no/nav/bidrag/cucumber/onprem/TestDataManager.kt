@@ -4,6 +4,7 @@ import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.BidragCucumberSingletons.mapJsonSomMap
+import no.nav.bidrag.cucumber.model.BidragCucumberSingletons.mapTilJsonString
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.Data
 import org.assertj.core.api.Assertions.assertThat
@@ -12,6 +13,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import java.util.UUID
 
 object TestDataManager {
 
@@ -25,8 +27,11 @@ object TestDataManager {
             if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)) {
                 val saksnummer = mapJsonSomMap(json)["saksnummer"] as String? ?: throwExceptionWhenJournalfort(json)
                 val testDataApp = CucumberTestRun.hentKonfigurertNaisApp(bidragTestdata)
-
-                testDataApp.exchangePost(endpointUrl = "/journalpost", body = json)
+                val jsonMap  = mapJsonSomMap(json)
+                if (jsonMap["opprettDokument"] == true){
+                    jsonMap["dokumentreferanse"] = UUID.randomUUID().toString().replace("-", "").subSequence(0, 15)
+                }
+                testDataApp.exchangePost(endpointUrl = "/journalpost", body = mapTilJsonString(jsonMap))
 
                 FellesEgenskaperManager.assertWhenNotSanityCheck(
                     Assertion(

@@ -18,6 +18,17 @@ class DokumentEgenskaper : No {
             this.fagomrade = fagomrade
         }
 
+        Når("jeg ber om at en bidrag journalpost arkiveres i Joark") {
+            val testData = CucumberTestRun.thisRun().testData
+            val nokkel = testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
+            val jpId = testData.hentJournalpostId(nokkel).replace("BID-", "")
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                failOnBadRequest = false,
+                endpointUrl = "/api/v1/arkivere/journalpost/$jpId",
+                body = "{}"
+            )
+        }
         Og("at det finnes en ferdigstilt journalpost i arkiv på fagområdet og saksnummer") {
             ArkivManager.opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
         }
