@@ -36,7 +36,8 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_RESKANNING
 
   @ignored # sikkerhetstoken (sts) mot dokarkiv-api må settes opp
   Scenario: Sjekk at oppgave blir laget for reskanning
-    Gitt jeg søker etter oppgaver for mottaksregistrert journalpost
+    Når jeg behandler avvik på opprettet journalpost
+    Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status være 200
     Og søkeresultatet skal inneholde en oppgave
 
