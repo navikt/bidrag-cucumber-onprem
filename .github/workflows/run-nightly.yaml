@@ -404,6 +404,7 @@ jobs:
   run-tests-for-arkivering:
     runs-on: self-hosted
     name: bidrag-dokument-arkivering
+    needs: run-tests-for-dokument-journalpost  # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument-journalpost
 
     steps:
       - run: |
