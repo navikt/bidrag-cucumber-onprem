@@ -320,7 +320,8 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":[
-                "@avvik-best-org", "@avvik-best-reskan", "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut", "@avvik-slett-jp"
+                "@avvik-best-org", "@avvik-best-reskan", "@avvik-best-splitt",
+                "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut", "@avvik-slett-jp"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
