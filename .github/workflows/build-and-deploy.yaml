@@ -562,6 +562,7 @@ jobs:
       - run-tests-for-sak
       - run-tests-for-sjablon
       - run-tests-for-testdata
+      - run-tests-for-dokument-arkivering
 
     steps:
       - uses: actions/checkout@v2
