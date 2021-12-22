@@ -37,7 +37,5 @@ Egenskap: bidrag-dokument-arkivering
             """
 
   Scenario: Arkivere reservert journalpost
-
     Når jeg ber om at en bidrag journalpost arkiveres i Joark
     Så skal http status være 200
-#    Og responsen skal inneholde feilmeldingen 'Henting av dokument fra midlertidig brevlager feilet!'
