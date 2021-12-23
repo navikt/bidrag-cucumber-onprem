@@ -108,7 +108,7 @@ navUsername og testUser er valgfri):
   "testUser": "z123456",
   "navUsername": "x123456",
   "sanityCheck": true,
-  "securityToken": "<azure token for testbruker>"
+  "securityToken": "<isso token for testbruker>"
 }
 ```
 
