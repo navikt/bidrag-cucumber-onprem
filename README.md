@@ -2,10 +2,11 @@
 
 Nais applikasjon som kjører integrasjonstester for applikasjoner som er deployet på cloud "on-premise"
 
-## workflow
+## workflows
 
 [![build and deploy](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/build-and-deploy.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/build-and-deploy.yaml)
 [![test build on pull request](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/pr.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/pr.yaml)
+[![nightly run of cucumber tests](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/run-nightly.yaml/badge.svg)](https://github.com/navikt/bidrag-cucumber-onprem/actions/workflows/run-nightly.yaml)
 
 ## beskrivelse
 
@@ -70,9 +71,10 @@ Nedenfor så vises de nødvendige input for kjøring (1 og 2):
 
 1. ingress som skal testes
 2. tag som bruker denne ingressen
-  * hvis ingressen til applikasjon også skal fungere som en tag, brukes `ingress@tag:<nais applikasjon>`
-  * det finnes en egen liste for å liste opp tags, `tags`
-  * **PS!** det er standard at appnavn blir brukt som context path etter ingress. Hvis det ikke skal gjøres må `noContextPathForApps` også listes opp
+
+* hvis ingressen til applikasjon også skal fungere som en tag, brukes `ingress@tag:<nais applikasjon>`
+* det finnes en egen liste for å liste opp tags, `tags`
+* **PS!** det er standard at appnavn blir brukt som context path etter ingress. Hvis det ikke skal gjøres må `noContextPathForApps` også listes opp
 
 Dette er hva som må til for å kjøre testing av en applikasjon som ikke har sikkerhet. Når applikasjonen har sikkerhet implementert, må også en
 testbruker angies.
@@ -87,7 +89,7 @@ check" for å teste at den tekniske implementasjonen til cucumber er ok.
 4. securityToken
 5. sanityCheck=true
 
-Disse verdiene sendes som json til test-endepunkt, se avsnittet om `Kjøring lokalt`. Eksempel på en slik json (sanityCheck, noContextPathForApps, tags 
+Disse verdiene sendes som json til test-endepunkt, se avsnittet om `Kjøring lokalt`. Eksempel på en slik json (sanityCheck, noContextPathForApps, tags
 og testUser er valgfri):
 
 ```json
@@ -97,24 +99,22 @@ og testUser er valgfri):
     "<ingress>@tag:app.b/tag.2>",
     "<ingress>@app.c>"
   ],
-  "tags": ["<@tag.3>"],
-  "noContextPathForApps": ["<app.b>"],
+  "tags": [
+    "<@tag.3>"
+  ],
+  "noContextPathForApps": [
+    "<app.b>"
+  ],
   "testUser": "z123456",
   "sanityCheck": true,
   "securityToken": "<azure token for testbruker>"
 }
 ```
 
-#### Azure Ad data for fullstendig kjøring
+#### Kjøring lokalt
 
 Lokalt på et naisdevice, vil sanity check av en cucumber test være alt som er mulig hvis ikke et sikkerhetstoken blir manuelt generert og sendt med
-som input til testen. Applikasjonen som testes testes må også kunne nåes fra offentlig internett eller ha `accessPolicy` med "inbound rules" definert
-i `nais.yaml`. Følgende azure data blir brukt til å hente sikkerhetstoken for test bruker når sikkerhetstoken ikke er del av json:
-
-* `AZURE_APP_CLIENT_ID`: miljøvariabel fra kjørende nais applikasjon med azure
-* `AZURE_APP_CLIENT_SECRET`: miljøvariabel fra kjørende nais applikasjon med azure
-* `AZURE_APP_TENANT_ID`: miljøvariabel fra kjørende nais applikasjon med azure
-* `AZURE_LOGIN_ENDPOINT`: login for testbruker sammen med azure verdier: https://login.microsoftonline.com/$AZURE_APP_TENANT_ID/oauth2/v2.0/token
+som input til testen. Applikasjonene som testes via denne applikasjonen er for applikasjoner deployet "on premise" og ikke krever zero-trust satt opp.
 
 ### Variabler for kjøring
 
@@ -122,31 +122,36 @@ json | Beskrivelse | Kommentar
 ---|---|---
 `ingressesForApps` | kommaseparert liste over ingress og nais-applikasjon som testes | Eks:https://somewhere.com@nais.app.a,https://something.com@annen.nais.app.b
 `noContextPathForApps` | kommaseparert liste over applikasjoner (fra `ingressesForApps`) som ikke bruker appnavn som context-path etter ingress
-`tags` | kommaseparert liste over tags som skal kjøres (som ikke nevnes blant ingressene)
+`tags` | kommaseparert liste over tags som skal kjøres (som ikke nevnes blant ingressene ala https://some-app@tag:some-name)
 `testUser` | Testbruker (saksbehandler) med ident ala z123456 | unødvendig for sanity check, men må brukes med `securityToken` (hvis kjøring lokalt).
+`navUsername` | Reell bruker som må være med når man ønsker å hente gyldig token for testbruker
 
-#### Miljøvariabler for kjøring lokalt
+#### Testbruker ved kjøring i nais-applikasjon
 
-`SECURITY_TOKEN` - manuelt generert sikkerhetstoken for testbruker, Den kan også sendes med json til test-endpoint når testing foregår via spring-boot
-
-`SANITY_CHECK=true` - for tjenester som har implementert sikkerhet, så kan denne settes slik at selve sjekken bare logges til konsoll og ikke feiler.
-Den kan også sendes med json til test-endpoint når testing foregår via spring-boot
-
-#### Testbruker
-
-Testbruker simulerer en saksbehandler hos NAV. Testbrukeren må ha et gyldig brukernavn og passord som er sikret med Azure Ad. Dette er en såkalt
-Z-bruker og det må sørges for at den har et gyldig passord og at "two factor authentication" er slått av for brukeren.
+Testbruker simulerer en saksbehandler hos NAV. Testbrukeren må ha et gyldig brukernavn og passord. Dette er en såkalt Z-bruker og det må sørges for at
+den har et gyldig passord og at "two factor authentication" er slått av for brukeren.
 
 #### Kjøring lokalt
 
 Ved kjøring lokalt kan det vøre ønskelig å bare teste at det tekniske "fungerer". Dette kan gjøres ved å sette miljøvariabelen `SANITY_CHECK=true`. Da
 vil bare resultatene fra operasjoner logges til konsoll i stedet for at den aktuelle sjekken gjøres.
 
+##### Miljøvariabler for kjøring lokalt (trengs ikke når invokering gjøres via curl)
+
+`SECURITY_TOKEN` - manuelt generert sikkerhetstoken for testbruker, Den kan også sendes med json til test-endpoint når testing foregår via lokal
+spring-boot
+
+`SANITY_CHECK=true` - for tjenester som har implementert sikkerhet, så kan denne settes slik at selve sjekken bare logges til konsoll og ikke feiler.
+Den kan også sendes med json til test-endpoint når testing foregår via lokal spring-boot
+
 ##### Kjøring med maven
+
+PS! Når du ikke sender med `SANITY_CHECK=true`, så må du sende med `SECURITY_TOKEN` (evt. fullstendig authentisering).
 
 ```
 mvn exec:java                                        \
     -DSANITY_CHECK=true                              \
+    -DSECURITY_TOKEN=<isso generert id-token>        \
     -DTEST_USER="<azure bruker ala z123456>          \
     -DSECURITY_TOKEN="<abc...xyz>                    \
     -DINGRESSES_FOR_APPS=<ingress@app1,ingress@app2> \
@@ -168,20 +173,20 @@ mvn exec:java                                        \
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag>"]}' \
+    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag:navn>"]}' \
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
+    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tag:navn>"],"securityToken"="<security token (uten Bearer)}'
   ```
 
 ##### Kjøring med IntelliJ
 
-Man kan ogå bruke IntelliJ til å kjøre cucumber testene direkte. IntelliJ har innebygd støtte for cucumber (java), men hvis du vil navigere i koden
-ut fra testene som kjøres, så bør du installere plugin `Cucumber Kotlin` (IntelliJ settings/prefrences -> Plugins)
+Man kan ogå bruke IntelliJ til å kjøre cucumber testene direkte. IntelliJ har innebygd støtte for cucumber (java), men hvis du vil navigere i koden ut
+fra testene som kjøres, så bør du installere plugin `Cucumber Kotlin` (IntelliJ settings/prefrences -> Plugins)
 
 ###### Kjør cucumber features
 
@@ -229,8 +234,10 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
 ###### gcp
 
 2. Gå til url for main eller feature branch
-   * main - https://bidrag-cucumber-onprem.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
-   * feature - https://bidrag-cucumber-onprem-feature.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
+    * main
+      - https://bidrag-cucumber-onprem.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
+    * feature
+      - https://bidrag-cucumber-onprem-feature.dev.adeo.no/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
 3. Ekspander endpoint `/run`
 4. Trykk på "Try it out"
 5. Endre json-schema med ingress@tag, sanity check evt. testbruker med security token
