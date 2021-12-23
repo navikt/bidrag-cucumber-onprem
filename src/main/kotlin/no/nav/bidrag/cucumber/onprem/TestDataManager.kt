@@ -28,6 +28,7 @@ object TestDataManager {
                 val saksnummer = mapJsonSomMap(json)["saksnummer"] as String? ?: throwExceptionWhenJournalfort(json)
                 val testDataApp = CucumberTestRun.hentKonfigurertNaisApp(bidragTestdata)
                 val jsonMap  = mapJsonSomMap(json)
+                // Opprettelse av dokument i brevlager krever unik dokumentreferanse. Dokument kan ikke slettes fra brevlageret
                 if (jsonMap["opprettDokument"] == true){
                     jsonMap["dokumentreferanse"] = UUID.randomUUID().toString().replace("-", "").subSequence(0, 15)
                 }
