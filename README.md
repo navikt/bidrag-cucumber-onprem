@@ -89,8 +89,8 @@ check" for å teste at den tekniske implementasjonen til cucumber er ok.
 4. securityToken
 5. sanityCheck=true
 
-Disse verdiene sendes som json til test-endepunkt, se avsnittet om `Kjøring lokalt`. Eksempel på en slik json (sanityCheck, noContextPathForApps, tags
-og testUser er valgfri):
+Disse verdiene sendes som json til test-endepunkt, se avsnittet om `Kjøring lokalt`. Eksempel på en slik json (sanityCheck, noContextPathForApps, tags,
+navUsername og testUser er valgfri):
 
 ```json
 {
@@ -106,6 +106,7 @@ og testUser er valgfri):
     "<app.b>"
   ],
   "testUser": "z123456",
+  "navUsername": "x123456",
   "sanityCheck": true,
   "securityToken": "<azure token for testbruker>"
 }
@@ -152,7 +153,8 @@ PS! Når du ikke sender med `SANITY_CHECK=true`, så må du sende med `SECURITY_
 mvn exec:java                                        \
     -DSANITY_CHECK=true                              \
     -DSECURITY_TOKEN=<isso generert id-token>        \
-    -DTEST_USER="<azure bruker ala z123456>          \
+    -DNAV_USERNAME="<nav bruker ala x123456>         \
+    -DTEST_USER="<test bruker ala z123456>           \
     -DSECURITY_TOKEN="<abc...xyz>                    \
     -DINGRESSES_FOR_APPS=<ingress@app1,ingress@app2> \
     -DTAGS=<@tag1>,<@tagp2>                          \
@@ -162,8 +164,8 @@ mvn exec:java                                        \
 **NB**
 
 * Fjern `-DSANITY_CHECK` (eller sett den til `-DSANITY_CHECH=false`) hvis du vil kjøre en fullskala test.
-* Når `-DSANITY_CHECK=true` vil det være unødvendig å bruke `-DTEST_USER` og `-DSECURITY_TOKEN`.
-* Når `-DSANITY_CHECK=false` (eller ikke er med) må man ha med `-DTEST_USER` og `-DSECURITY_TOKEN`.
+* Når `-DSANITY_CHECK=true` vil det være unødvendig å bruke `-DTEST_USER`, `-DNAV_USERNAME` og `-DSECURITY_TOKEN`.
+* Når `-DSANITY_CHECK=false` (eller `-DSANITY_CHECK` ikke er med) må man ha med `-DTEST_USER`, `-DNAV_USERNAME` og `-DSECURITY_TOKEN`.
 
 ###### Kjøring med maven og spring-boot
 
@@ -210,14 +212,14 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tagnavn>"]}'
+    -d '{"tags":["@tag1","@tag2"],"sanityCheck":true,"ingressesForApps":["<ingress.som.testes@tag:navn>"]}'
   ```
 * for fullstendig test, åpne ny terminal og kjør kommandoen
   ```
   curl -X 'POST' http://localhost:8080/bidrag-cucumber-onprem/run \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
-    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tagnavn>"],"securityToken"="<security token (uten Bearer)}'
+    -d '{"tags":["@tag1","@tag2"],"testUsername":"<z123456>","ingressesForApps":["<ingress.som.testes@tag:navn>"],"securityToken"="<security token (uten Bearer)}'
   ```
 
 ##### Kjøring med swagger
@@ -228,10 +230,10 @@ Det anbefales at man lagrer ovennevnte konfigurasjon, slik dette ikke må settes
 2. Gå til url: http://localhost:8080/bidrag-cucumber-onprem/swagger-ui/index.html?configUrl=/bidrag-cucumber-onprem/v3/api-docs/swagger-config#/
 3. Ekspander endpoint `/run`
 4. Trykk på "Try it out"
-5. Endre json-schema med ingress@tag, sanity check evt. testbruker med security token
+5. Endre json-schema med ingress@tag:navn, sanity check evt. testbruker med security token
 6. Press `Execute`
 
-###### gcp
+###### on premise
 
 2. Gå til url for main eller feature branch
     * main
