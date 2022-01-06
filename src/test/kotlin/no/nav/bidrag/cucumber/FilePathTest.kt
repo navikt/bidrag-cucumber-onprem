@@ -16,7 +16,7 @@ internal class FilePathTest {
             { assertThat(pathFile.exists()).`as`("file exists").isTrue() },
             {
                 assertThat(filePath.findFolderPath()).`as`("folder path")
-                    .isEqualTo(File("src/main/resources/no/nav/bidrag/cucumber/onprem").absolutePath)
+                    .isEqualTo(File("./src/main/resources/no/nav/bidrag/cucumber/onprem").absolutePath)
             },
         )
     }
