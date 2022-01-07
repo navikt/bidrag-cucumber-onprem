@@ -110,52 +110,6 @@ jobs:
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
-  run-tests-for-bidrag-beregn:
-    runs-on: self-hosted
-    name: bidrag-beregn-*
-    needs: deploy
-
-    env:
-      INGRESS_BARNEBIDRAG: https://bidrag-beregn-barnebidrag-rest.dev.adeo.no
-      INGRESS_FORSKUDD: https://bidrag-beregn-forskudd-rest.dev.adeo.no
-      INGRESS_SAERTILSKUDD: https://bidrag-beregn-saertilskudd-rest.dev.adeo.no
-
-    steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_BARNEBIDRAG=https://bidrag-beregn-barnebidrag-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_FORSKUDD=https://bidrag-beregn-forskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_SAERTILSKUDD=https://bidrag-beregn-saertilskudd-rest-feature.dev.adeo.no" >> $GITHUB_ENV
-      - name: bidrag-beregn-barnebidrag-rest
-        run: |
-          curl -X 'POST' ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run -i \
-            -H 'accept: */*' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "ingressesForApps":["${{ env.INGRESS_BARNEBIDRAG }}@tag:bidrag-beregn-barnebidrag-rest"]
-          }' | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-      - name: bidrag-beregn-forskudd-rest
-        run: |
-          curl -X 'POST' ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run -i \
-            -H 'accept: */*' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "ingressesForApps":["${{ env.INGRESS_FORSKUDD }}@tag:bidrag-beregn-forskudd-rest"]
-          }' | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-      - name: bidrag-beregn-saertilskudd-rest
-        run: |
-          curl -X 'POST' ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run -i \
-            -H 'accept: */*' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "ingressesForApps":["${{ env.INGRESS_SAERTILSKUDD }}@tag:bidrag-beregn-saertilskudd-rest"]
-          }' | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
   run-tests-for-dokument:
     runs-on: self-hosted
     name: bidrag-dokument
@@ -553,7 +507,6 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs:
       - run-tests-for-cucumber-onprem
-      - run-tests-for-bidrag-beregn
       - run-tests-for-dokument
       - run-tests-for-dokument-arkiv
       - run-tests-for-dokument-journalpost

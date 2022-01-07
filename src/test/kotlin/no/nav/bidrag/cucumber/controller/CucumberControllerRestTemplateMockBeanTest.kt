@@ -31,7 +31,7 @@ class CucumberControllerRestTemplateMockBeanTest {
     private lateinit var httpHeaderRestTemplateMock: HttpHeaderRestTemplate
 
     @Test
-    fun `skal lage endpoint url mot bidrag-beregn-barnebidrag-sak`() {
+    fun `skal lage endpoint url mot bidrag-sjablon`() {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
 
@@ -40,7 +40,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@tag:bidrag-beregn-barnebidrag-rest"]
+                  "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
                 }
                 """.trimMargin().trim(), headers
             ),
@@ -57,7 +57,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             { assertThat(testResponse.statusCode).`as`("status code").isEqualTo(HttpStatus.NOT_ACCEPTABLE) },
             {
                 assertThat(urlCaptor.value).`as`("endpoint url")
-                    .isEqualTo("/swagger-ui/index.html?configUrl=/bidrag-beregn-barnebidrag-rest/v3/api-docs/swagger-config#")
+                    .isEqualTo("/actuator/health")
             }
         )
     }
@@ -72,7 +72,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-beregn-barnebidrag-rest.dev.adeo.no@tag:bidrag-beregn-barnebidrag-rest"]
+                  "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
                 }
                 """.trimMargin().trim(), headers
             ),
