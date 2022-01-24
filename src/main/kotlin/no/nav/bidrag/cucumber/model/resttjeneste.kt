@@ -207,7 +207,7 @@ class RestTjeneste(
     private fun initHttpHeadersWithCorrelationIdAndEnhet(customHeaders: Array<out Pair<String, String>> = emptyArray()): HttpHeaders {
         val headers = HttpHeaders()
         headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.fetchCorrelationIdForScenario())
-        headers.add(EnhetFilter.X_ENHET_HEADER, "4802")
+        headers.add(EnhetFilter.X_ENHET_HEADER, "4806")
 
         customHeaders.forEach {
             if (headers.containsKey(it.first)) {
