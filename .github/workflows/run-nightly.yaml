@@ -368,6 +368,7 @@ jobs:
           -H 'accept: */*' \
           -H 'Content-Type: application/json' \
           -d '{
+           "navUsername": "c151787", "testUsername": "z992903",
            "tags":["@bidrag-dokument-arkivering"],
            "noContextPathForApps": ["bidrag-dokument-arkivering"],
            "ingressesForApps":["https://bidrag-dokument-arkivering.dev.adeo.no@tag:bidrag-dokument-arkivering", "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"]
