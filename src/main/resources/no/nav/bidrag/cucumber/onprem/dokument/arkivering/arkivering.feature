@@ -19,7 +19,7 @@ Egenskap: bidrag-dokument-arkivering
         "dokumentreferanse": "1234567890",
         "opprettDokument": true,
         "fagomrade": "BID",
-        "journalstatus": "R",
+        "journalstatus": "KP",
         "journalfortAv": "Cucumber test",
         "gjelder": "11126222671",
         "journaldato": "2019-01-01",
