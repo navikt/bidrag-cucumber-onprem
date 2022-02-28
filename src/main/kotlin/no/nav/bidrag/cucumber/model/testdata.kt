@@ -1,5 +1,6 @@
 package no.nav.bidrag.cucumber.model
 
+import no.nav.bidrag.cucumber.onprem.dokument.DokumentEgenskaper.Companion.ARKIVER_JOURNALPOST_NOKKEL
 import org.slf4j.LoggerFactory
 
 private val LOGGER = LoggerFactory.getLogger(TestData::class.java)
@@ -9,9 +10,10 @@ internal class TestData {
     var nokkel: String? = null
     val dataForNokkel: MutableMap<String, Data> = HashMap()
 
-    fun isDataPresent() = dataForNokkel.isNotEmpty()
+    fun isDataPresent() = dataForNokkel.filter { it.key != ARKIVER_JOURNALPOST_NOKKEL }.isNotEmpty()
     fun harIkkeLagretTestdata(nokkel: String) = !dataForNokkel.contains(nokkel) || dataForNokkel[nokkel]?.journalpostId == null
     fun hentJournalpostId(nokkel: String?) = dataForNokkel[nokkel]?.journalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
+    fun hentJoarkJournalpostId(nokkel: String?) = dataForNokkel[nokkel]?.joarkJournalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
     fun hentJournalpostIdUtenPrefix(nokkel: String?) = hentJournalpostId(nokkel).split("-")[1]
     fun hentSaksnummer(nokkel: String) = dataForNokkel[nokkel]?.saksnummer ?: throwIllegalStateException("Ingen testdata på $nokkel!")
     fun nye(nokkel: String, data: Data) {
@@ -32,6 +34,7 @@ internal data class Data(
     val avvik: Avvik = Avvik(),
     var fagomrade: String? = null,
     var journalpostId: String? = null,
+    var joarkJournalpostId: String? = null,
     var saksnummer: String? = null
 ) {
 
@@ -40,6 +43,7 @@ internal data class Data(
             avvik.berikMed(data.avvik)
             fagomrade = nyVerdi("fagomrade", fagomrade, data.fagomrade)
             journalpostId = nyVerdi("journalpostId", journalpostId, data.journalpostId)
+            joarkJournalpostId = nyVerdi("joarkJournalpostId", joarkJournalpostId, data.joarkJournalpostId)
             saksnummer = nyVerdi("saksnummer", saksnummer, data.saksnummer)
         }
 

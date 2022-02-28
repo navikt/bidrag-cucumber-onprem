@@ -1,9 +1,11 @@
 package no.nav.bidrag.cucumber.onprem.dokument
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.No
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import no.nav.bidrag.cucumber.model.Data
 import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.SoftAssertions
 
@@ -11,6 +13,9 @@ import org.assertj.core.api.SoftAssertions
 class DokumentEgenskaper : No {
     private lateinit var fagomrade: String
     private lateinit var saksnummer: String
+    companion object {
+        var ARKIVER_JOURNALPOST_NOKKEL = "ARKIVER_JOURNALPOST"
+    }
 
     init {
         Gitt("saksnummer {string} og fagområdet {string}") { saksnummer: String, fagomrade: String ->
@@ -23,14 +28,53 @@ class DokumentEgenskaper : No {
             val nokkel = testData.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata")
             val jpId = testData.hentJournalpostId(nokkel).replace("BID-", "")
 
-            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+            val restTjeneste = CucumberTestRun.hentKonfigurertNaisApp("bidrag-dokument-arkivering")
+            restTjeneste.exchangePost(
                 failOnBadRequest = false,
                 endpointUrl = "/api/v1/arkivere/journalpost/$jpId",
                 body = "{}"
             )
+            val jpIdJoark = jacksonObjectMapper().readTree(restTjeneste.hentResponse()).get("jpIdJoark")
+            testData.nye(ARKIVER_JOURNALPOST_NOKKEL, Data(joarkJournalpostId = jpIdJoark.asText()))
         }
+
+        Og("bestiller distribusjon av Joark journalpost") {
+            val testData = CucumberTestRun.thisRun().testData
+            val jpId = testData.hentJoarkJournalpostId(ARKIVER_JOURNALPOST_NOKKEL)
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                failOnBadRequest = false,
+                endpointUrl = "/journal/distribuer/JOARK-$jpId",
+                body = "{\n" +
+                        "    \"adresse\": {\n" +
+                        "        \"adresselinje1\": \"Batmangata 5A\",\n" +
+                        "        \"land\": \"NO\",\n" +
+                        "        \"postnummer\": \"0007\",\n" +
+                        "        \"poststed\": \"OSLO\"\n" +
+                        "    }\n" +
+                        "}"
+            )
+        }
+
         Og("at det finnes en ferdigstilt journalpost i arkiv på fagområdet og saksnummer") {
             ArkivManager.opprettFerdistiltJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
+        }
+
+        Og("kaller journalpost kan arkiveres endepunkt") {
+            val testData = CucumberTestRun.thisRun().testData
+            val jpId = testData.hentJoarkJournalpostId(ARKIVER_JOURNALPOST_NOKKEL)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(
+                failOnBadRequest = false,
+                endpointUrl = "/journal/distribuer/JOARK-$jpId/enabled"
+            )
+        }
+
+        Og("at det finnes en utgående journalpost i arkiv på fagområdet og saksnummer") {
+            ArkivManager.opprettUtgaaendeJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer, fagomrade)
+            val testData = CucumberTestRun.thisRun().testData
+            val restTjeneste = CucumberTestRun.hentRestTjenste("dokarkiv-api")
+            val jpIdJoark = jacksonObjectMapper().readTree(restTjeneste.hentResponse()).get("journalpostId")
+            testData.nye(ARKIVER_JOURNALPOST_NOKKEL, Data(joarkJournalpostId = jpIdJoark.asText()))
         }
 
         Og("at det finnes en journalført journalpost i midlertidig brevlager på fagområde og saksnummer") {
