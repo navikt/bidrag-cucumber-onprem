@@ -13,7 +13,9 @@ import org.assertj.core.api.SoftAssertions
 class DokumentEgenskaper : No {
     private lateinit var fagomrade: String
     private lateinit var saksnummer: String
-    private var ARKIVER_JOURNALPOST_NOKKEL = "ARKIVER_JOURNALPOST"
+    companion object {
+        var ARKIVER_JOURNALPOST_NOKKEL = "ARKIVER_JOURNALPOST"
+    }
 
     init {
         Gitt("saksnummer {string} og fagområdet {string}") { saksnummer: String, fagomrade: String ->
