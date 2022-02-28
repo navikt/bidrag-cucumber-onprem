@@ -17,3 +17,11 @@ Egenskap: bidrag-dokument-arkiv
     Når jeg kaller endpoint '/sak/1234567/journal' med parameter 'fagomrade' = 'BID'
     Så skal http status være 200
     Og så skal responsen være ei tom liste
+
+  Scenario: bidrag-dokument-arkiv: Sjekk at distribusjon av journalpost går OK
+    Gitt saksnummer '1000000' og fagområdet 'BID'
+    Og at det finnes en utgående journalpost i arkiv på fagområdet og saksnummer
+    Og kaller journalpost kan arkiveres endepunkt
+    Så skal http status være 200
+    Og bestiller distribusjon av Joark journalpost
+    Så skal http status være 200

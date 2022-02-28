@@ -70,4 +70,52 @@ object ArkivManager {
             LOGGER.info("Fant ${bidragDokumentArkiv.hentResponseSomListe().size} journalpost(er) i $appForBidDokArkiv")
         }
     }
+
+    fun opprettUtgaaendeJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {
+        val appForDokarkiv = "dokarkiv-api"
+        LOGGER.info("Oppretter journalpost med $appForDokarkiv")
+
+        CucumberTestRun.hentKonfigurertNaisApp(appForDokarkiv).exchangePost(
+            endpointUrl = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true",
+            body = """
+            {
+              "datoMottatt": "${LocalDate.now().minusDays(1)}",
+              "tittel": "Bidrag automatisk test av distribusjon",
+              "journalposttype": "UTGAAENDE",
+              "tema": "$fagomrade",
+              "behandlingstema": "ab0322",
+              "kanal": "NAV_NO",
+              "journalfoerendeEnhet": "0701",
+              "avsenderMottaker": {
+                "id": "15277049616",
+                "idType": "FNR",
+                "navn": "Blund, Jon"
+              },
+              "sak": {
+                "fagsakId": "$saksnummer",
+                "sakstype": "FAGSAK",
+                "fagsaksystem": "BISYS"
+              },
+              "bruker": {
+                "id": "15277049616",
+                "idType": "FNR"
+              },
+              "dokumenter": [
+                {
+                  "tittel": "En cucumber test",
+                  "brevkode": "NAV 04-01.04",
+                  "dokumentvarianter": [
+                    {
+                      "filtype": "PDFA",
+                      "fysiskDokument": "U8O4a25hZCBvbSBkYWdwZW5nZXIgdmVkIHBlcm1pdHRlcmluZw==",
+                      "variantformat": "ARKIV"
+                    }
+                  ]
+                }
+              ]
+            }
+            """.trimIndent(),
+            customHeaders = arrayOf(NAV_CALL_ID to ScenarioManager.fetchCorrelationIdForScenario())
+        )
+    }
 }
