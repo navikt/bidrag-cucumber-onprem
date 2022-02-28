@@ -39,4 +39,4 @@ Egenskap: bidrag-distribusjon
     Så skal http status være 200
     Gitt nais applikasjon 'bidrag-dokument'
     Og bestiller distribusjon av Joark journalpost
-    Så skal http status fra siste kall være 200
+    Så skal http status være 200
