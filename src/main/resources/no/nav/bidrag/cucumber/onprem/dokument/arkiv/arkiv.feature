@@ -28,7 +28,7 @@ Egenskap: bidrag-dokument-arkiv
 
   Scenario: bidrag-dokument-arkiv - Registrer (journalfør) journalpost som har status mottaksregistrert
     Gitt fagområdet 'BID'
-    Og opprettet joark journalpost på nøkkel 'JOARK_INNGAAENDE_JP':
+    Og opprettet joark journalpost på nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
           """
             {
               "tittel": "Bidrag automatisk test av registrer journalpost",
@@ -38,7 +38,7 @@ Egenskap: bidrag-dokument-arkiv
               "kanal": "NAV_NO",
               "journalfoerendeEnhet": "0701",
               "avsenderMottaker": {
-                "id": "15277049616",
+                "id": "02459032730",
                 "idType": "FNR",
                 "navn": "Blund, Jon"
               },
@@ -48,7 +48,7 @@ Egenskap: bidrag-dokument-arkiv
                 "fagsaksystem": "BISYS"
               },
               "bruker": {
-                "id": "15277049616",
+                "id": "02459032730",
                 "idType": "FNR"
               },
               "dokumenter": [
@@ -66,72 +66,17 @@ Egenskap: bidrag-dokument-arkiv
               ]
             }
           """
-    Og jeg registrerer endring på opprettet journalpost med nøkkel 'JOARK_INNGAAENDE_JP':
+    Og jeg registrerer endring på opprettet journalpost med nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
       """
       {
         "skalJournalfores":true,
-        "gjelder": "01117712345",
+        "gjelder": "19466334734",
         "tittel":"Journalfør cucumber test",
         "tilknyttSaker":["0000004"]
       }
       """
     Så skal http status være 200
-    Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JP'
-    Så skal http status være 200
-    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
-    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'tema' = 'BID'
-
-  Scenario: bidrag-dokument-arkiv - Registrer (journalfør) journalpost som har status mottaksregistrert
-    Gitt fagområdet 'BID'
-    Og opprettet joark journalpost på nøkkel 'JOARK_INNGAAENDE_JP':
-          """
-            {
-              "tittel": "Bidrag automatisk test av registrer journalpost",
-              "journalposttype": "INNGAAENDE",
-              "tema": "BID",
-              "behandlingstema": "ab0322",
-              "kanal": "NAV_NO",
-              "journalfoerendeEnhet": "0701",
-              "avsenderMottaker": {
-                "id": "15277049616",
-                "idType": "FNR",
-                "navn": "Blund, Jon"
-              },
-              "sak": {
-                "fagsakId": "$saksnummer",
-                "sakstype": "FAGSAK",
-                "fagsaksystem": "BISYS"
-              },
-              "bruker": {
-                "id": "15277049616",
-                "idType": "FNR"
-              },
-              "dokumenter": [
-                {
-                  "tittel": "En cucumber test",
-                  "brevkode": "NAV 04-01.04",
-                  "dokumentvarianter": [
-                    {
-                      "filtype": "PDFA",
-                      "fysiskDokument": "U8O4a25hZCBvbSBkYWdwZW5nZXIgdmVkIHBlcm1pdHRlcmluZw==",
-                      "variantformat": "ARKIV"
-                    }
-                  ]
-                }
-              ]
-            }
-          """
-    Og jeg registrerer endring på opprettet journalpost med nøkkel 'JOARK_INNGAAENDE_JP':
-      """
-      {
-        "skalJournalfores":true,
-        "gjelder": "01117712345",
-        "tittel":"Journalfør cucumber test",
-        "tilknyttSaker":["0000004"]
-      }
-      """
-    Så skal http status være 200
-    Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JP'
+    Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JOURNALFOR'
     Så skal http status være 200
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'tema' = 'BID'
