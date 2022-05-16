@@ -10,6 +10,7 @@ spec:
     application:
       enabled: true
       tenant: trygdeetaten.no
+  webproxy: true
   accessPolicy:
       outbound:
         external:

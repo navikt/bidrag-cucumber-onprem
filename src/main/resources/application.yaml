@@ -9,6 +9,8 @@ server:
 springdoc:
   packages-to-scan: no.nav.bidrag.cucumber.controller
 
+http.proxy.parametername: prevent.isso.proxy.fss(hack)
+
 spring:
   main.banner-mode: "off"
   security:

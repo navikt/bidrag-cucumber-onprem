@@ -34,6 +34,7 @@ Egenskap: avvik for bidrag-dokument (/journal/*/avvik REST API)
       | ENDRE_FAGOMRADE       |
       | INNG_TIL_UTG_DOKUMENT |
       | FEILFORE_SAK          |
+      | SEND_TIL_FAGOMRADE    |
 
   Scenario: bidrag-dokument: Sjekk at man kan bestille original
     Gitt avvikstype 'BESTILL_ORIGINAL'
