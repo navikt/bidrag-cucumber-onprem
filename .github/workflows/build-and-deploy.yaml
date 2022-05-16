@@ -222,13 +222,13 @@ jobs:
 
     env:
       INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.intern.nav.no
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
+      INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
       INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
       INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
 
     steps:
       - run: |
-          echo "INGRESS_OPPGAVE=https://oppgave-q1.dev-fss-pub.nais.io" >> $GITHUB_ENV
+          echo "INGRESS_OPPGAVE=https://oppgave.nais.preprod.local" >> $GITHUB_ENV
           echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV

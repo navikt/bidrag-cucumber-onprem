@@ -148,7 +148,7 @@ jobs:
     name: bidrag-dokument-arkiv
 
     env:
-      INGRESS_OPPGAVE: https://oppgave.dev-fss-pub.nais.io
+      INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
       INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.adeo.no
       INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
 
