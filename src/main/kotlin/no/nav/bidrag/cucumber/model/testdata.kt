@@ -10,8 +10,8 @@ internal class TestData {
     var nokkel: String? = null
     val dataForNokkel: MutableMap<String, Data> = HashMap()
 
-    fun isDataPresent() = dataForNokkel.filter { it.key != ARKIVER_JOURNALPOST_NOKKEL }.isNotEmpty()
-    fun harIkkeLagretTestdata(nokkel: String) = !dataForNokkel.contains(nokkel) || dataForNokkel[nokkel]?.journalpostId == null
+    fun isDataPresent() = dataForNokkel.filter { it.key != ARKIVER_JOURNALPOST_NOKKEL && !it.key.contains("JOARK_") }.isNotEmpty()
+    fun harIkkeLagretTestdata(nokkel: String) = !dataForNokkel.contains(nokkel) || dataForNokkel[nokkel]?.journalpostId == null || dataForNokkel[nokkel]?.joarkJournalpostId == null
     fun hentJournalpostId(nokkel: String?) = dataForNokkel[nokkel]?.journalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
     fun hentJoarkJournalpostId(nokkel: String?) = dataForNokkel[nokkel]?.joarkJournalpostId ?: throwIllegalStateException("Ingen testdata på $nokkel!")
     fun hentJournalpostIdUtenPrefix(nokkel: String?) = hentJournalpostId(nokkel).split("-")[1]

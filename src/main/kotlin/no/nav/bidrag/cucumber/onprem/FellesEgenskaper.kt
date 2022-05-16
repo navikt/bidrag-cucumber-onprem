@@ -84,6 +84,10 @@ class FellesEgenskaper : No {
             )
         }
 
+        Og("så skal responsen fra {string} inneholde et objekt med navn {string} som har feltet {string} = {string}") { apiName: String, objekt: String, key: String, value: String ->
+            val response = CucumberTestRun.hentRestTjenste("oppgave-api").hentResponseSomMap()
+            sjekkAtResponseHarObjektMedFelt(response, objekt, key, value)
+        }
         Og("så skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
             sjekkAtResponseHarObjektMedFelt(objekt, key, value)
         }
@@ -167,6 +171,10 @@ class FellesEgenskaper : No {
 
     private fun sjekkAtResponseHarObjektMedFelt(objekt: String, key: String, value: String) {
         val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
+        sjekkAtResponseHarObjektMedFelt(responseObject, objekt, key, value)
+    }
+
+    private fun sjekkAtResponseHarObjektMedFelt(responseObject: Map<String, Any>, objekt: String, key: String, value: String) {
         @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
 
         FellesEgenskaperManager.assertWhenNotSanityCheck(

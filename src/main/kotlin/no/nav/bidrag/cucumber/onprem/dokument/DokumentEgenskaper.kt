@@ -6,6 +6,7 @@ import io.cucumber.java8.No
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.Data
+import no.nav.bidrag.cucumber.onprem.TestDataManager
 import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.SoftAssertions
 
@@ -18,6 +19,9 @@ class DokumentEgenskaper : No {
     }
 
     init {
+        Gitt("fagområdet {string}") { fagomrade: String ->
+            this.fagomrade = fagomrade
+        }
         Gitt("saksnummer {string} og fagområdet {string}") { saksnummer: String, fagomrade: String ->
             this.saksnummer = saksnummer
             this.fagomrade = fagomrade
@@ -67,6 +71,10 @@ class DokumentEgenskaper : No {
                 failOnBadRequest = false,
                 endpointUrl = "/journal/distribuer/JOARK-$jpId/enabled"
             )
+        }
+
+        Gitt("opprettet joark journalpost på nøkkel {string}:") { nokkel: String, json: String ->
+            ArkivManager.opprettJoarkJournalpostNarDenIkkeFinnes(nokkel = nokkel, json = json)
         }
 
         Og("at det finnes en utgående journalpost i arkiv på fagområdet og saksnummer") {
@@ -156,6 +164,14 @@ class DokumentEgenskaper : No {
             val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
                 endpointUrl = "/journal/$journalpostId",
+                journalpostJson = json
+            )
+        }
+
+        Og("jeg registrerer endring på opprettet joark journalpost med nøkkel {string}:") { nokkel: String, json: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJoarkJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
+                endpointUrl = "/journal/JOARK-$journalpostId",
                 journalpostJson = json
             )
         }

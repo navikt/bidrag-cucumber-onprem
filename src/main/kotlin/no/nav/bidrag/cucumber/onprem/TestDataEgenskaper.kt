@@ -30,7 +30,7 @@ class TestDataEgenskaper : No {
             )
         }
 
-        Gitt("opprettet journalpost på nøkkel {string}:") { nokkel: String, json: String ->
+         Gitt("opprettet journalpost på nøkkel {string}:") { nokkel: String, json: String ->
             TestDataManager.opprettTestDataNarTestdataIkkeErOpprettetTidligere(nokkel = nokkel, json = json)
         }
     }

@@ -47,4 +47,4 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_SPLITTING
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status for oppgavesøket være 200
-    Og søkeresultatet skal inneholde en oppgave
+    Og søkeresultatet skal inneholde 1 oppgave

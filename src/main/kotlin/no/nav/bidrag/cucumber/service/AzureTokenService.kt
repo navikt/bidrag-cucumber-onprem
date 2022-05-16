@@ -15,6 +15,7 @@ class AzureTokenService(val authorizedClientManager: OAuth2AuthorizedClientManag
         private val ANONYMOUS_AUTHENTICATION: Authentication = AnonymousAuthenticationToken(
             "anonymous", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
         )
+        val supportedApplications = setOf("oppgave-api")
     }
 
     override fun generateToken(application: String): String {
@@ -24,6 +25,6 @@ class AzureTokenService(val authorizedClientManager: OAuth2AuthorizedClientManag
                     .withClientRegistrationId(application)
                     .principal(ANONYMOUS_AUTHENTICATION)
                     .build()
-            )!!.accessToken.toString()
+            )!!.accessToken.tokenValue
     }
 }
