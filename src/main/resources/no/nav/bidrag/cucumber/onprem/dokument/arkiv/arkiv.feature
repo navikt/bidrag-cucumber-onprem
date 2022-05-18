@@ -28,6 +28,7 @@ Egenskap: bidrag-dokument-arkiv
 
   Scenario: bidrag-dokument-arkiv - Registrer (journalfør) journalpost som har status mottaksregistrert
     Gitt fagområdet 'BID'
+    Gitt alle søknadsoppgaver med saksnummer '2121212' er lukket
     Og opprettet joark journalpost på nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
           """
             {
@@ -41,11 +42,6 @@ Egenskap: bidrag-dokument-arkiv
                 "id": "02459032730",
                 "idType": "FNR",
                 "navn": "Blund, Jon"
-              },
-              "sak": {
-                "fagsakId": "2121212",
-                "sakstype": "FAGSAK",
-                "fagsaksystem": "BISYS"
               },
               "bruker": {
                 "id": "02459032730",
@@ -66,17 +62,24 @@ Egenskap: bidrag-dokument-arkiv
               ]
             }
           """
-    Og jeg registrerer endring på opprettet journalpost med nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
+    Og skal ha totalt 1 åpne journalføringsoppgaver
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'tildeltEnhetsnr' = '4806'
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'aktoerId' = '2586584223271'
+    Og jeg registrerer endring på opprettet journalpost på enhet '4806' med nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
       """
       {
         "skalJournalfores":true,
         "gjelder": "19466334734",
         "tittel":"Journalfør cucumber test",
-        "tilknyttSaker":["0000004"]
+        "tilknyttSaker":["2121212"]
       }
       """
     Så skal http status være 200
+    Og skal ha totalt 0 åpne journalføringsoppgaver
+    Og skal ha totalt 1 åpne søknadsoppgaver
+    Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'tildeltEnhetsnr' = '4806'
     Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JOURNALFOR'
     Så skal http status være 200
+    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'gjelderAktor.ident' = '19466334734'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'tema' = 'BID'

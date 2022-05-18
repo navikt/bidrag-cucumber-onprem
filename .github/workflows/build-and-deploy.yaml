@@ -261,23 +261,6 @@ jobs:
               ]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-      - name: "@arkiv-joarkhendelse"
-        run: |
-          curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
-            -H 'accept: */*' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "tags":["@arkiv-joarkhendelse"], "navUsername": "c151787", "testUsername": "z992903",
-              "noContextPathForApps": [
-                  "dokarkiv-api", "oppgave-api"
-              ],
-              "ingressesForApps":[
-                  "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
-                  "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
-                  "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api"
-              ]
-            }' | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
       - name: "@arkiv-saf"
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
