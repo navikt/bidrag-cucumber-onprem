@@ -160,6 +160,14 @@ class DokumentEgenskaper : No {
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet(endpointUrl = "/journal/$journalpostId")
         }
 
+        Og("jeg registrerer endring på opprettet journalpost med nøkkel {string}:") { nokkel: String, json: String ->
+            val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
+                endpointUrl = "/journal/$journalpostId",
+                journalpostJson = json
+            )
+        }
+
         Og("jeg registrerer endring på opprettet journalpost på enhet {string} med nøkkel {string}:") { enhet: String, nokkel: String, json: String ->
             val journalpostId = CucumberTestRun.thisRun().testData.hentJournalpostId(nokkel)
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePatch(
