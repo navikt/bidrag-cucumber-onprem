@@ -6,4 +6,4 @@ access:
     bidrag-sak: bidrag-sak.dev-fss-pub.nais.io
 scope:
   sak: dev-fss.bidrag.bidrag-sak
-  oppgave: dev-fss.oppgavehandtering.oppgave-q2
+  oppgave: dev-fss.oppgavehandtering.oppgave
