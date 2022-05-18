@@ -10,6 +10,7 @@ spec:
     application:
       enabled: true
       tenant: trygdeetaten.no
+  webproxy: true
   accessPolicy:
       outbound:
         external:
@@ -46,6 +47,8 @@ spec:
   env:
     - name: SAK_SCOPE
       value: {{ scope.sak }}
+    - name: OPPGAVE_SCOPE
+      value: {{scope.oppgave}}
     - name: STS_URL
       value: https://security-token-service.dev.adeo.no
     - name: STS_USER

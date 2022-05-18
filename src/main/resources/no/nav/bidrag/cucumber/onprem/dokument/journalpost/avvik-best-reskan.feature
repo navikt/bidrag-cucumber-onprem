@@ -39,7 +39,7 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_RESKANNING
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status være 200
-    Og søkeresultatet skal inneholde en oppgave
+    Og søkeresultatet skal inneholde 1 oppgave
 
   Scenario: Sjekk at når man bestiller reskanning, så skal journalposten bli feilført
     Når jeg behandler avvik på opprettet journalpost

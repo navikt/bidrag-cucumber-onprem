@@ -2,12 +2,10 @@ package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.Assertion
-import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
 import no.nav.bidrag.cucumber.onprem.FellesEgenskaperManager
 import no.nav.bidrag.cucumber.onprem.dokument.DokumentManager
 import org.assertj.core.api.Assertions.assertThat
-import org.springframework.http.HttpStatus
 
 @Suppress("unused") // used by cucumber
 class ArkivEgenskaper : No {
@@ -65,37 +63,6 @@ class ArkivEgenskaper : No {
                     value = hentRestTjenesteTilTesting().hentResponse(),
                     expectation = """"journalpostId":"JOARK-""",
                 ) { assertThat(it.value as String).`as`(it.message).contains(it.expectation as String) }
-            )
-        }
-
-        Gitt("jeg søker etter oppgaver for mottaksregistrert journalpost") {
-            val dokarkiv = CucumberTestRun.settOppNaisApp("dokarkiv-api")
-            val testdata = CucumberTestRun.thisRun().testData
-            val journalpostIdUtenPrefix = testdata.hentJournalpostIdUtenPrefix(testdata.nokkel)
-
-            dokarkiv.exchangeGet("/rest/journalpostapi/v1?journalpostId=$journalpostIdUtenPrefix&statuskategori=AAPEN")
-        }
-
-        Så("skal http status for oppgavesøket være {int}") { httpStatus: Int ->
-            val dokarkiv = CucumberTestRun.hentRestTjenste("dokarkiv-api")
-            FellesEgenskaperManager.assertWhenNotSanityCheck(
-                Assertion(
-                    message = "HttpStatus for ${dokarkiv.hentFullUrlMedEventuellWarning()}",
-                    value = hentRestTjenesteTilTesting().hentHttpStatus(),
-                    expectation = HttpStatus.valueOf(httpStatus)
-                ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
-            )
-        }
-
-        Og("søkeresultatet skal inneholde en oppgave") {
-            val response = CucumberTestRun.hentRestTjenste("dokarkiv-api").hentResponse()
-
-            FellesEgenskaperManager.assertWhenNotSanityCheck(
-                Assertion(
-                    message = "søkeresultatet skal inneholde en oppgave",
-                    value = response,
-                    expectation = """"antallTreffTotalt":1""""
-                ) { assertThat(it.value as String?).`as`(it.message).contains(it.expectation as String) }
             )
         }
     }

@@ -130,6 +130,11 @@ class RestTjeneste(
                     }
                 }
 
+                if (AzureTokenService.supportedApplications.contains(applicationName)){
+                    val azureToken = hentAzureToken(applicationName)
+                    httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { azureToken.initBearerToken() }
+                }
+
                 return RestTjeneste(ResttjenesteMedBaseUrl(httpHeaderRestTemplate, applicationUrl))
             } catch (throwable: Throwable) {
                 CucumberTestRun.holdExceptionForTest(throwable)
@@ -152,6 +157,15 @@ class RestTjeneste(
 
             return if (CucumberTestRun.isNotSanityCheck)
                 TokenValue(stsService.hentServiceBrukerOidcToken() ?: throw IllegalStateException("Token er null!"))
+            else
+                TokenValue("sanity check, no token")
+        }
+
+        private fun hentAzureToken(applicationName: String): TokenValue {
+            val azureTokenService: AzureTokenService = BidragCucumberSingletons.hentEllerInit(AzureTokenService::class)
+
+            return if (CucumberTestRun.isNotSanityCheck)
+                TokenValue(azureTokenService.generateToken(applicationName) ?: throw IllegalStateException("Token er null!"))
             else
                 TokenValue("sanity check, no token")
         }
@@ -207,7 +221,7 @@ class RestTjeneste(
     private fun initHttpHeadersWithCorrelationIdAndEnhet(customHeaders: Array<out Pair<String, String>> = emptyArray()): HttpHeaders {
         val headers = HttpHeaders()
         headers.add(CorrelationId.CORRELATION_ID_HEADER, ScenarioManager.fetchCorrelationIdForScenario())
-        headers.add(EnhetFilter.X_ENHET_HEADER, "4802")
+        headers.add(EnhetFilter.X_ENHET_HEADER, "4833")
 
         customHeaders.forEach {
             if (headers.containsKey(it.first)) {

@@ -8,6 +8,7 @@ import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTi
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
+import java.util.function.BiFunction
 
 @Suppress("unused") // used by cucumber
 class FellesEgenskaper : No {
@@ -84,6 +85,10 @@ class FellesEgenskaper : No {
             )
         }
 
+        Og("så skal responsen fra {string} inneholde et objekt med navn {string} som har feltet {string} = {string}") { apiName: String, objekt: String, key: String, value: String ->
+            val response = CucumberTestRun.hentRestTjenste("oppgave-api").hentResponseSomMap()
+            sjekkAtResponseHarObjektMedFelt(response, objekt, key, value)
+        }
         Og("så skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
             sjekkAtResponseHarObjektMedFelt(objekt, key, value)
         }
@@ -167,14 +172,30 @@ class FellesEgenskaper : No {
 
     private fun sjekkAtResponseHarObjektMedFelt(objekt: String, key: String, value: String) {
         val responseObject = hentRestTjenesteTilTesting().hentResponseSomMap()
-        @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
+        sjekkAtResponseHarObjektMedFelt(responseObject, objekt, key, value)
+    }
 
+    private fun sjekkAtResponseHarObjektMedFelt(responseObject: Map<String, Any>, objekt: String, key: String, value: String) {
+        @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
         FellesEgenskaperManager.assertWhenNotSanityCheck(
             Assertion(
                 message = "$objekt skal inneholde $key",
-                value = objektFraResponse?.get(key)?.toString(),
+                value = getValueFromMap(objektFraResponse, key)?.toString(),
                 expectation = value
             ) { assertThat(it.value).`as`(it.message).isEqualTo(it.value) }
         )
+    }
+
+    private fun getValueFromMap(objektFraResponse: Map<String, Any>?, key: String): Any? {
+        var responseValue = objektFraResponse
+        val segments = key.split(".")
+        for (segment in segments){
+            val currentValue = responseValue?.get(segment)
+            if (currentValue == null || currentValue is String){
+                return currentValue
+            }
+            responseValue = currentValue as Map<String, Any>
+        }
+        return ""
     }
 }

@@ -1,8 +1,11 @@
 package no.nav.bidrag.cucumber.onprem.dokument.arkiv
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.bidrag.cucumber.Headers.NAV_CALL_ID
 import no.nav.bidrag.cucumber.ScenarioManager
+import no.nav.bidrag.cucumber.model.BidragCucumberSingletons
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import no.nav.bidrag.cucumber.model.Data
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -69,6 +72,29 @@ object ArkivManager {
         } else {
             LOGGER.info("Fant ${bidragDokumentArkiv.hentResponseSomListe().size} journalpost(er) i $appForBidDokArkiv")
         }
+    }
+
+    fun opprettJoarkJournalpostNarDenIkkeFinnes(nokkel: String, json: String) {
+        if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)){
+            val appForDokarkiv = "dokarkiv-api"
+            LOGGER.info("Oppretter journalpost med $appForDokarkiv")
+
+            val jsonMap = BidragCucumberSingletons.mapJsonSomMap(json)
+            jsonMap["datoMottatt"] = LocalDate.now().minusDays(1)
+
+            CucumberTestRun.hentKonfigurertNaisApp(appForDokarkiv).exchangePost(
+                endpointUrl = "/rest/journalpostapi/v1/journalpost",
+                body = BidragCucumberSingletons.mapTilJsonString(jsonMap),
+                customHeaders = arrayOf(NAV_CALL_ID to ScenarioManager.fetchCorrelationIdForScenario())
+            )
+
+            val testData = CucumberTestRun.thisRun().testData
+            val restTjeneste = CucumberTestRun.hentRestTjenste("dokarkiv-api")
+            val jpIdJoark = jacksonObjectMapper().readTree(restTjeneste.hentResponse()).get("journalpostId")
+            testData.nye(nokkel, Data(journalpostId = "JOARK-${jpIdJoark.asText()}", joarkJournalpostId = jpIdJoark.asText()))
+            testData.nokkel = nokkel
+        }
+
     }
 
     fun opprettUtgaaendeJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {

@@ -25,3 +25,61 @@ Egenskap: bidrag-dokument-arkiv
     Så skal http status være 200
     Og bestiller distribusjon av Joark journalpost
     Så skal http status være 200
+
+  Scenario: bidrag-dokument-arkiv - Registrer (journalfør) journalpost som har status mottaksregistrert
+    Gitt fagområdet 'BID'
+    Gitt alle søknadsoppgaver med saksnummer '2121212' er lukket
+    Og opprettet joark journalpost på nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
+          """
+            {
+              "tittel": "Bidrag automatisk test av registrer journalpost",
+              "journalposttype": "INNGAAENDE",
+              "tema": "BID",
+              "behandlingstema": "ab0322",
+              "kanal": "NAV_NO",
+              "journalfoerendeEnhet": "0701",
+              "avsenderMottaker": {
+                "id": "02459032730",
+                "idType": "FNR",
+                "navn": "Blund, Jon"
+              },
+              "bruker": {
+                "id": "02459032730",
+                "idType": "FNR"
+              },
+              "dokumenter": [
+                {
+                  "tittel": "En cucumber test",
+                  "brevkode": "NAV 04-01.04",
+                  "dokumentvarianter": [
+                    {
+                      "filtype": "PDFA",
+                      "fysiskDokument": "U8O4a25hZCBvbSBkYWdwZW5nZXIgdmVkIHBlcm1pdHRlcmluZw==",
+                      "variantformat": "ARKIV"
+                    }
+                  ]
+                }
+              ]
+            }
+          """
+    Og skal ha totalt 1 åpne journalføringsoppgaver
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'tildeltEnhetsnr' = '4806'
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'aktoerId' = '2586584223271'
+    Og jeg registrerer endring på opprettet journalpost på enhet '4806' med nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
+      """
+      {
+        "skalJournalfores":true,
+        "gjelder": "19466334734",
+        "tittel":"Journalfør cucumber test",
+        "tilknyttSaker":["2121212"]
+      }
+      """
+    Så skal http status være 200
+    Og skal ha totalt 0 åpne journalføringsoppgaver
+    Og skal ha totalt 1 åpne søknadsoppgaver
+    Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'tildeltEnhetsnr' = '4806'
+    Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JOURNALFOR'
+    Så skal http status være 200
+    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'gjelderAktor.ident' = '19466334734'
+    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
+    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'tema' = 'BID'
