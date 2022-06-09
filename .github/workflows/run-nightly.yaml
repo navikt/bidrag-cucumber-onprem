@@ -174,10 +174,12 @@ jobs:
               "navUsername": "c151787",
               "testUsername": "z992903",
               "noContextPathForApps": [
-                  "dokarkiv-api"
+                  "dokarkiv-api",
+                  "oppgave-api"
               ],
               "ingressesForApps":[
                   "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
+                  "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                   "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api"
               ]
             }' | tee .cucumber-result
