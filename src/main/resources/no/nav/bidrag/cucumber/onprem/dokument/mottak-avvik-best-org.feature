@@ -43,4 +43,4 @@ Egenskap: Avvikshendelse BESTILL_ORIGINAL på journalposter som er mottaksregist
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status for oppgavesøket være 200
-    Og søkeresultatet skal inneholde 1 oppgave
+    Og skal ha totalt 1 åpne oppgaver med type 'SR'
