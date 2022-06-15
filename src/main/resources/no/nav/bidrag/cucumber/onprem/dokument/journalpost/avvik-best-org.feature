@@ -16,7 +16,7 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_ORIGINAL
         "dokumentdato": "2019-01-01",
         "dokumentreferanse": "1234567890",
         "fagomrade": "BID",
-        "gjelder": "29118012345",
+        "gjelder": "12516209656",
         "journaldato": "2019-01-01",
         "journalstatus": "J",
         "mottattDato": "2019-01-01",
@@ -41,9 +41,10 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_ORIGINAL
     Så skal http status være 200
     Og listen med avvikstyper skal ikke inneholde 'BESTILL_ORIGINAL'
 
-  @ignored # sikkerhetstoken (sts) mot dokarkiv-api må settes opp
   Scenario: Sjekk at oppgave blir laget for bestill original
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status for oppgavesøket være 200
     Og søkeresultatet skal inneholde 1 oppgave
+    Og skal responsen fra oppgave inneholde feltet 'tema' = 'MOT'
+    Og skal responsen fra oppgave inneholde feltet 'oppgavetype' = 'SR'

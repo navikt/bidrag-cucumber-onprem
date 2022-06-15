@@ -38,7 +38,6 @@ Egenskap: Avvikshendelse BESTILL_ORIGINAL på journalposter som er mottaksregist
     Så skal http status være 200
     Og så skal listen med avvikstyper ikke inneholde 'BESTILL_ORIGINAL'
 
-  @ignored # sikkerhetstoken (sts) mot dokarkiv-api må settes opp
   Scenario: bidrag-dokument-journalpost - Sjekk at oppgave blir laget for BESTILL_ORIGINAL
     Gitt avviksdetaljer 'enhetsnummer' = '4806'
     Når jeg behandler avvik på opprettet journalpost
