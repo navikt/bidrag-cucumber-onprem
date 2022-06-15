@@ -42,9 +42,12 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_SPLITTING
     Så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'feilfort' = 'true'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'AS'
 
-  @ignored # sikkerhetstoken (sts) mot dokarkiv-api må settes opp
   Scenario: Sjekk at oppgave blir laget for splitting
+    Gitt avviksdetaljer 'enhetsnummer' = '4806'
+    Og avvikstypen har beskrivelse 'splitt midt på'
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status for oppgavesøket være 200
     Og søkeresultatet skal inneholde 1 oppgave
+    Og skal responsen fra oppgave inneholde feltet 'tema' = 'MOT'
+    Og skal responsen fra oppgave inneholde feltet 'oppgavetype' = 'SR'

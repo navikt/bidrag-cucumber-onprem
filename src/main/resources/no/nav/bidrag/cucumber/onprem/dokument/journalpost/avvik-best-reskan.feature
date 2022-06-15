@@ -31,15 +31,17 @@ Egenskap: avvik bidrag-dokument-journalpost: BESTILL_RESKANNING
     Og listen med avvikstyper skal inneholde 'BESTILL_RESKANNING'
 
   Scenario: Sjekk at reskanning kan bestilles
+    Og avvikstypen har beskrivelse 'splitt midt på'
     Når jeg behandler avvik på opprettet journalpost
     Så skal http status være 200
 
-  @ignored # sikkerhetstoken (sts) mot dokarkiv-api må settes opp
   Scenario: Sjekk at oppgave blir laget for reskanning
     Når jeg behandler avvik på opprettet journalpost
     Og jeg søker etter oppgaver for mottaksregistrert journalpost
     Så skal http status være 200
     Og søkeresultatet skal inneholde 1 oppgave
+    Og skal responsen fra oppgave inneholde feltet 'tema' = 'MOT'
+    Og skal responsen fra oppgave inneholde feltet 'oppgavetype' = 'SR'
 
   Scenario: Sjekk at når man bestiller reskanning, så skal journalposten bli feilført
     Når jeg behandler avvik på opprettet journalpost

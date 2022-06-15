@@ -215,6 +215,7 @@ jobs:
       INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
       INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.adeo.no
       INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
 
     steps:
       - name: "@bdj-mot-avvik-*"
@@ -228,7 +229,8 @@ jobs:
                 "@bdj-mot-avvik-endre-fagomrade", "@bdj-mot-avvik-inn2ut"
               ],
               "navUsername": "c151787", "testUsername": "z992903",
-              "noContextPathForApps":["dokarkiv-api"], "ingressesForApps":[
+              "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
+                "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata",
                 "https://dokarkiv-q2.dev.adeo.no@dokarkiv-api"
@@ -291,8 +293,10 @@ jobs:
                 "@avvik-best-org", "@avvik-best-reskan", "@avvik-best-splitt",
                 "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut", "@avvik-slett-jp"
               ],
+              "noContextPathForApps":["dokarkiv-api", "oppgave-api"],
               "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
+                "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata",
                 "https://dokarkiv-q2.dev.adeo.no@dokarkiv-api"
