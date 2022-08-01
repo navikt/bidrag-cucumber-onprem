@@ -49,7 +49,7 @@ object ArkivManager {
                     "fagsaksystem": "BISYS"
                   },
                   "bruker": {
-                    "id": "11126222671",
+                    "id": "27516441319",
                     "idType": "FNR"
                   },
                   "dokumenter": [

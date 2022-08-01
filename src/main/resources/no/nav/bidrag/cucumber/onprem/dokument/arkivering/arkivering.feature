@@ -21,7 +21,7 @@ Egenskap: bidrag-dokument-arkivering
         "fagomrade": "BID",
         "journalstatus": "KP",
         "journalfortAv": "Cucumber test",
-        "gjelder": "11126222671",
+        "gjelder": "27516441319",
         "journaldato": "2019-01-01",
         "mottattDato": "2019-01-01",
         "skannetDato": "2019-01-01",
