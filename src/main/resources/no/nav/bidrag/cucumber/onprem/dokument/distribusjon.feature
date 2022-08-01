@@ -22,7 +22,7 @@ Egenskap: bidrag-distribusjon
         "fagomrade": "BID",
         "journalstatus": "KP",
         "journalfortAv": "Cucumber test",
-        "gjelder": "11126222671",
+        "gjelder": "27516441319",
         "saksnummer": "1000003"
         }
         """
