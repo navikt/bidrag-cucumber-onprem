@@ -39,12 +39,12 @@ Egenskap: bidrag-dokument-arkiv
               "kanal": "NAV_NO",
               "journalfoerendeEnhet": "0701",
               "avsenderMottaker": {
-                "id": "02459032730",
+                "id": "27516441319",
                 "idType": "FNR",
                 "navn": "Blund, Jon"
               },
               "bruker": {
-                "id": "02459032730",
+                "id": "27516441319",
                 "idType": "FNR"
               },
               "dokumenter": [
@@ -63,13 +63,13 @@ Egenskap: bidrag-dokument-arkiv
             }
           """
     Og skal ha totalt 1 åpne journalføringsoppgaver
-    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'tildeltEnhetsnr' = '4806'
-    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'aktoerId' = '2586584223271'
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'tildeltEnhetsnr' = '4812'
+    Og skal responsen fra oppgave med type 'JFR' inneholde feltet 'aktoerId' = '2616400414139'
     Og jeg registrerer endring på opprettet journalpost på enhet '4806' med nøkkel 'JOARK_INNGAAENDE_JOURNALFOR':
       """
       {
         "skalJournalfores":true,
-        "gjelder": "19466334734",
+        "gjelder": "22466401394",
         "tittel":"Journalfør cucumber test",
         "tilknyttSaker":["2121212"]
       }
@@ -78,9 +78,9 @@ Egenskap: bidrag-dokument-arkiv
     Og skal ha totalt 0 åpne journalføringsoppgaver
     Og skal ha totalt 1 åpne søknadsoppgaver
     Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'tildeltEnhetsnr' = '4806'
-    Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'aktoerId' = '2676039818321'
+    Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'aktoerId' = '2350724505015'
     Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JOURNALFOR'
     Så skal http status være 200
-    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'gjelderAktor.ident' = '19466334734'
+    Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'gjelderAktor.ident' = '22466401394'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'journalstatus' = 'J'
     Og så skal responsen inneholde et objekt med navn 'journalpost' som har feltet 'tema' = 'BID'

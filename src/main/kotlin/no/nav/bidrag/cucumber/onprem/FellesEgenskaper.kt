@@ -5,7 +5,9 @@ import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
+import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.Assertions.assertThat
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
 import java.util.function.BiFunction
@@ -13,6 +15,10 @@ import java.util.function.BiFunction
 @Suppress("unused") // used by cucumber
 class FellesEgenskaper : No {
 
+    companion object {
+        @JvmStatic
+        private val LOGGER = LoggerFactory.getLogger(FellesEgenskaper::class.java)
+    }
     init {
         Gitt("nais applikasjon {string}") { naisApplikasjon: String -> CucumberTestRun.settOppNaisAppTilTesting(naisApplikasjon) }
 
@@ -86,10 +92,12 @@ class FellesEgenskaper : No {
         }
 
         Og("så skal responsen fra {string} inneholde et objekt med navn {string} som har feltet {string} = {string}") { apiName: String, objekt: String, key: String, value: String ->
+            LOGGER.info("Sjekker om objekt med navn $objekt har feltet $key=$value")
             val response = CucumberTestRun.hentRestTjenste("oppgave-api").hentResponseSomMap()
             sjekkAtResponseHarObjektMedFelt(response, objekt, key, value)
         }
         Og("så skal responsen inneholde et objekt med navn {string} som har feltet {string} = {string}") { objekt: String, key: String, value: String ->
+            LOGGER.info("Sjekker om objekt med navn $objekt har feltet $key=$value")
             sjekkAtResponseHarObjektMedFelt(objekt, key, value)
         }
 
