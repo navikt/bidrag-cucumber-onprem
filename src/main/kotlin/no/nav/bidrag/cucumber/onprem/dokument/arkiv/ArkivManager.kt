@@ -113,7 +113,7 @@ object ArkivManager {
               "kanal": "NAV_NO",
               "journalfoerendeEnhet": "0701",
               "avsenderMottaker": {
-                "id": "57128849817",
+                "id": "22466401394",
                 "idType": "FNR",
                 "navn": "Blund, Jon"
               },
