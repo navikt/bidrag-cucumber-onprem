@@ -24,5 +24,5 @@ Egenskap: bidrag-organisasjon
     Så skal http status være 200
 
   Scenario: Sjekk at hent av enheter fra arbeidsfordeling for person-id returnerer OK (200) respons
-    Når jeg henter enheter fra arbeidsfordeling for person med ident '27058426518'
+    Når jeg henter enheter fra arbeidsfordeling for person med ident '29068918861'
     Så skal http status være 200
