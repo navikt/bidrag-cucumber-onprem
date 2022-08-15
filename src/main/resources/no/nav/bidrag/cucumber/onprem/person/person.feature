@@ -12,7 +12,7 @@ Egenskap: bidrag-person
     Og responsen skal inneholde 'status' = 'UP'
 
   Scenario: bidrag-person: Sjekk at gyldig person-id returnerer OK (200) respons
-    Når jeg henter informasjon for ident '27058426518'
+    Når jeg henter informasjon for ident '29068918861'
     Så skal http status være 200
 
   Scenario: bidrag-person: Sjekk at ugyldig person-id returnerer NO CONTENT (204) respons
