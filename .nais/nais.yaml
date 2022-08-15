@@ -43,6 +43,7 @@ spec:
   envFrom:
     - secret: test-auth-z992903
     - secret: nav-auth-c151787
+    - secret: nav-auth-s148719
     - secret: sts-auth
   env:
     - name: SAK_SCOPE
