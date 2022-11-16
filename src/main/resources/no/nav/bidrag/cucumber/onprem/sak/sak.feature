@@ -17,6 +17,10 @@ Egenskap: bidrag-sak
     Når jeg henter bidragssaker for person med fnr '12345678901'
     Så skal http status være 404
 
+  Scenario: Sjekk at vi får 201 CREATE hvis vi ber om å opprette en sak i databasen
+    Når jeg oppretter bidragssak med enhet '1701'
+    Så skal http status være 201
+
   @ignored
   @pip
   Scenario: Skal gi 200 for sak 9999999
