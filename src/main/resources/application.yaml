@@ -33,6 +33,12 @@ spring:
             client-secret: ${AZURE_APP_CLIENT_SECRET}
             authorization-grant-type: client_credentials
             scope: api://${OPPGAVE_SCOPE}/.default
+          bidrag-dokument-arkiv:
+            provider: aad
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: api://${BD_ARKIV_SCOPE}/.default
         provider:
           aad:
             token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}

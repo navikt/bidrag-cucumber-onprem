@@ -1,0 +1,10 @@
+SAK_SCOPE: dev-fss.bidrag.bidrag-sak-feature
+OPPGAVE_SCOPE: dev-fss.oppgavehandtering.oppgave-q1
+BD_ARKIV_SCOPE: dev-fss.bidrag.bidrag-dokument-arkiv-feature
+STS_URL: https://security-token-service.dev.adeo.no
+STS_USER: srvbdarkiv
+server.port: 9855
+AZURE_APP_TENANT_ID: 966ac572-f5b7-4bbe-aa88-c76419c0f851
+AZURE_OPENID_CONFIG_ISSUER: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+AZURE_OPENID_CONFIG_JWKS_URI: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
