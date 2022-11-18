@@ -1,6 +1,11 @@
 SAK_SCOPE: dev-fss.bidrag.bidrag-sak-feature
 OPPGAVE_SCOPE: dev-fss.oppgavehandtering.oppgave-q1
 BD_ARKIV_SCOPE: dev-fss.bidrag.bidrag-dokument-arkiv-feature
+BD_JOURNALPOST_SCOPE: dev-fss.bidrag.bidrag-dokument-journalpost-feature
+DOKUMENT_SCOPE: dev-fss.bidrag.bidrag-dokument-feature
+PERSON_SCOPE: dev-fss.bidrag.bidrag-person-feature
+ORGANISASJON_SCOPE: dev-fss.bidrag.bidrag-organisasjon-feature
+BD_ARKIVERING_SCOPE: dev-fss.bidrag.bidrag-dokument-arkivering-feature
 STS_URL: https://security-token-service.dev.adeo.no
 STS_USER: srvbdarkiv
 server.port: 9855

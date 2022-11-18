@@ -47,8 +47,20 @@ spec:
   env:
     - name: SAK_SCOPE
       value: {{ scope.sak }}
+    - name: BD_ARKIV_SCOPE
+      value: {{scope.bd_arkiv}}
+    - name: BD_JOURNALPOST_SCOPE
+      value: {{scope.bd_journalpost}}
+    - name: ORGANISASJON_SCOPE
+      value: {{scope.organisasjon}}
+    - name: DOKUMENT_SCOPE
+      value: {{scope.dokument}}
+    - name: PERSON_SCOPE
+      value: {{scope.person}}
     - name: OPPGAVE_SCOPE
       value: {{scope.oppgave}}
+    - name: BD_ARKIVERING_SCOPE
+      value: {{scope.bd_arkivering}}
     - name: STS_URL
       value: https://security-token-service.dev.adeo.no
     - name: STS_USER

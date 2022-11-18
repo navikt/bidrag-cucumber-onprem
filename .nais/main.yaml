@@ -6,4 +6,10 @@ access:
     bidrag-sak: bidrag-sak.dev-fss-pub.nais.io
 scope:
   sak: dev-fss.bidrag.bidrag-sak
+  bd_arkiv: dev-fss.bidrag.bidrag-dokument-arkiv
+  bd_journalpost: dev-fss.bidrag.bidrag-dokument-journalpost
+  organisasjon: dev-fss.bidrag.bidrag-organisasjon
+  person: dev-fss.bidrag.bidrag-person
+  dokument: dev-fss.bidrag.bidrag-dokument
+  bd_arkivering: dev-fss.bidrag.bidrag-dokument-arkivering
   oppgave: dev-fss.oppgavehandtering.oppgave
