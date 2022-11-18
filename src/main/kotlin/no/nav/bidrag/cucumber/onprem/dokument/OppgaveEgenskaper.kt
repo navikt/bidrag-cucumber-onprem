@@ -34,6 +34,10 @@ class OppgaveEgenskaper : No {
             oppgave.exchangeGet("/api/v1/oppgaver/?journalpostId=JOARK-$journalpostIdUtenPrefix&journalpostId=BID-$journalpostIdUtenPrefix&journalpostId=$journalpostIdUtenPrefix&statuskategori=AAPEN")
         }
 
+        fun hentAapneSoknadsOppgaver(saksnummer: String) {
+            val oppgave = settOppNaisApp("oppgave-api")
+            oppgave.exchangeGet("/api/v1/oppgaver/?saksreferanse=$saksnummer&statuskategori=AAPEN")
+        }
 
         Gitt("alle søknadsoppgaver med saksnummer {string} er lukket") { saksnummer: String ->
             val oppgave = settOppNaisApp("oppgave-api")
@@ -68,11 +72,11 @@ class OppgaveEgenskaper : No {
             )
         }
 
-        Og("skal ha totalt {int} åpne søknadsoppgaver") { antall: Int ->
+        Og("skal ha totalt {int} åpne søknadsoppgaver for saksnummer {string}") { antall: Int, saksnummer: String ->
             await.atMost(15, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS)
                 .pollInSameThread()
                 .untilAsserted {
-                    hentAapneOppgaver()
+                    hentAapneSoknadsOppgaver(saksnummer)
                     validerHarAntallOppgaverMedType(antall, "BEH_SAK")
                 }
         }
