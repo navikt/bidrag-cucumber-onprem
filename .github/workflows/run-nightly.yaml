@@ -52,7 +52,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bda-samt-bdj"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bda-samt-bdj"],
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "https://bidrag-dokument-arkiv.dev.intern.nav.no@bidrag-dokument-arkiv",
                 "https://dokarkiv-q2.dev.adeo.no@dokarkiv-api",
@@ -69,7 +69,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@sakjournal"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@sakjournal"],
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument"
               ]
@@ -82,7 +82,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@avviksbehandling"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@avviksbehandling"],
               "ingressesForApps":[
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -96,7 +96,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bdok-journalpost"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bdok-journalpost"],
               "ingressesForApps":[
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -110,7 +110,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bdok-mottaksregistrert"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bdok-mottaksregistrert"],
               "ingressesForApps":[
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -128,7 +128,6 @@ jobs:
                 "@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut", "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-org",
                 "@bdok-mot-avvik-best-reskan", "@bdok-mot-avvik-best-splitt"
               ],
-              "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
                 "https://oppgave-q2.nais.preprod.local@oppgave-api",
                 "https://bidrag-dokument.dev.intern.nav.no@bidrag-dokument",
@@ -172,8 +171,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bidrag-dokument-arkiv"],
-              "navUsername": "c151787",
-              "testUsername": "z992903",
               "noContextPathForApps": [
                   "dokarkiv-api",
                   "oppgave-api"
@@ -192,7 +189,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@arkiv-saf"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@arkiv-saf"],
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api"
@@ -229,7 +226,6 @@ jobs:
                 "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan", "@bdj-mot-avvik-best-splitt",
                 "@bdj-mot-avvik-endre-fagomrade", "@bdj-mot-avvik-inn2ut"
               ],
-              "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
                 "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
@@ -246,7 +242,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-mottaksregistrert"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -261,7 +256,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-sakjournal"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -276,7 +270,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-journalpost"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
                 "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"
@@ -295,7 +288,6 @@ jobs:
                 "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut", "@avvik-slett-jp"
               ],
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                 "https://bidrag-dokument-journalpost.dev.adeo.no@bidrag-dokument-journalpost",
@@ -321,7 +313,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["https://bidrag-organisasjon.dev.intern.nav.no@tag:bidrag-organisasjon"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -342,7 +333,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["https://bidrag-person.dev.intern.nav.no@tag:bidrag-person"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -363,7 +353,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["https://bidrag-sak.dev.intern.nav.no@tag:bidrag-sak"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -385,7 +374,6 @@ jobs:
           -H 'accept: */*' \
           -H 'Content-Type: application/json' \
           -d '{
-           "navUsername": "c151787", "testUsername": "z992903",
            "tags":["@bidrag-dokument-arkivering"],
            "noContextPathForApps": ["bidrag-dokument-arkivering"],
            "ingressesForApps":["https://bidrag-dokument-arkivering.dev.adeo.no@tag:bidrag-dokument-arkivering", "https://bidrag-testdata.dev.adeo.no@bidrag-testdata"]
@@ -414,7 +402,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "tags":["@bidrag-distribusjon"],
               "noContextPathForApps": ["bidrag-dokument-arkivering"],
               "ingressesForApps":[

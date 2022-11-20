@@ -28,38 +28,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: navikt/bidrag-docker/exists@v1
-        id: dockerimage
-        with:
-          image_name: bidrag-cucumber-onprem
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo NOT_FOUND=${{ steps.dockerimage.outputs.not_found }} >> $GITHUB_ENV
-      - uses: actions/checkout@v2
-        if: env.NOT_FOUND == 'true'
-      - uses: actions/setup-java@v1
-        if: env.NOT_FOUND == 'true'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           java-version: '17'
-      - uses: actions/cache@v1
-        if: env.NOT_FOUND == 'true'
+          distribution: 'corretto'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: navikt/bidrag-maven/setup@v7
-        if: env.NOT_FOUND == 'true'
+      - uses: navikt/bidrag-maven/setup@v7.0.5
         with:
           repositories: maven-central=https://repo.maven.apache.org/maven2,github-packages=https://maven.pkg.github.com/navikt/maven-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: navikt/bidrag-maven/verify-dependencies@v7
-        if: env.NOT_FOUND == 'true'
       - run: mvn install -B -e
-        if: env.NOT_FOUND == 'true'
       - name: Build and publish Docker image
-        if: env.NOT_FOUND == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -73,7 +61,7 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: deploy
       - name: Deploy bidrag-cucumber-onprem testapplication for main branches to dev-fss
@@ -139,7 +127,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bda-samt-bdj"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bda-samt-bdj"],
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
@@ -155,7 +143,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@sakjournal"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@sakjournal"],
               "ingressesForApps":["${{ env.INGRESS_DOKUMENT }}@bidrag-dokument"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -165,7 +153,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@avviksbehandling"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@avviksbehandling"],
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT }}@bidrag-dokument",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -178,7 +166,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bdok-journalpost"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bdok-journalpost"],
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT }}@bidrag-dokument",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -191,7 +179,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bdok-mottaksregistrert"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bdok-mottaksregistrert"],
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT }}@bidrag-dokument",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -208,7 +196,6 @@ jobs:
                 "@bdok-mot-avvik-best-org", "@bdok-mot-avvik-best-reskan", "@bdok-mot-avvik-best-splitt",
                 "@bdok-mot-avvik-endre-fagomrade", "@bdok-mot-avvik-inn2ut"
               ],
-              "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
                 "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
@@ -253,7 +240,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@bidrag-dokument-arkiv"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@bidrag-dokument-arkiv"],
               "noContextPathForApps": [
                   "dokarkiv-api", "oppgave-api"
               ],
@@ -270,7 +257,7 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "tags":["@arkiv-saf"], "navUsername": "c151787", "testUsername": "z992903",
+              "tags":["@arkiv-saf"],
               "noContextPathForApps":["dokarkiv-api"],"ingressesForApps":[
                 "${{ env.INGRESS_ARKIV }}@bidrag-dokument-arkiv",
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
@@ -307,7 +294,6 @@ jobs:
                 "@bdj-mot-avvik-best-org", "@bdj-mot-avvik-best-reskan", "@bdj-mot-avvik-best-splitt",
                 "@bdj-mot-avvik-endre-fagomrade", "@bdj-mot-avvik-inn2ut"
               ],
-              "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
                 "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
@@ -323,7 +309,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-mottaksregistrert"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -337,7 +322,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-sakjournal"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -351,7 +335,6 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "tags":["@bdj-journalpost"],
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":[
                 "${{ env.INGRESS_DOKUMENT_JOURNALPOST }}@bidrag-dokument-journalpost",
                 "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"
@@ -368,7 +351,6 @@ jobs:
                 "@avvik-best-org", "@avvik-best-reskan", "@avvik-best-splitt",
                 "@avvik-endre-fagomrade", "@avvik-feilfore-sak", "@avvik-inn2ut", "@avvik-slett-jp"
               ],
-              "navUsername": "c151787", "testUsername": "z992903",
               "noContextPathForApps":["dokarkiv-api", "oppgave-api"], "ingressesForApps":[
                 "${{ env.INGRESS_DOKARKIV }}@dokarkiv-api",
                 "${{ env.INGRESS_OPPGAVE }}@oppgave-api",
@@ -396,7 +378,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["${{ env.INGRESS_PERSON }}@tag:bidrag-person"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -419,7 +400,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["${{ env.INGRESS_ORGANISASJON }}@tag:bidrag-organisasjon"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -442,7 +422,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "ingressesForApps":["${{ env.INGRESS_SAK }}@tag:bidrag-sak"]
             }' | tee .cucumber-result
           cat .cucumber-result | grep HTTP/1.1 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
@@ -489,7 +468,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "tags":["@bidrag-dokument-arkivering"],
               "noContextPathForApps": ["bidrag-dokument-arkivering"],
               "ingressesForApps":["${{ env.INGRESS_ARKIVERING }}@tag:bidrag-dokument-arkivering", "${{ env.INGRESS_TESTDATA }}@bidrag-testdata"]
@@ -518,7 +496,6 @@ jobs:
             -H 'accept: */*' \
             -H 'Content-Type: application/json' \
             -d '{
-              "navUsername": "c151787", "testUsername": "z992903",
               "tags":["@bidrag-distribusjon"],
               "noContextPathForApps": ["bidrag-dokument-arkivering"],
               "ingressesForApps":[
@@ -569,5 +546,5 @@ jobs:
       - run-tests-for-distribusjon
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: navikt/bidrag-git/tag-snap@v1-tag-snap

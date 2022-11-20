@@ -76,7 +76,7 @@ Egenskap: bidrag-dokument-arkiv
       """
     Så skal http status være 200
     Og skal ha totalt 0 åpne journalføringsoppgaver
-    Og skal ha totalt 1 åpne søknadsoppgaver
+    Og skal ha totalt 1 åpne søknadsoppgaver for saksnummer '2121212'
     Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'tildeltEnhetsnr' = '4806'
     Og skal responsen fra oppgave med type 'BEH_SAK' inneholde feltet 'aktoerId' = '2350724505015'
     Og at jeg henter endret journalpost for nøkkel 'JOARK_INNGAAENDE_JOURNALFOR'

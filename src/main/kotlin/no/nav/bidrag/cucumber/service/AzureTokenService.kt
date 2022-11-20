@@ -15,7 +15,7 @@ class AzureTokenService(val authorizedClientManager: OAuth2AuthorizedClientManag
         private val ANONYMOUS_AUTHENTICATION: Authentication = AnonymousAuthenticationToken(
             "anonymous", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
         )
-        val supportedApplications = setOf("oppgave-api")
+        val supportedApplications = setOf("oppgave-api", "bidrag-sak", "bidrag-dokument-arkiv", "bidrag-dokument-journalpost", "bidrag-person", "bidrag-organisasjon", "bidrag-dokument", "bidrag-dokument-arkivering")
     }
 
     override fun generateToken(application: String): String {

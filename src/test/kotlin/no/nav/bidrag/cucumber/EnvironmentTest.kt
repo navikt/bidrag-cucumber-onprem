@@ -19,12 +19,4 @@ internal class EnvironmentTest {
         System.setProperty("TEST_AUTH_JACTOR-RISES", "007")
         assertThat(Environment.testUserAuth).isEqualTo("007")
     }
-
-    @Test
-    fun `skal hente passord basert på brukernavn (username)`() {
-        CucumberTestsModel(navUsername = "c151787").initCucumberEnvironment()
-
-        System.setProperty("NAV_AUTH_C151787", "707")
-        assertThat(Environment.navAuth).isEqualTo("707")
-    }
 }
