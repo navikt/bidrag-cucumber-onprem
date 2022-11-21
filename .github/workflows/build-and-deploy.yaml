@@ -284,6 +284,7 @@ jobs:
           echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.adeo.no" >> $GITHUB_ENV
           echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+        if: github.ref != 'refs/heads/main'
       - name: "@bdj-mot-avvik-*"
         run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
