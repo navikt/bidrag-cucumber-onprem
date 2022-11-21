@@ -5,8 +5,8 @@ import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.Headers
 import no.nav.bidrag.cucumber.ScenarioManager
 import no.nav.bidrag.cucumber.service.AzureTokenService
-import no.nav.bidrag.cucumber.service.OidcTokenService
 import no.nav.bidrag.cucumber.service.StsService
+import no.nav.bidrag.cucumber.service.StsTokenService
 import no.nav.bidrag.cucumber.service.TokenService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -146,7 +146,7 @@ class RestTjeneste(
         private fun hentSaksbehandlerToken(applicationName: String): TokenValue {
             val tokenService: TokenService = when (CucumberTestRun.hentTokenType()) {
                 TokenType.AZURE -> BidragCucumberSingletons.hentEllerInit(AzureTokenService::class) ?: throw notNullTokenService(TokenType.AZURE)
-                TokenType.OIDC -> BidragCucumberSingletons.hentEllerInit(OidcTokenService::class) ?: throw notNullTokenService(TokenType.OIDC)
+                TokenType.STS -> BidragCucumberSingletons.hentEllerInit(StsTokenService::class) ?: throw notNullTokenService(TokenType.STS)
             }
 
             return TokenValue(tokenService.cacheGeneratedToken(applicationName))
