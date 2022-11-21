@@ -4,7 +4,7 @@ import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.dto.CucumberTestsApi
 import no.nav.bidrag.cucumber.service.AzureTokenService
-import no.nav.bidrag.cucumber.service.OidcTokenService
+import no.nav.bidrag.cucumber.service.StsTokenService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ internal class RestTjenesteSikkerhetTest {
     private lateinit var azureTokenServiceMock: AzureTokenService
 
     @MockBean
-    private lateinit var oidcTokenServiceMock: OidcTokenService
+    private lateinit var stsTokenService: StsTokenService
 
     @MockBean
     private lateinit var httpHeaderRestTemplateMock: HttpHeaderRestTemplate
@@ -56,30 +56,32 @@ internal class RestTjenesteSikkerhetTest {
         assertAll(
             { assertThat(valueGenerator.generate()).isEqualTo("Bearer of azure-token") },
             { verify(azureTokenServiceMock).generateToken("nais-app") },
-            { verify(oidcTokenServiceMock, never()).generateToken(anyOrNull()) }
         )
     }
 
     @Test
-    fun `skal bruke OIDC token`() {
+    fun `skal bruke STS token`() {
         CucumberTestsModel(
             CucumberTestsApi(
                 ingressesForApps = listOf("https://somewhere@nais-app"),
-                testUsername = "jactor-rises"
+                testUsername = "jactor-rises",
+                tokenType = "STS"
             )
         ).initCucumberEnvironment()
 
-        whenever(oidcTokenServiceMock.generateToken("nais-app")).thenReturn("of oidc-token")
+
+        whenever(stsTokenService.generateToken("nais-app")).thenReturn("of sts-token")
+
         RestTjeneste.konfigurerResttjeneste("nais-app")
+
 
         val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
         verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
         val valueGenerator = generatorCaptor.value
 
         assertAll(
-            { assertThat(valueGenerator.generate()).isEqualTo("Bearer of oidc-token") },
+            { assertThat(valueGenerator.generate()).isEqualTo("Bearer of sts-token") },
             { verify(azureTokenServiceMock, never()).generateToken(anyOrNull()) },
-            { verify(oidcTokenServiceMock).generateToken("nais-app") }
         )
     }
 

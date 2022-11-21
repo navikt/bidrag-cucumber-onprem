@@ -1,7 +1,6 @@
 package no.nav.bidrag.cucumber.model
 
 import no.nav.bidrag.cucumber.Environment
-import no.nav.bidrag.cucumber.service.OidcTokenService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,7 +11,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -21,9 +19,6 @@ import org.springframework.web.client.RestTemplate
 
 @SpringBootTest
 internal class RestTjenesteTest {
-
-    @MockBean
-    private lateinit var oidcTokenServiceMock: OidcTokenService
 
     @BeforeEach
     fun `reset Cucumber environment`() {
@@ -34,7 +29,6 @@ internal class RestTjenesteTest {
     fun `gitt INGRESSES_FOR_APPS med verdi for applikasjon, skal RestTjeneste konfigureres med denne verdien`() {
         val cucumberTestsModel = CucumberTestsModel(
             ingressesForApps = listOf("https://somewhere.com/@nais-app", "https://somewhere.else.com@annen-nais-app"),
-            testUsername = "James Bond",
             securityToken = "secured"
         )
 
@@ -53,7 +47,6 @@ internal class RestTjenesteTest {
     fun `gitt INGRESSES_FOR_APPS med verdi for applikasjon (konfigurert som er en tag), skal RestTjeneste konfigureres med tag-navnet`() {
         val cucumberTestsModel = CucumberTestsModel(
             ingressesForApps = listOf("https://somewhere.com/@nais-tag", "https://somewhere.else.com@annen-nais-tag"),
-            testUsername = "James Bond",
             securityToken = "secured"
         )
 

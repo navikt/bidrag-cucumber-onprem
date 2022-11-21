@@ -11,5 +11,5 @@ data class CucumberTestsApi(
     @Schema(description = "liste med tags som skal testes uten å oppgi ingress") var tags: List<String> = emptyList(),
     @Schema(description = "Brukernavn (nav-ident) for verifisering av tilgang for testbruker, eks: x123456") var navUsername: String? = null,
     @Schema(description = "Brukernavn (test ident) for testkjøring, eks: z123456") var testUsername: String? = null,
-    @Schema(description = "Type token som skal brukes i test, AZURE eller OIDC (default)") var tokenType: String = "OIDC"
+    @Schema(description = "Type token som skal brukes i test, AZURE eller STS (default)") var tokenType: String = "AZURE"
 )

@@ -5,7 +5,6 @@ import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.BidragCucumberOnprem
 import no.nav.bidrag.cucumber.SpringConfig
-import no.nav.bidrag.cucumber.service.OidcTokenService
 import no.nav.bidrag.cucumber.service.StsService
 import no.nav.bidrag.cucumber.service.TokenService
 import org.springframework.context.ApplicationContext
@@ -30,7 +29,6 @@ internal object BidragCucumberSingletons {
     private fun <T> init(kClass: KClass<*>): T {
         if (kClass == StsService::class) return StsService(HttpHeaderRestTemplate()) as T
         if (kClass == ExceptionLogger::class) return ExceptionLogger("${BidragCucumberOnprem::class.simpleName}") as T
-        if (kClass == OidcTokenService::class) return DummyTokenService() as T
 
         throw IllegalStateException("Mangler manuell initialisering av ${kClass.simpleName}")
     }
