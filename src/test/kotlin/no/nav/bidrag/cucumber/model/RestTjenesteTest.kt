@@ -29,6 +29,7 @@ internal class RestTjenesteTest {
     fun `gitt INGRESSES_FOR_APPS med verdi for applikasjon, skal RestTjeneste konfigureres med denne verdien`() {
         val cucumberTestsModel = CucumberTestsModel(
             ingressesForApps = listOf("https://somewhere.com/@nais-app", "https://somewhere.else.com@annen-nais-app"),
+            noContextPathForApps = listOf("annen-nais-app"),
             securityToken = "secured"
         )
 
@@ -39,7 +40,7 @@ internal class RestTjenesteTest {
 
         assertAll(
             { assertThat(restTjeneste.rest.baseUrl).`as`("tjeneste-app").isEqualTo("https://somewhere.com/nais-app") },
-            { assertThat(annenRestTjeneste.rest.baseUrl).`as`("annen-tjeneste").isEqualTo("https://somewhere.else.com/annen-nais-app") }
+            { assertThat(annenRestTjeneste.rest.baseUrl).`as`("annen-tjeneste").isEqualTo("https://somewhere.else.com") }
         )
     }
 

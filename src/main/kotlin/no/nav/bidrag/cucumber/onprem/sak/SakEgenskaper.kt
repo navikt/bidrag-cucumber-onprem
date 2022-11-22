@@ -8,11 +8,11 @@ class SakEgenskaper : No {
     init {
         Når("jeg henter bidragssaker for person med fnr {string}") { fnr: String ->
             CucumberTestRun.hentRestTjenesteTilTesting()
-                .exchangeGet("/person/sak/$fnr", failOnNotFound = false)
+                .exchangeGet("/bidrag-sak/person/sak/$fnr", failOnNotFound = false)
         }
         Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
-                "/sak/ny",
+                "/bidrag-sak/sak/ny",
                 """{"eierfogd":"$enhet"}""",
                 true,
                 "X-Enhet" to enhet
