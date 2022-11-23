@@ -21,6 +21,14 @@ Egenskap: bidrag-sak
     Når jeg oppretter bidragssak med enhet '1701'
     Så skal http status være 201
 
+  Scenario: Sjekk at vi får 200 OK når vi ber om å opprette en sak i databasen
+    Når jeg oppretter bidragssak med rolle for fnr '22517860577'
+    Så skal http status være 200
+
+  Scenario: Sjekk at vi får 200 OK når vi ber om sak for person som eksisterer i databasen
+    Når jeg henter bidragssaker for person med fnr '22517860577'
+    Så skal http status være 200
+
   @ignored
   @pip
   Scenario: Skal gi 200 for sak 9999999
