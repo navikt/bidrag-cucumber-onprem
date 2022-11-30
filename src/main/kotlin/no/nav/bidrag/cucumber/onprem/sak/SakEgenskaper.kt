@@ -23,8 +23,8 @@ class SakEgenskaper : No {
             val body =
                 """{ "eierfogd": "2260",
                      "roller": [ { "fodselsnummer": "$fnr", "type": "BP" },
-                                 { "fodselsnummer": "12529050370", "type": "BM" },
-                                 { "fodselsnummer": "16446030772", "reellMottager": "16446030772", "type": "BA" } ] }"""
+                                 { "fodselsnummer": "22496818540", "type": "BM" },
+                                 { "fodselsnummer": "31477719212", "reellMottager": "16446030772", "type": "BA" } ] }"""
 
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                 "/sak",

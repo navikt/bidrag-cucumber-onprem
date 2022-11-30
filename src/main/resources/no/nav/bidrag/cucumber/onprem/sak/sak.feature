@@ -22,7 +22,7 @@ Egenskap: bidrag-sak
     Så skal http status være 201
 
   Scenario: Sjekk at vi får 200 OK når vi ber om å opprette en sak i databasen
-    Når jeg oppretter bidragssak med rolle for fnr '22517860577'
+    Når jeg oppretter bidragssak med rolle for fnr '31528318552'
     Så skal http status være 200
 
   Scenario: Sjekk at vi får 200 OK når vi ber om sak for person som eksisterer i databasen
