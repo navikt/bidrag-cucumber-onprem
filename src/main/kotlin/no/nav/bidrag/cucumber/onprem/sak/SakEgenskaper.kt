@@ -19,6 +19,20 @@ class SakEgenskaper : No {
             )
         }
 
+        Når("jeg oppretter bidragssak med rolle for fnr {string}") { fnr: String ->
+            val body =
+                """{ "eierfogd": "2260",
+                     "roller": [ { "fodselsnummer": "$fnr", "type": "BP" },
+                                 { "fodselsnummer": "22496818540", "type": "BM" },
+                                 { "fodselsnummer": "31477719212", "reellMottager": "16446030772", "type": "BA" } ] }"""
+
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                "/sak",
+                body,
+                true
+            )
+        }
+
         Og("bruk av en produksjonsbrukeren 'srvbisys' med tilgang til bidrag-sak pip") {
             TODO("Not yet implemented")
         }
