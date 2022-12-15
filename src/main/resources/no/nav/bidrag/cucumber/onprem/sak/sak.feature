@@ -29,6 +29,10 @@ Egenskap: bidrag-sak
     Når jeg henter bidragssaker for person med fnr '22517860577'
     Så skal http status være 200
 
+  Scenario: Sjekk at vi får 200 når vi oppdaterer en sak som eksisterer i basen
+    Når jeg oppdaterer en bidragssak
+    Så skal http status være 200
+
   @ignored
   @pip
   Scenario: Skal gi 200 for sak 9999999

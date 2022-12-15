@@ -2,6 +2,9 @@ package no.nav.bidrag.cucumber.onprem.organisasjon
 
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import no.nav.bidrag.cucumber.model.fnr1
+import no.nav.bidrag.cucumber.model.fnr2
+import no.nav.bidrag.cucumber.model.fnr3
 
 @Suppress("unused") // used by cucumber
 class OrganisasjonEgenskaper : No {
@@ -20,6 +23,12 @@ class OrganisasjonEgenskaper : No {
 
     Når("jeg henter enheter fra arbeidsfordeling for person med ident {string}") { ident: String ->
       CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet("/arbeidsfordeling/enhetsliste/geografisktilknytning/$ident")
+    }
+    Når("jeg henter enhet fra arbeidsfordeling for HentEnhetRequest") {
+      CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+        "/arbeidsfordeling/enhet/geografisktilknytning",
+        """{ "ident":"$fnr1", "biidenter":["$fnr2", "$fnr3"] }"""
+      )
     }
   }
 }
