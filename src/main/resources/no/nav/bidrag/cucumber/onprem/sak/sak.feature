@@ -14,7 +14,7 @@ Egenskap: bidrag-sak
     Og responsen skal inneholde 'status' = 'UP'
 
   Scenario: Sjekk at vi får NOT FOUND dersom vi ber om sak for person som ikke eksisterer i databasen
-    Når jeg henter bidragssaker for person med fnr '12345678901'
+    Når jeg henter bidragssaker for person med fnr som ikke finnes
     Så skal http status være 404
 
   Scenario: Sjekk at vi får 201 CREATE hvis vi ber om å opprette en sak i databasen
@@ -22,11 +22,11 @@ Egenskap: bidrag-sak
     Så skal http status være 201
 
   Scenario: Sjekk at vi får 200 OK når vi ber om å opprette en sak i databasen
-    Når jeg oppretter bidragssak med rolle for fnr '31528318552'
+    Når jeg oppretter bidragssak med rolle for fnr som finnes
     Så skal http status være 200
 
   Scenario: Sjekk at vi får 200 OK når vi ber om sak for person som eksisterer i databasen
-    Når jeg henter bidragssaker for person med fnr '22517860577'
+    Når jeg henter bidragssaker for person med fnr som finnes
     Så skal http status være 200
 
   Scenario: Sjekk at vi får 200 når vi oppdaterer en sak som eksisterer i basen

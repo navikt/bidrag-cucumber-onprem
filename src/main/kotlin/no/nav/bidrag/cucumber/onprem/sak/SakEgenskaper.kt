@@ -2,14 +2,21 @@ package no.nav.bidrag.cucumber.onprem.sak
 
 import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.CucumberTestRun
+import no.nav.bidrag.cucumber.model.fnr1
+import no.nav.bidrag.cucumber.model.fnr2
+import no.nav.bidrag.cucumber.model.fnr3
 import java.time.Year
 
 @Suppress("unused") // used by cucumber
 class SakEgenskaper : No {
   init {
-    Når("jeg henter bidragssaker for person med fnr {string}") { fnr: String ->
+    Når("jeg henter bidragssaker for person med fnr som finnes") {
       CucumberTestRun.hentRestTjenesteTilTesting()
-        .exchangeGet("/bidrag-sak/person/sak/$fnr", failOnNotFound = false)
+        .exchangeGet("/bidrag-sak/person/sak/$fnr1", failOnNotFound = false)
+    }
+    Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
+      CucumberTestRun.hentRestTjenesteTilTesting()
+        .exchangeGet("/bidrag-sak/person/sak/12345678901", failOnNotFound = false)
     }
     Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
       CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
@@ -20,12 +27,12 @@ class SakEgenskaper : No {
       )
     }
 
-    Når("jeg oppretter bidragssak med rolle for fnr {string}") { fnr: String ->
+    Når("jeg oppretter bidragssak med rolle for fnr som finnes") {
       val body =
         """{ "eierfogd": "2260",
-                     "roller": [ { "fodselsnummer": "$fnr", "type": "BP" },
-                                 { "fodselsnummer": "22496818540", "type": "BM" },
-                                 { "fodselsnummer": "31477719212", "reellMottager": "16446030772", "type": "BA" } ] }"""
+                     "roller": [ { "fodselsnummer": "$fnr3", "type": "BP" },
+                                 { "fodselsnummer": "$fnr2", "type": "BM" },
+                                 { "fodselsnummer": "$fnr1", "reellMottager": "$fnr1", "type": "BA" } ] }"""
 
       CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
         "/sak",
