@@ -85,3 +85,8 @@ private fun <T> nyVerdi(felt: String, verdi: T, erstattesMed: T): T {
 
     return verdi
 }
+
+// Nav testidenter som finnes i PDL
+const val fnr1 = "22496818540"
+const val fnr2 = "31477719212"
+const val fnr3 = "31528318552"
