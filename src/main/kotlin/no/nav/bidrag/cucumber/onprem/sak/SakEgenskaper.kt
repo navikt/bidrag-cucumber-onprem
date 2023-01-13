@@ -45,6 +45,7 @@ class SakEgenskaper : No {
       val saksnummer = "${Year.now().value % 100}00001"
       val body =
         """{ 
+             "saksnummer":$saksnummer,
              "kategorikode":"U",
              "landkode":"DEU",
              "konvensjonskode":"HiS",
@@ -53,7 +54,7 @@ class SakEgenskaper : No {
           }"""
 
       CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
-        "/sak/$saksnummer/oppdater",
+        "/sak/oppdater",
         body,
         true
       )
