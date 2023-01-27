@@ -7,7 +7,7 @@ on:
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
-  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.dev.adeo.no
+  INGRESS_CUCUMBER: https://bidrag-cucumber-onprem.dev.intern.nav.no
 
 jobs:
 
@@ -18,10 +18,10 @@ jobs:
     steps:
       - name: restart server bidrag-testdata
         if: github.ref == 'refs/heads/main'
-        run: "curl -X 'POST' 'https://bidrag-testdata.dev.adeo.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
+        run: "curl -X 'POST' 'https://bidrag-testdata.dev.intern.nav.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
       - name: restart server bidrag-testdata-feature
         if: github.ref != 'refs/heads/main'
-        run: "curl -X 'POST' 'https://bidrag-testdata-feature.dev.adeo.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
+        run: "curl -X 'POST' 'https://bidrag-testdata-feature.dev.intern.nav.no/bidrag-testdata/restart' -H 'accept: */*' -d ''"
 
   build:
     name: Build with maven and docker
@@ -87,7 +87,7 @@ jobs:
     needs: deploy
 
     steps:
-      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+      - run: echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run -i \
@@ -105,21 +105,21 @@ jobs:
 
     env:
       INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.intern.nav.no
-      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
+      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.intern.nav.no
       INGRESS_DOKUMENT: https://bidrag-dokument.dev.intern.nav.no
-      INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.adeo.no
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.intern.nav.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
       INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
 
     steps:
       - run: |
           echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_OPPGAVE=https://oppgave.nais.preprod.local" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_DOKUMENT=https://bidrag-dokument-feature.dev.intern.nav.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - name: "@bda-samt-bdj"
         run: |
@@ -213,16 +213,16 @@ jobs:
     env:
       INGRESS_ARKIV: https://bidrag-dokument-arkiv.dev.intern.nav.no
       INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
-      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.intern.nav.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
 
     steps:
       - run: |
           echo "INGRESS_OPPGAVE=https://oppgave.nais.preprod.local" >> $GITHUB_ENV
           echo "INGRESS_ARKIV=https://bidrag-dokument-arkiv-feature.dev.intern.nav.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - name: "@arkiv-swagger"
         run: |
@@ -272,18 +272,18 @@ jobs:
     needs: run-tests-for-dokument # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument
 
     env:
-      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.adeo.no
-      INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.adeo.no
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_DOKARKIV: https://dokarkiv-q2.dev.intern.nav.no
+      INGRESS_DOKUMENT_JOURNALPOST: https://bidrag-dokument-journalpost.dev.intern.nav.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
       INGRESS_OPPGAVE: https://oppgave-q2.nais.preprod.local
 
     steps:
       - run: |
           echo "INGRESS_OPPGAVE=https://oppgave.nais.preprod.local" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKARKIV=https://dokarkiv-q1.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKUMENT_JOURNALPOST=https://bidrag-dokument-journalpost-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - name: "@bdj-mot-avvik-*"
         run: |
@@ -371,7 +371,7 @@ jobs:
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_PERSON=https://bidrag-person-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
@@ -393,7 +393,7 @@ jobs:
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_ORGANISASJON=https://bidrag-organisasjon-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
@@ -415,7 +415,7 @@ jobs:
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
           echo "INGRESS_SAK=https://bidrag-sak-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
@@ -434,12 +434,12 @@ jobs:
     needs: deploy
 
     env:
-      INGRESS_SJABLON: https://bidrag-sjablon.dev.adeo.no
+      INGRESS_SJABLON: https://bidrag-sjablon.dev.intern.nav.no
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_SJABLON=https://bidrag-sjablon-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_SJABLON=https://bidrag-sjablon-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
@@ -456,14 +456,14 @@ jobs:
     needs: run-tests-for-dokument-journalpost # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument-journalpost
 
     env:
-      INGRESS_ARKIVERING: https://bidrag-dokument-arkivering.dev.adeo.no
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_ARKIVERING: https://bidrag-dokument-arkivering.dev.intern.nav.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_ARKIVERING=https://bidrag-dokument-arkivering-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_ARKIVERING=https://bidrag-dokument-arkivering-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
@@ -482,16 +482,16 @@ jobs:
     needs: run-tests-for-arkivering # deleting testdata will cause ObjectOptimisticLockingFailureException if not started after tests of bidrag-dokument-journalpost
 
     env:
-      INGRESS_ARKIVERING: https://bidrag-dokument-arkivering.dev.adeo.no
-      INGRESS_DOKUMENT: https://bidrag-dokument.dev.adeo.no
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_ARKIVERING: https://bidrag-dokument-arkivering.dev.intern.nav.no
+      INGRESS_DOKUMENT: https://bidrag-dokument.dev.intern.nav.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_ARKIVERING=https://bidrag-dokument-arkivering-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_DOKUMENT=https://bidrag-dokument-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_ARKIVERING=https://bidrag-dokument-arkivering-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_DOKUMENT=https://bidrag-dokument-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
@@ -514,12 +514,12 @@ jobs:
     needs: deploy
 
     env:
-      INGRESS_TESTDATA: https://bidrag-testdata.dev.adeo.no
+      INGRESS_TESTDATA: https://bidrag-testdata.dev.intern.nav.no
 
     steps:
       - run: |
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.adeo.no" >> $GITHUB_ENV
-          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.adeo.no" >> $GITHUB_ENV
+          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-onprem-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_TESTDATA=https://bidrag-testdata-feature.dev.intern.nav.no" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
       - run: |
           curl -X 'POST' '${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-onprem/run' -i \
