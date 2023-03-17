@@ -45,7 +45,7 @@ class SakEgenskaper : No {
       val saksnummer = "${Year.now().value % 100}00001"
       val body =
         """{ 
-             "saksnummer":$saksnummer,
+             "saksnummer":"$saksnummer",
              "kategorikode":"U",
              "landkode":"DEU",
              "konvensjonskode":"HiS",
