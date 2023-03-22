@@ -16,7 +16,7 @@ class SakEgenskaper : No {
         }
         Når("jeg bruker post for å hente bidragssaker for person med fnr som finnes") {
             CucumberTestRun.hentRestTjenesteTilTesting()
-                .exchangePost("/person/sak", "$fnr1")
+                .exchangePost("/person/sak", "\"$fnr1\"")
         }
         Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
             CucumberTestRun.hentRestTjenesteTilTesting()
