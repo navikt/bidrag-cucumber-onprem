@@ -19,11 +19,11 @@ class PersonEgenskaper : No {
       hentRestTjenesteTilTesting().exchangeGet("/husstandsmedlemmer/$fnr3")
     }
     Når("vi henter fødselsdatoer for en liste med personer") {
-      val body = """[$fnr1, $fnr2, $fnr3]"""
+      val body = """["$fnr1", "$fnr2", "$fnr3"]"""
       hentRestTjenesteTilTesting().exchangePost("/fodselsdatoer", body)
     }
     Når("vi henter graderingsinfo for en liste med personer") {
-      val body = """[$fnr1, $fnr2, $fnr3]"""
+      val body = """["$fnr1", "$fnr2", "$fnr3"]"""
       hentRestTjenesteTilTesting().exchangePost("/graderingsinfo", body)
     }
     Når("vi henter informasjon om geografisk tilknytning for en person") {
