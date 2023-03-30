@@ -3,7 +3,6 @@ package no.nav.bidrag.cucumber.controller
 import no.nav.bidrag.cucumber.TestUtil.assumeThatActuatorHealthIsRunning
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.AssumptionViolatedException
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -50,7 +49,8 @@ internal class CucumberControllerIntegrationTest {
                 {
                   "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
                 }
-                """.trimMargin().trim(), initJsonAsMediaType()
+                """.trimMargin().trim(),
+                initJsonAsMediaType()
             ),
             Void::class.java
         )
@@ -69,7 +69,8 @@ internal class CucumberControllerIntegrationTest {
                 {
                   "ingressesForApps":["https://bidrag-cucumber-onprem-feature.dev.adeo.no@tag:bidrag-cucumber-onprem"]
                 }
-                """.trimMargin().trim(), initJsonAsMediaType()
+                """.trimMargin().trim(),
+                initJsonAsMediaType()
             ),
             String::class.java
         )
@@ -93,7 +94,8 @@ internal class CucumberControllerIntegrationTest {
                   "ingressesForApps":["https://bidrag-person.dev.adeo.no@tag:bidrag-person"],
                   "sanityCheck":true, "testUsername": "jumbo"
                 }
-                """.trimMargin().trim(), initJsonAsMediaType()
+                """.trimMargin().trim(),
+                initJsonAsMediaType()
             ),
             String::class.java
         )
@@ -110,7 +112,8 @@ internal class CucumberControllerIntegrationTest {
                 {
                   "ingressesForApps":["https://i-am-not-here.dev.adeo.no@tag:bidrag-person"]
                 }
-                """.trimMargin().trim(), initJsonAsMediaType()
+                """.trimMargin().trim(),
+                initJsonAsMediaType()
             ),
             String::class.java
         )

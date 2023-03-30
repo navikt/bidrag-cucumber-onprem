@@ -19,7 +19,8 @@ class OAuth2ClientConfiguration {
             .clientCredentials()
             .build()
         val authorizedClientManager = AuthorizedClientServiceOAuth2AuthorizedClientManager(
-            clientRegistrationRepository, authorizedClientService
+            clientRegistrationRepository,
+            authorizedClientService
         )
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
         return authorizedClientManager

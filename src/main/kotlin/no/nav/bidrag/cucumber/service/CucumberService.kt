@@ -17,7 +17,7 @@ class CucumberService(
     private val suppressStackTraceText: SuppressStackTraceText,
     applicationContext: ApplicationContext,
     exceptionLogger: ExceptionLogger,
-    objectMapper: ObjectMapper,
+    objectMapper: ObjectMapper
 ) {
     init {
         BidragCucumberSingletons.setApplicationContext(applicationContext)
@@ -49,7 +49,11 @@ class CucumberService(
         if (tags.isBlank()) throw IllegalStateException("Ingen tags som kan brukes")
 
         return Main.run(
-            ABSOLUTE_FEATURE_PATH, "--glue", "no.nav.bidrag.cucumber.onprem", "--tags", tags
+            ABSOLUTE_FEATURE_PATH,
+            "--glue",
+            "no.nav.bidrag.cucumber.onprem",
+            "--tags",
+            tags
         )
     }
 }

@@ -29,7 +29,7 @@ class JsonMappingTest {
               "https://bidrag-dokument-arkiv.dev.adeo.no@bidrag-dokument-arkiv"
             ]
           }
-          """.trimIndent()
+        """.trimIndent()
 
         val cucumberTestsApi = objectMapper.readValue(json, CucumberTestsApi::class.java)
 
@@ -42,7 +42,8 @@ class JsonMappingTest {
             {
                 assertThat(cucumberTestsApi.ingressesForApps).`as`("ingressesForApps").isEqualTo(
                     listOf(
-                        "https://oppgave-q1.dev-fss-pub.nais.io@oppgave", "https://bidrag-dokument-arkiv.dev.adeo.no@bidrag-dokument-arkiv"
+                        "https://oppgave-q1.dev-fss-pub.nais.io@oppgave",
+                        "https://bidrag-dokument-arkiv.dev.adeo.no@bidrag-dokument-arkiv"
                     )
                 )
             }

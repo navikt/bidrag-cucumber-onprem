@@ -14,13 +14,12 @@ object KafkaManager {
     fun sjekkAtJournalpostHendelseErRegistrert(journalpostId: String) {
         val naisAppWithKafka = CucumberTestRun.hentKonfigurertNaisApp(naisAppReadingKafka)
         await.atMost(15, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).untilAsserted {
-
             val response = naisAppWithKafka.exchangeGet("/hendelser/$journalpostId")
 
             FellesEgenskaperManager.assertWhenNotSanityCheck(
                 Assertion(
                     message = "Forventet å finne journalposthendelse for $journalpostId",
-                    value = response.statusCode,
+                    value = response.statusCode
                 ) { assertThat(it.value).`as`(it.message).isEqualTo(HttpStatus.OK) }
             )
         }

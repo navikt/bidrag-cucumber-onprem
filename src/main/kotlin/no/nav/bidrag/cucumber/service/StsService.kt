@@ -28,7 +28,10 @@ class StsService(private val basicAuthRestTemplate: HttpHeaderRestTemplate) {
         LOGGER.info("Hent service bruker token for $stsUser")
 
         val responseEntity = basicAuthRestTemplate.exchange(
-            "${Environment.fetchPropertyOrEnvironment(STS_URL)}/rest/v1/sts/token2", HttpMethod.GET, null, Map::class.java
+            "${Environment.fetchPropertyOrEnvironment(STS_URL)}/rest/v1/sts/token2",
+            HttpMethod.GET,
+            null,
+            Map::class.java
         )
 
         if (!responseEntity.statusCode.is2xxSuccessful) {

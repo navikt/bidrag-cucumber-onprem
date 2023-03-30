@@ -39,10 +39,11 @@ internal object BidragCucumberSingletons {
     }
 
     fun mapResponseSomMap(responseEntity: ResponseEntity<String?>?): Map<String, Any> {
-        return if (responseEntity?.statusCode?.is2xxSuccessful == true && responseEntity.body != null)
+        return if (responseEntity?.statusCode?.is2xxSuccessful == true && responseEntity.body != null) {
             mapJsonSomMap(responseEntity.body!!)
-        else
+        } else {
             HashMap()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -52,6 +53,7 @@ internal object BidragCucumberSingletons {
         CucumberTestRun.holdExceptionForTest(e)
         throw e
     }
+
     @Suppress("UNCHECKED_CAST")
     internal fun mapTilJsonString(body: Map<String, Any>): String = try {
         fetchObjectMapper().writeValueAsString(body) as String
@@ -61,10 +63,11 @@ internal object BidragCucumberSingletons {
     }
 
     fun mapResponseSomListe(responseEntity: ResponseEntity<String?>?): List<Any> {
-        return if (responseEntity?.statusCode == HttpStatus.OK && responseEntity.body != null)
+        return if (responseEntity?.statusCode == HttpStatus.OK && responseEntity.body != null) {
             mapResponseSomListe(responseEntity.body!!)
-        else
+        } else {
             ArrayList()
+        }
     }
 
     private fun mapResponseSomListe(body: String): List<Any> = try {

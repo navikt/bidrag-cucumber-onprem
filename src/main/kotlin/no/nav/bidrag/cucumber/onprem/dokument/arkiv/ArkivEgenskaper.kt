@@ -41,7 +41,7 @@ class ArkivEgenskaper : No {
                 Assertion(
                     message = "Respons fra ${hentRestTjenesteTilTesting().hentFullUrlMedEventuellWarning()}",
                     value = hentRestTjenesteTilTesting().hentResponse()?.trim(),
-                    expectation = "[]",
+                    expectation = "[]"
                 ) { assertThat(it.value).`as`(it.message).isEqualTo(it.expectation) }
             )
         }
@@ -61,7 +61,7 @@ class ArkivEgenskaper : No {
                 Assertion(
                     message = "Responsen inneholder en journalpost med JOARK-prefix",
                     value = hentRestTjenesteTilTesting().hentResponse(),
-                    expectation = """"journalpostId":"JOARK-""",
+                    expectation = """"journalpostId":"JOARK-"""
                 ) { assertThat(it.value as String).`as`(it.message).contains(it.expectation as String) }
             )
         }

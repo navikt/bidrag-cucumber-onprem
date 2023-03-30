@@ -59,7 +59,11 @@ internal class DokumentManagerTest {
 
     private fun mockNotFoundException() {
         val notFoundException = HttpClientErrorException.create(
-            HttpStatus.NOT_FOUND, "ikke her", HttpHeaders(), "".toByteArray(), null
+            HttpStatus.NOT_FOUND,
+            "ikke her",
+            HttpHeaders(),
+            "".toByteArray(),
+            null
         )
 
         whenever(resttjenesteMock.exchange(anyString(), any(), anyOrNull(), eq(String::class.java))).thenThrow(notFoundException)

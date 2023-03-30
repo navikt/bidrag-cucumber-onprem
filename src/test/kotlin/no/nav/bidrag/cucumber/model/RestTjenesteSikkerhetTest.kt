@@ -55,7 +55,7 @@ internal class RestTjenesteSikkerhetTest {
 
         assertAll(
             { assertThat(valueGenerator.generate()).isEqualTo("Bearer of azure-token") },
-            { verify(azureTokenServiceMock).generateToken("nais-app") },
+            { verify(azureTokenServiceMock).generateToken("nais-app") }
         )
     }
 
@@ -69,11 +69,9 @@ internal class RestTjenesteSikkerhetTest {
             )
         ).initCucumberEnvironment()
 
-
         whenever(stsTokenService.generateToken("nais-app")).thenReturn("of sts-token")
 
         RestTjeneste.konfigurerResttjeneste("nais-app")
-
 
         val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
         verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
@@ -81,7 +79,7 @@ internal class RestTjenesteSikkerhetTest {
 
         assertAll(
             { assertThat(valueGenerator.generate()).isEqualTo("Bearer of sts-token") },
-            { verify(azureTokenServiceMock, never()).generateToken(anyOrNull()) },
+            { verify(azureTokenServiceMock, never()).generateToken(anyOrNull()) }
         )
     }
 

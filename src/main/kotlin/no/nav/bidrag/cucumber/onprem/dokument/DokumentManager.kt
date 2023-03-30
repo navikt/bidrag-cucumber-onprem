@@ -44,7 +44,7 @@ object DokumentManager {
               "saksnummer": "$saksnummer",
               "enhetsnummer": "4833"
             }
-            """.trimIndent()
+                """.trimIndent()
             )
         } catch (throwable: Throwable) {
             LOGGER.warn("Unable to create bidragssak: ${throwable::class.simpleName}: ${throwable.message}")
@@ -75,7 +75,7 @@ object DokumentManager {
                         "skannetDato": "2019-01-01",
                         "saksnummer": "$saksnummer"
                         }
-                    """.trimIndent(),
+            """.trimIndent(),
             customHeaders = arrayOf(HttpHeaders.CONTENT_TYPE to MediaType.APPLICATION_JSON_VALUE)
         )
 
