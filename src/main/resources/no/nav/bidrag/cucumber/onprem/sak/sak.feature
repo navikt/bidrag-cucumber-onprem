@@ -29,6 +29,10 @@ Egenskap: bidrag-sak
     Når jeg henter bidragssaker for person med fnr som finnes
     Så skal http status være 200
 
+  Scenario: Sjekk at vi får 200 OK når vi bruker post for å finne sak for person som eksisterer i databasen
+    Når jeg bruker post for å hente bidragssaker for person med fnr som finnes
+    Så skal http status være 200
+
   Scenario: Sjekk at vi får 200 når vi oppdaterer en sak som eksisterer i basen
     Når jeg oppdaterer en bidragssak
     Så skal http status være 200

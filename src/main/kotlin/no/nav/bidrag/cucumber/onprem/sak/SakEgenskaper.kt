@@ -12,7 +12,11 @@ class SakEgenskaper : No {
     init {
         Når("jeg henter bidragssaker for person med fnr som finnes") {
             CucumberTestRun.hentRestTjenesteTilTesting()
-                .exchangeGet("/bidrag-sak/person/sak/$fnr1", failOnNotFound = false)
+                .exchangeGet("/bidrag-sak/person/sak/$fnr1")
+        }
+        Når("jeg bruker post for å hente bidragssaker for person med fnr som finnes") {
+            CucumberTestRun.hentRestTjenesteTilTesting()
+                .exchangePost("/person/sak", "\"$fnr1\"")
         }
         Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
             CucumberTestRun.hentRestTjenesteTilTesting()
@@ -21,7 +25,7 @@ class SakEgenskaper : No {
         Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                 "/bidrag-sak/sak/ny",
-                """{"eierfogd":"$enhet"}""",
+                """ { "eierfogd":"$enhet" }""",
                 true,
                 "X-Enhet" to enhet
             )
@@ -29,10 +33,12 @@ class SakEgenskaper : No {
 
         Når("jeg oppretter bidragssak med rolle for fnr som finnes") {
             val body =
-                """{ "eierfogd": "2260",
-                     "roller": [ { "fodselsnummer": "$fnr3", "type": "BP" },
-                                 { "fodselsnummer": "$fnr2", "type": "BM" },
-                                 { "fodselsnummer": "$fnr1", "reellMottager": "$fnr1", "type": "BA" } ] }"""
+                """ {
+                        "eierfogd": "2260",
+                        "roller": [ { "fodselsnummer": "$fnr3", "type": "BP" },
+                        { "fodselsnummer": "$fnr2", "type": "BM" },
+                        { "fodselsnummer": "$fnr1", "reellMottager": "$fnr1", "type": "BA" } ]
+                    }"""
 
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                 "/sak",
@@ -44,14 +50,14 @@ class SakEgenskaper : No {
         Når("jeg oppdaterer en bidragssak") {
             val saksnummer = "${Year.now().value % 100}00001"
             val body =
-                """{ 
-             "saksnummer":"$saksnummer",
-             "kategorikode":"U",
-             "landkode":"DEU",
-             "konvensjonskode":"HiS",
-             "konvensjonsdato":"2023-01-01",
-             "ffuReferansenr":"654987312"
-          }"""
+                """ {
+                        "saksnummer":"$saksnummer",
+                        "kategorikode":"U",
+                        "landkode":"DEU",
+                        "konvensjonskode":"HiS",
+                        "konvensjonsdato":"2023-01-01",
+                        "ffuReferansenr":"654987312"
+                    }"""
 
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                 "/sak/oppdater",
