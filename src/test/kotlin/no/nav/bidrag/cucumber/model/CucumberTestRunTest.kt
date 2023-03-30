@@ -30,5 +30,4 @@ internal class CucumberTestRunTest {
 
         assertThat(CucumberTestRun.isFeatureBranch).isFalse
     }
-
 }

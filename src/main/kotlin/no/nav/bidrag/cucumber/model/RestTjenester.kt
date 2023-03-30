@@ -123,14 +123,14 @@ class RestTjeneste(
 
                 if (StsService.supportedApplications.contains(applicationName)) {
                     val stsTokenValue = hentStsToken()
-                    if (!CucumberTestRun.isTestUserPresent){
+                    if (!CucumberTestRun.isTestUserPresent) {
                         httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { stsTokenValue.initBearerToken() }
                     } else {
                         httpHeaderRestTemplate.addHeaderGenerator(Headers.NAV_CONSUMER_TOKEN) { stsTokenValue.initBearerToken() }
                     }
                 }
 
-                if (AzureTokenService.supportedApplications.contains(applicationName)){
+                if (AzureTokenService.supportedApplications.contains(applicationName)) {
                     val azureToken = hentAzureToken(applicationName)
                     httpHeaderRestTemplate.addHeaderGenerator(HttpHeaders.AUTHORIZATION) { azureToken.initBearerToken() }
                 }
@@ -155,19 +155,21 @@ class RestTjeneste(
         private fun hentStsToken(): TokenValue {
             val stsService: StsService = BidragCucumberSingletons.hentEllerInit(StsService::class)
 
-            return if (CucumberTestRun.isNotSanityCheck)
+            return if (CucumberTestRun.isNotSanityCheck) {
                 TokenValue(stsService.hentServiceBrukerOidcToken() ?: throw IllegalStateException("Token er null!"))
-            else
+            } else {
                 TokenValue("sanity check, no token")
+            }
         }
 
         private fun hentAzureToken(applicationName: String): TokenValue {
             val azureTokenService: AzureTokenService = BidragCucumberSingletons.hentEllerInit(AzureTokenService::class)
 
-            return if (CucumberTestRun.isNotSanityCheck)
+            return if (CucumberTestRun.isNotSanityCheck) {
                 TokenValue(azureTokenService.generateToken(applicationName) ?: throw IllegalStateException("Token er null!"))
-            else
+            } else {
                 TokenValue("sanity check, no token")
+            }
         }
 
         private fun notNullTokenService(tokenType: TokenType) = IllegalStateException("No service for $tokenType in spring context")
@@ -190,7 +192,6 @@ class RestTjeneste(
     }
 
     fun exchangeGet(endpointUrl: String, failOnNotFound: Boolean = true, failOnBadRequest: Boolean = true): ResponseEntity<String?> {
-
         val header = initHttpHeadersWithCorrelationIdAndEnhet()
 
         exchange(
@@ -202,8 +203,9 @@ class RestTjeneste(
         )
 
         LOGGER.info(
-            if (responseEntity?.body != null) "response with body and status ${responseEntity!!.statusCode}"
-            else if (responseEntity == null) "no response entity (${sanityCheck()})" else "no response body with status ${responseEntity!!.statusCode}"
+            if (responseEntity?.body != null) {
+                "response with body and status ${responseEntity!!.statusCode}"
+            } else if (responseEntity == null) "no response entity (${sanityCheck()})" else "no response body with status ${responseEntity!!.statusCode}"
         )
 
         return responseEntity ?: ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build()

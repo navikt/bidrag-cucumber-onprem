@@ -75,7 +75,7 @@ object ArkivManager {
     }
 
     fun opprettJoarkJournalpostNarDenIkkeFinnes(nokkel: String, json: String) {
-        if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)){
+        if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)) {
             val appForDokarkiv = "dokarkiv-api"
             LOGGER.info("Oppretter journalpost med $appForDokarkiv")
 
@@ -94,7 +94,6 @@ object ArkivManager {
             testData.nye(nokkel, Data(journalpostId = "JOARK-${jpIdJoark.asText()}", joarkJournalpostId = jpIdJoark.asText()))
             testData.nokkel = nokkel
         }
-
     }
 
     fun opprettUtgaaendeJournalpostForSaksnummerNarDenIkkeFinnes(saksnummer: String, fagomrade: String) {

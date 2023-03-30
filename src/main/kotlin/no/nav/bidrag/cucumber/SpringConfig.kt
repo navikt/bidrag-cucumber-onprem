@@ -36,7 +36,9 @@ class SpringConfig {
 
     @Bean
     fun exceptionLogger() = ExceptionLogger(
-        BidragCucumberOnprem::class.java.simpleName, ExceptionLoggerAspect::class.java, TestFailedAdvice::class.java
+        BidragCucumberOnprem::class.java.simpleName,
+        ExceptionLoggerAspect::class.java,
+        TestFailedAdvice::class.java
     )
 
     @Bean

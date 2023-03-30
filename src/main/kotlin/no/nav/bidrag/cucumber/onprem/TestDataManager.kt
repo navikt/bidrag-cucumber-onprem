@@ -27,9 +27,9 @@ object TestDataManager {
             if (CucumberTestRun.isNotSanityCheck && CucumberTestRun.skalOpprettTestdataForNokkel(nokkel)) {
                 val saksnummer = mapJsonSomMap(json)["saksnummer"] as String? ?: throwExceptionWhenJournalfort(json)
                 val testDataApp = CucumberTestRun.hentKonfigurertNaisApp(bidragTestdata)
-                val jsonMap  = mapJsonSomMap(json)
+                val jsonMap = mapJsonSomMap(json)
                 // Opprettelse av dokument i brevlager krever unik dokumentreferanse. Dokument kan ikke slettes fra brevlageret
-                if (jsonMap["opprettDokument"] == true){
+                if (jsonMap["opprettDokument"] == true) {
                     jsonMap["dokumentreferanse"] = UUID.randomUUID().toString().replace("-", "").subSequence(0, 15)
                 }
                 testDataApp.exchangePost(endpointUrl = "/journalpost", body = mapTilJsonString(jsonMap))
@@ -78,9 +78,11 @@ object TestDataManager {
     }
 
     internal fun hentDataForTest(nokkel: String?): Data {
-        return CucumberTestRun.thisRun().testData.dataForNokkel[nokkel] ?: if (CucumberTestRun.isNotSanityCheck)
+        return CucumberTestRun.thisRun().testData.dataForNokkel[nokkel] ?: if (CucumberTestRun.isNotSanityCheck) {
             throw IllegalStateException("Ingen data for $nokkel")
-        else Data()
+        } else {
+            Data()
+        }
     }
 
     fun slettTestData() {

@@ -9,42 +9,42 @@ import java.time.Year
 
 @Suppress("unused") // used by cucumber
 class SakEgenskaper : No {
-  init {
-    Når("jeg henter bidragssaker for person med fnr som finnes") {
-      CucumberTestRun.hentRestTjenesteTilTesting()
-        .exchangeGet("/bidrag-sak/person/sak/$fnr1", failOnNotFound = false)
-    }
-    Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
-      CucumberTestRun.hentRestTjenesteTilTesting()
-        .exchangeGet("/bidrag-sak/person/sak/12345678901", failOnNotFound = false)
-    }
-    Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
-      CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
-        "/bidrag-sak/sak/ny",
-        """{"eierfogd":"$enhet"}""",
-        true,
-        "X-Enhet" to enhet
-      )
-    }
+    init {
+        Når("jeg henter bidragssaker for person med fnr som finnes") {
+            CucumberTestRun.hentRestTjenesteTilTesting()
+                .exchangeGet("/bidrag-sak/person/sak/$fnr1", failOnNotFound = false)
+        }
+        Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
+            CucumberTestRun.hentRestTjenesteTilTesting()
+                .exchangeGet("/bidrag-sak/person/sak/12345678901", failOnNotFound = false)
+        }
+        Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                "/bidrag-sak/sak/ny",
+                """{"eierfogd":"$enhet"}""",
+                true,
+                "X-Enhet" to enhet
+            )
+        }
 
-    Når("jeg oppretter bidragssak med rolle for fnr som finnes") {
-      val body =
-        """{ "eierfogd": "2260",
+        Når("jeg oppretter bidragssak med rolle for fnr som finnes") {
+            val body =
+                """{ "eierfogd": "2260",
                      "roller": [ { "fodselsnummer": "$fnr3", "type": "BP" },
                                  { "fodselsnummer": "$fnr2", "type": "BM" },
                                  { "fodselsnummer": "$fnr1", "reellMottager": "$fnr1", "type": "BA" } ] }"""
 
-      CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
-        "/sak",
-        body,
-        true
-      )
-    }
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                "/sak",
+                body,
+                true
+            )
+        }
 
-    Når("jeg oppdaterer en bidragssak") {
-      val saksnummer = "${Year.now().value % 100}00001"
-      val body =
-        """{ 
+        Når("jeg oppdaterer en bidragssak") {
+            val saksnummer = "${Year.now().value % 100}00001"
+            val body =
+                """{ 
              "saksnummer":"$saksnummer",
              "kategorikode":"U",
              "landkode":"DEU",
@@ -53,19 +53,19 @@ class SakEgenskaper : No {
              "ffuReferansenr":"654987312"
           }"""
 
-      CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
-        "/sak/oppdater",
-        body,
-        true
-      )
-    }
+            CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
+                "/sak/oppdater",
+                body,
+                true
+            )
+        }
 
-    Og("bruk av en produksjonsbrukeren 'srvbisys' med tilgang til bidrag-sak pip") {
-      TODO("Not yet implemented")
-    }
+        Og("bruk av en produksjonsbrukeren 'srvbisys' med tilgang til bidrag-sak pip") {
+            TODO("Not yet implemented")
+        }
 
-    Når("jeg henter pip for sak '9999999'") {
-      TODO("Not yet implemented")
+        Når("jeg henter pip for sak '9999999'") {
+            TODO("Not yet implemented")
+        }
     }
-  }
 }

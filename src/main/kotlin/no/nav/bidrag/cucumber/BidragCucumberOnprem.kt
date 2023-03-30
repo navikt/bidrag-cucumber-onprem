@@ -12,8 +12,9 @@ class BidragCucumberOnprem {
 
         @JvmStatic
         fun main(args: Array<String>) {
-
-            val profile = if (args.isEmpty()) PROFILE_LIVE else {
+            val profile = if (args.isEmpty()) {
+                PROFILE_LIVE
+            } else {
                 LOGGER.info("Starter med profil (argument): $args")
                 args[0]
             }

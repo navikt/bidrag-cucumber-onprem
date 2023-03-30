@@ -13,7 +13,9 @@ class AzureTokenService(val authorizedClientManager: OAuth2AuthorizedClientManag
     companion object {
         @JvmStatic
         private val ANONYMOUS_AUTHENTICATION: Authentication = AnonymousAuthenticationToken(
-            "anonymous", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
+            "anonymous",
+            "anonymousUser",
+            AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
         )
         val supportedApplications = setOf("oppgave-api", "bidrag-sak", "bidrag-dokument-arkiv", "bidrag-dokument-journalpost", "bidrag-person", "bidrag-organisasjon", "bidrag-dokument", "bidrag-dokument-arkivering")
     }

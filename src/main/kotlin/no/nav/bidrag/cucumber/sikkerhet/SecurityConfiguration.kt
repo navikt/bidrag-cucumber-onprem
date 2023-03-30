@@ -21,5 +21,4 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
             .anyRequest()
             .fullyAuthenticated()
     }
-
 }

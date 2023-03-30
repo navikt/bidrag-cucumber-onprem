@@ -6,7 +6,6 @@ import io.cucumber.java8.No
 import no.nav.bidrag.commons.web.EnhetFilter
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.Data
-import no.nav.bidrag.cucumber.onprem.TestDataManager
 import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.SoftAssertions
 
@@ -50,13 +49,13 @@ class DokumentEgenskaper : No {
                 failOnBadRequest = false,
                 endpointUrl = "/journal/distribuer/JOARK-$jpId",
                 body = "{\n" +
-                        "    \"adresse\": {\n" +
-                        "        \"adresselinje1\": \"Batmangata 5A\",\n" +
-                        "        \"land\": \"NO\",\n" +
-                        "        \"postnummer\": \"0007\",\n" +
-                        "        \"poststed\": \"OSLO\"\n" +
-                        "    }\n" +
-                        "}"
+                    "    \"adresse\": {\n" +
+                    "        \"adresselinje1\": \"Batmangata 5A\",\n" +
+                    "        \"land\": \"NO\",\n" +
+                    "        \"postnummer\": \"0007\",\n" +
+                    "        \"poststed\": \"OSLO\"\n" +
+                    "    }\n" +
+                    "}"
             )
         }
 
@@ -213,7 +212,8 @@ class DokumentEgenskaper : No {
 
         Og("hver journal i listen skal ha {string} = {string}") { key: String, value: String ->
             if (CucumberTestRun.isNotSanityCheck) {
-                @Suppress("UNCHECKED_CAST") val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
+                @Suppress("UNCHECKED_CAST")
+                val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
                     .hentResponseSomListe() as List<Map<String, Any>>
 
                 val verifyer = SoftAssertions()
@@ -229,7 +229,9 @@ class DokumentEgenskaper : No {
         Og("hver journal i listen skal ha objektet {string} med feltene") { objektNavn: String, properties: DataTable ->
             if (CucumberTestRun.isNotSanityCheck) {
                 val verifyer = SoftAssertions()
-                @Suppress("UNCHECKED_CAST") val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
+
+                @Suppress("UNCHECKED_CAST")
+                val responseObject = CucumberTestRun.hentRestTjenesteTilTesting()
                     .hentResponseSomListe() as List<Map<String, Map<String, Any>>>
 
                 responseObject.forEach { jp ->

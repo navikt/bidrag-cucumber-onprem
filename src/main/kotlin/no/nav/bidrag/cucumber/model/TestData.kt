@@ -27,7 +27,6 @@ internal class TestData {
 
         throw IllegalStateException(message)
     }
-
 }
 
 internal data class Data(

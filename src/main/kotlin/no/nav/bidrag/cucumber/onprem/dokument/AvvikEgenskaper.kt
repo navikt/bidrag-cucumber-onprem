@@ -80,7 +80,8 @@ class AvvikEgenskaper : No {
                             expectation = forventedeAvvikstyper.size
                         ) { assertThat(it.value as List<*>).`as`(it.message).hasSize(it.expectation as Int) }
                     )
-                }, {
+                },
+                {
                     FellesEgenskaperManager.assertWhenNotSanityCheck(
                         Assertion(
                             message = "$funnetAvvikstyper vs $forventedeAvvikstyper",
@@ -112,10 +113,10 @@ class AvvikEgenskaper : No {
                     customHeaders = arrayOf(EnhetFilter.X_ENHET_HEADER to (data.avvik.avviksdetaljer["enhetsnummer"] ?: "-1")),
                     failOnBadRequest = false,
                     body = """{"avvikType":"${data.avvik.avvikstype}"""" +
-                            (data.avvik.mapAvviksdetaljer()?.let { ""","detaljer":$it""" } ?: "") +
-                            (data.avvik.hentBeskrivelse()?.let { ""","beskrivelse":"$it"""" } ?: "") +
-                            (data.avvik.hentBeskrivelse()?.let { ""","beskrivelse":"$it"""" } ?: "") +
-                            """${data.saksnummer?.let { ""","saksnummer":"$it"""" } ?: ""}}"""
+                        (data.avvik.mapAvviksdetaljer()?.let { ""","detaljer":$it""" } ?: "") +
+                        (data.avvik.hentBeskrivelse()?.let { ""","beskrivelse":"$it"""" } ?: "") +
+                        (data.avvik.hentBeskrivelse()?.let { ""","beskrivelse":"$it"""" } ?: "") +
+                        """${data.saksnummer?.let { ""","saksnummer":"$it"""" } ?: ""}}"""
 
                 )
             } catch (e: Exception) {
@@ -166,7 +167,9 @@ class AvvikEgenskaper : No {
 
         Og("listen med journalposter skal ikke inneholde id for journalposten") {
             val testData = CucumberTestRun.thisRun().testData
-            @Suppress("UNCHECKED_CAST") val journalpostMapSomListe = CucumberTestRun.hentRestTjenesteTilTesting()
+
+            @Suppress("UNCHECKED_CAST")
+            val journalpostMapSomListe = CucumberTestRun.hentRestTjenesteTilTesting()
                 .hentResponseSomListe() as List<Map<String, *>>
 
             val listeMedAlleJournalpostId = journalpostMapSomListe.map { it["journalpostId"].toString() }

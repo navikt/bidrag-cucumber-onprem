@@ -46,14 +46,14 @@ class OppgaveEgenskaper : No {
             oppgaver.forEach {
                 val oppgaveId = it["id"].toString()
                 val versjon = it["versjon"].toString()
-                oppgave.exchangePatch("/api/v1/oppgaver/${oppgaveId}",
+                oppgave.exchangePatch(
+                    "/api/v1/oppgaver/$oppgaveId",
                     "{\n" +
-                        "             \"id\": ${oppgaveId},\n" +
-                        "             \"versjon\": ${versjon},\n" +
+                        "             \"id\": $oppgaveId,\n" +
+                        "             \"versjon\": $versjon,\n" +
                         "             \"status\": \"FERDIGSTILT\"\n" +
                         "        }"
                 )
-
             }
         }
 
@@ -121,6 +121,4 @@ class OppgaveEgenskaper : No {
             )
         }
     }
-
-
 }

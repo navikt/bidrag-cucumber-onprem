@@ -5,12 +5,10 @@ import io.cucumber.java8.No
 import no.nav.bidrag.cucumber.model.Assertion
 import no.nav.bidrag.cucumber.model.CucumberTestRun
 import no.nav.bidrag.cucumber.model.CucumberTestRun.Companion.hentRestTjenesteTilTesting
-import no.nav.bidrag.cucumber.onprem.dokument.arkiv.ArkivManager
 import org.assertj.core.api.Assertions.assertThat
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import java.util.EnumSet
-import java.util.function.BiFunction
 
 @Suppress("unused") // used by cucumber
 class FellesEgenskaper : No {
@@ -106,7 +104,8 @@ class FellesEgenskaper : No {
         }
 
         Og("responsen skal inneholde et objekt med navn {string} som har feltene:") { objekt: String, felter: DataTable ->
-            @Suppress("UNCHECKED_CAST") val objektResponse = hentRestTjenesteTilTesting().hentResponseSomMap()[objekt] as Map<String, *>?
+            @Suppress("UNCHECKED_CAST")
+            val objektResponse = hentRestTjenesteTilTesting().hentResponseSomMap()[objekt] as Map<String, *>?
             val manglerFelt = ArrayList<String>()
 
             if (CucumberTestRun.isNotSanityCheck) {
@@ -117,7 +116,8 @@ class FellesEgenskaper : No {
         }
 
         Og("så skal responsen inneholde ei liste med et objekt som har feltet {string} = true") { feltnavn: String ->
-            @Suppress("UNCHECKED_CAST") val journalposter = hentRestTjenesteTilTesting().hentResponseSomListe() as List<Map<String, *>>
+            @Suppress("UNCHECKED_CAST")
+            val journalposter = hentRestTjenesteTilTesting().hentResponseSomListe() as List<Map<String, *>>
             val testdata = CucumberTestRun.thisRun().testData
             val nokkel = testdata.nokkel ?: throw IllegalStateException("Ingen nøkkel for testdata!")
             val jpIdFraTestdata = testdata.hentJournalpostId(nokkel)
@@ -167,7 +167,9 @@ class FellesEgenskaper : No {
             if (CucumberTestRun.isNotSanityCheck) {
                 val journalpostResponse = hentRestTjenesteTilTesting().hentResponseSomMap()
                 val journalpostMap = journalpostResponse[objekt] as Map<*, *>?
-                @Suppress("UNCHECKED_CAST") val reelleFelter = (journalpostMap?.get(objektFelt) as List<Map<*, *>>?)?.first()
+
+                @Suppress("UNCHECKED_CAST")
+                val reelleFelter = (journalpostMap?.get(objektFelt) as List<Map<*, *>>?)?.first()
 
                 assertThat(reelleFelter).isNotNull
                 val manglerFelt = ArrayList<String>()
@@ -184,7 +186,8 @@ class FellesEgenskaper : No {
     }
 
     private fun sjekkAtResponseHarObjektMedFelt(responseObject: Map<String, Any>, objekt: String, key: String, value: String) {
-        @Suppress("UNCHECKED_CAST") val objektFraResponse = responseObject[objekt] as Map<String, Any>?
+        @Suppress("UNCHECKED_CAST")
+        val objektFraResponse = responseObject[objekt] as Map<String, Any>?
         FellesEgenskaperManager.assertWhenNotSanityCheck(
             Assertion(
                 message = "$objekt skal inneholde $key",
@@ -197,9 +200,9 @@ class FellesEgenskaper : No {
     private fun getValueFromMap(objektFraResponse: Map<String, Any>?, key: String): Any? {
         var responseValue = objektFraResponse
         val segments = key.split(".")
-        for (segment in segments){
+        for (segment in segments) {
             val currentValue = responseValue?.get(segment)
-            if (currentValue == null || currentValue is String){
+            if (currentValue == null || currentValue is String) {
                 return currentValue
             }
             responseValue = currentValue as Map<String, Any>
