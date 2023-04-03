@@ -17,7 +17,7 @@ Egenskap: bidrag-person
 
   Scenario: bidrag-person: Sjekk at ugyldig person-id returnerer NO CONTENT (204) respons
     Når jeg henter informasjon for ident '27067299999'
-    Så skal http status være 404
+    Så skal http status være 204
 
   @ignored #  Feiler i PDL, kommenter inn testen når dette blir fikset.
   Scenario: Endepunkt for henting av alle personer i samme husstand fungerer som det skal
