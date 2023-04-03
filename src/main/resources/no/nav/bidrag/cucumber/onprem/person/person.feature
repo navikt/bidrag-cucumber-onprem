@@ -19,11 +19,6 @@ Egenskap: bidrag-person
     Når jeg henter informasjon for ident '27067299999'
     Så skal http status være 204
 
-  @ignored # Endepunkt er deprecated og fungerer ikke.
-  Scenario: Get-endepunkt for husstandsmedlemmer fungerer som det skal
-    Når jeg henter husstandsmedlemmer for en ident som finnes
-    Så skal http status være 200
-
   @ignored #  Feiler i PDL, kommenter inn testen når dette blir fikset.
   Scenario: Endepunkt for henting av alle personer i samme husstand fungerer som det skal
     Når vi henter alle personer som bor i samme husstand som angitt person

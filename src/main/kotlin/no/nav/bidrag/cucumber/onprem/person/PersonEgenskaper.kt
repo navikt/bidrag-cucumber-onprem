@@ -10,13 +10,8 @@ import no.nav.bidrag.cucumber.model.fnr3
 class PersonEgenskaper : No {
     init {
         Når("jeg henter informasjon for ident {string}") { ident: String ->
-            hentRestTjenesteTilTesting().exchangeGet("/informasjon/$ident")
-        }
-        Når("jeg henter geografisktilknytning for en ident som finnes") {
-            hentRestTjenesteTilTesting().exchangeGet("/geografisktilknytning/$fnr2")
-        }
-        Når("jeg henter husstandsmedlemmer for en ident som finnes") {
-            hentRestTjenesteTilTesting().exchangeGet("/husstandsmedlemmer/$fnr3")
+            val body = """{"ident":"$ident", "verdi":"$ident"}"""
+            hentRestTjenesteTilTesting().exchangePost("/informasjon", body)
         }
         Når("vi henter fødselsdatoer for en liste med personer") {
             val body = """["$fnr1", "$fnr2", "$fnr3"]"""
