@@ -22,7 +22,7 @@ class PersonEgenskaper : No {
             hentRestTjenesteTilTesting().exchangePost("/graderingsinfo", body)
         }
         Når("vi henter informasjon om geografisk tilknytning for en person") {
-            val body = """{"ident":"$fnr1"}"""
+            val body = """{"verdi":"$fnr1"}"""
             hentRestTjenesteTilTesting().exchangePost("/geografisk_tilknytning", body)
         }
         Når("vi henter sivilstand for en person") {
