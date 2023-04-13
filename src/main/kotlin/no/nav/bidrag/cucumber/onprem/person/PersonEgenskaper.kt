@@ -10,7 +10,7 @@ import no.nav.bidrag.cucumber.model.fnr3
 class PersonEgenskaper : No {
     init {
         Når("jeg henter informasjon for ident {string}") { ident: String ->
-            val body = """{"ident":"$ident", "verdi":"$ident"}"""
+            val body = """{"ident":"$ident"}"""
             hentRestTjenesteTilTesting().exchangePost("/informasjon", body)
         }
         Når("vi henter fødselsdatoer for en liste med personer") {
