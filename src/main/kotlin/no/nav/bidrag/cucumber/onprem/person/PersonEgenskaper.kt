@@ -10,7 +10,7 @@ import no.nav.bidrag.cucumber.model.fnr3
 class PersonEgenskaper : No {
     init {
         Når("jeg henter informasjon for ident {string}") { ident: String ->
-            val body = """{"ident":"$ident", "verdi":"$ident"}"""
+            val body = """{"ident":"$ident"}"""
             hentRestTjenesteTilTesting().exchangePost("/informasjon", body)
         }
         Når("vi henter fødselsdatoer for en liste med personer") {
@@ -22,23 +22,23 @@ class PersonEgenskaper : No {
             hentRestTjenesteTilTesting().exchangePost("/graderingsinfo", body)
         }
         Når("vi henter informasjon om geografisk tilknytning for en person") {
-            val body = """{"verdi":"$fnr1"}"""
-            hentRestTjenesteTilTesting().exchangePost("/geografisk_tilknytning", body)
+            val body = """{"ident":"$fnr1"}"""
+            hentRestTjenesteTilTesting().exchangePost("/geografisktilknytning", body)
         }
         Når("vi henter sivilstand for en person") {
-            val body = """{"ident":"$fnr1", "verdi":"$fnr1"}"""
+            val body = """{"ident":"$fnr1"}"""
             hentRestTjenesteTilTesting().exchangePost("/sivilstand", body)
         }
         Når("vi henter alle forelder barn relasjoner for en person") {
-            val body = """{"ident":"$fnr1", "verdi":"$fnr1"}"""
+            val body = """{"ident":"$fnr1"}"""
             hentRestTjenesteTilTesting().exchangePost("/forelderbarnrelasjon", body)
         }
         Når("vi henter informasjon om en persons navn, fødselsdata og eventuell død") {
-            val body = """{"ident":"$fnr1", "verdi":"$fnr1"}"""
+            val body = """{"ident":"$fnr1"}"""
             hentRestTjenesteTilTesting().exchangePost("/navnfoedseldoed", body)
         }
         Når("vi henter alle personer som bor i samme husstand som angitt person") {
-            val body = """{"ident":"$fnr1", "verdi":"$fnr1"}"""
+            val body = """{"ident":"$fnr1"}"""
             hentRestTjenesteTilTesting().exchangePost("/husstandsmedlemmer", body)
         }
     }
