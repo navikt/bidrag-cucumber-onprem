@@ -21,9 +21,6 @@ class OrganisasjonEgenskaper : No {
             CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet("/arbeidsfordeling/enhetsliste/journalforende")
         }
 
-        Når("jeg henter enheter fra arbeidsfordeling for person med ident {string}") { ident: String ->
-            CucumberTestRun.hentRestTjenesteTilTesting().exchangeGet("/arbeidsfordeling/enhetsliste/geografisktilknytning/$ident")
-        }
         Når("jeg henter enhet fra arbeidsfordeling for HentEnhetRequest") {
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
                 "/arbeidsfordeling/enhet/geografisktilknytning",
