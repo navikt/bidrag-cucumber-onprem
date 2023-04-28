@@ -5,6 +5,10 @@ Egenskap: bidrag-person
   Bakgrunn: Felles egenskaper for alle scenario
     Gitt nais applikasjon 'bidrag-person'
 
+  Scenario: Sjekk at swagger-ui er operativt
+    Når det gjøres et kall til '/swagger-ui/index.html?configUrl=/bidrag-person/v3/api-docs/swagger-config#/'
+    Så skal http status være 200
+
   Scenario: bidrag-person: Sjekk at health endpoint er operativt
     Når jeg kaller helsetjenesten
     Så skal http status være 200
