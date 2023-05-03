@@ -180,7 +180,7 @@ class RestTjeneste(
 
     fun hentFullUrlMedEventuellWarning() = "$fullUrl${appendWarningWhenExists()}"
     fun hentHttpHeaders(): HttpHeaders = responseEntity?.headers ?: HttpHeaders()
-    fun hentHttpStatus(): HttpStatus = responseEntity?.statusCode ?: HttpStatus.I_AM_A_TEAPOT
+    fun hentHttpStatus(): HttpStatus = responseEntity?.statusCode?.value()?.let { HttpStatus.valueOf(it) } ?: HttpStatus.I_AM_A_TEAPOT
     fun hentResponse(): String? = responseEntity?.body
     fun hentResponseSomListe(): List<Any> = BidragCucumberSingletons.mapResponseSomListe(responseEntity)
     fun hentResponseSomMap() = BidragCucumberSingletons.mapResponseSomMap(responseEntity)
