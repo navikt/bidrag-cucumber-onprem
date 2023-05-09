@@ -1,18 +1,15 @@
 package no.nav.bidrag.cucumber.controller
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.slot
+import io.mockk.verify
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.mockito.ArgumentCaptor
-import org.mockito.kotlin.any
-import org.mockito.kotlin.atLeastOnce
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -27,7 +24,7 @@ class CucumberControllerRestTemplateMockBeanTest {
     @Autowired
     private lateinit var testRestTemplate: TestRestTemplate
 
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var httpHeaderRestTemplateMock: HttpHeaderRestTemplate
 
     @Test
@@ -48,21 +45,20 @@ class CucumberControllerRestTemplateMockBeanTest {
             Void::class.java
         )
 
-        val urlCaptor = ArgumentCaptor.forClass(String::class.java)
+        val urlCaptor = slot<String>()
 
-        verify(httpHeaderRestTemplateMock, atLeastOnce()).exchange(
-            urlCaptor.capture(),
-            eq(HttpMethod.GET),
-            any(),
-            eq(String::class.java)
-        )
+        verify {
+            httpHeaderRestTemplateMock.exchange(
+                capture(urlCaptor),
+                eq(HttpMethod.GET),
+                any(),
+                eq(String::class.java)
+            )
+        }
 
         assertAll(
             { assertThat(testResponse.statusCode).`as`("status code").isEqualTo(HttpStatus.NOT_ACCEPTABLE) },
-            {
-                assertThat(urlCaptor.value).`as`("endpoint url")
-                    .isEqualTo("/actuator/health")
-            }
+            { assertThat(urlCaptor.captured).`as`("endpoint url").isEqualTo("/actuator/health") }
         )
     }
 
