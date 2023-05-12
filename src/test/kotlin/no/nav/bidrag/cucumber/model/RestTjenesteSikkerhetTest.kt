@@ -1,5 +1,10 @@
 package no.nav.bidrag.cucumber.model
 
+import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.verify
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.dto.CucumberTestsApi
@@ -9,26 +14,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.mockito.ArgumentCaptor
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 
 @SpringBootTest
 internal class RestTjenesteSikkerhetTest {
 
-    @MockBean
+    @SpykBean
     private lateinit var azureTokenServiceMock: AzureTokenService
 
-    @MockBean
+    @SpykBean
     private lateinit var stsTokenService: StsTokenService
 
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var httpHeaderRestTemplateMock: HttpHeaderRestTemplate
 
     @BeforeEach
@@ -46,16 +44,16 @@ internal class RestTjenesteSikkerhetTest {
             )
         ).initEnvironment()
 
-        whenever(azureTokenServiceMock.generateToken("nais-app")).thenReturn("of azure-token")
+        every { azureTokenServiceMock.generateToken("nais-app") } returns "of azure-token"
         RestTjeneste.konfigurerResttjeneste("nais-app")
 
-        val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
-        verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
-        val valueGenerator = generatorCaptor.value
+        val generatorCaptor = slot<() -> String>()
+        verify { httpHeaderRestTemplateMock.addHeaderGenerator(HttpHeaders.AUTHORIZATION, capture(generatorCaptor)) }
+        val valueGenerator = generatorCaptor.captured
 
         assertAll(
-            { assertThat(valueGenerator.generate()).isEqualTo("Bearer of azure-token") },
-            { verify(azureTokenServiceMock).generateToken("nais-app") }
+            { assertThat(valueGenerator.invoke()).isEqualTo("Bearer of azure-token") },
+            { verify { azureTokenServiceMock.generateToken("nais-app") } }
         )
     }
 
@@ -69,17 +67,17 @@ internal class RestTjenesteSikkerhetTest {
             )
         ).initCucumberEnvironment()
 
-        whenever(stsTokenService.generateToken("nais-app")).thenReturn("of sts-token")
+        every { stsTokenService.generateToken("nais-app") } returns "of sts-token"
 
         RestTjeneste.konfigurerResttjeneste("nais-app")
 
-        val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
-        verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
-        val valueGenerator = generatorCaptor.value
+        val generatorCaptor = slot<() -> String>()
+        verify(atLeast = 0) { httpHeaderRestTemplateMock.addHeaderGenerator(HttpHeaders.AUTHORIZATION, capture(generatorCaptor)) }
+        val valueGenerator = generatorCaptor.captured
 
         assertAll(
-            { assertThat(valueGenerator.generate()).isEqualTo("Bearer of sts-token") },
-            { verify(azureTokenServiceMock, never()).generateToken(anyOrNull()) }
+            { assertThat(valueGenerator.invoke()).isEqualTo("Bearer of sts-token") },
+            { verify(exactly = 0) { azureTokenServiceMock.generateToken(allAny()) } }
         )
     }
 
@@ -95,10 +93,10 @@ internal class RestTjenesteSikkerhetTest {
 
         RestTjeneste.konfigurerResttjeneste("nais-app")
 
-        val generatorCaptor = ArgumentCaptor.forClass(HttpHeaderRestTemplate.ValueGenerator::class.java)
-        verify(httpHeaderRestTemplateMock).addHeaderGenerator(eq(HttpHeaders.AUTHORIZATION), generatorCaptor.capture())
-        val valueGenerator = generatorCaptor.value
+        val generatorCaptor = slot<() -> String>()
+        verify { httpHeaderRestTemplateMock.addHeaderGenerator(HttpHeaders.AUTHORIZATION, capture(generatorCaptor)) }
+        val valueGenerator = generatorCaptor.captured
 
-        assertThat(valueGenerator.generate()).isEqualTo("Bearer secured")
+        assertThat(valueGenerator.invoke()).isEqualTo("Bearer secured")
     }
 }

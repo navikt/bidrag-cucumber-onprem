@@ -19,8 +19,8 @@ class StsService(private val basicAuthRestTemplate: HttpHeaderRestTemplate) {
     }
 
     init {
-        basicAuthRestTemplate.addHeaderGenerator(Headers.BASIC_PASS) { Environment.fetchPropertyOrEnvironment(STS_PASSWORD) }
-        basicAuthRestTemplate.addHeaderGenerator(Headers.BASIC_USER) { Environment.fetchPropertyOrEnvironment(STS_USER) }
+        basicAuthRestTemplate.addHeaderGenerator(Headers.BASIC_PASS) { Environment.fetchPropertyOrEnvironment(STS_PASSWORD)!! }
+        basicAuthRestTemplate.addHeaderGenerator(Headers.BASIC_USER) { Environment.fetchPropertyOrEnvironment(STS_USER)!! }
     }
 
     fun hentServiceBrukerOidcToken(): String? {

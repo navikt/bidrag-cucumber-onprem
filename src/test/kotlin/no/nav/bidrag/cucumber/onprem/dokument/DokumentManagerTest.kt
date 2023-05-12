@@ -1,5 +1,7 @@
 package no.nav.bidrag.cucumber.onprem.dokument
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
 import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.Environment
 import no.nav.bidrag.cucumber.model.CucumberTestRun
@@ -12,13 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.whenever
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
@@ -28,7 +24,7 @@ import org.springframework.web.client.HttpStatusCodeException
 @DisabledOnOs(value = [OS.LINUX], disabledReason = "spring-context og mocking må ha annen implementasjon i linux... testene nedenfor feiler der...")
 internal class DokumentManagerTest {
 
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var resttjenesteMock: HttpHeaderRestTemplate
 
     @BeforeEach
@@ -66,7 +62,7 @@ internal class DokumentManagerTest {
             null
         )
 
-        whenever(resttjenesteMock.exchange(anyString(), any(), anyOrNull(), eq(String::class.java))).thenThrow(notFoundException)
+        every { resttjenesteMock.exchange(any<String>(), any(), any(), eq(String::class.java)) } throws notFoundException
     }
 
     @AfterEach

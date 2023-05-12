@@ -8,9 +8,9 @@ import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.cucumber.aop.ExceptionLoggerAspect
 import no.nav.bidrag.cucumber.aop.TestFailedAdvice
 import no.nav.bidrag.cucumber.model.SuppressStackTraceText
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.ssl.SSLContexts
+import org.apache.hc.client5.http.impl.classic.HttpClients
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory
+import org.apache.hc.core5.ssl.SSLContexts
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
@@ -51,7 +51,7 @@ class SpringConfig {
         val csf = SSLConnectionSocketFactory(sslContext)
 
         val httpClient = HttpClients.custom()
-            .setSSLSocketFactory(csf)
+//            .setSSLSocketFactory(csf)
             .build()
 
         val requestFactory = HttpComponentsClientHttpRequestFactory()
