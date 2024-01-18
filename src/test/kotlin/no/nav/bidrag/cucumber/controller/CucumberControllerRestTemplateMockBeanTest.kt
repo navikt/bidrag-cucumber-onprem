@@ -37,7 +37,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
+                  "ingressesForApps":["https://bidrag-sjablon.intern.dev.nav.no@tag:bidrag-sjablon"]
                 }
                 """.trimMargin().trim(),
                 headers
@@ -72,7 +72,7 @@ class CucumberControllerRestTemplateMockBeanTest {
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
+                  "ingressesForApps":["https://bidrag-sjablon.intern.dev.nav.no@tag:bidrag-sjablon"]
                 }
                 """.trimMargin().trim(),
                 headers

@@ -40,14 +40,14 @@ internal class CucumberControllerIntegrationTest {
 
     @Test
     fun `skal ikke feile ved testing av applikasjon uten sikkerhet`() {
-        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-sjablon.dev.adeo.no", "bidrag-sjablon")
+        assumeThatActuatorHealthIsRunningCachedException("https://bidrag-sjablon.intern.dev.nav.no", "bidrag-sjablon")
 
         val testResponse = testRestTemplate.postForEntity(
             "/run",
             HttpEntity(
                 """
                 {
-                  "ingressesForApps":["https://bidrag-sjablon.dev.adeo.no@tag:bidrag-sjablon"]
+                  "ingressesForApps":["https://bidrag-sjablon.intern.dev.nav.no@tag:bidrag-sjablon"]
                 }
                 """.trimMargin().trim(),
                 initJsonAsMediaType()
