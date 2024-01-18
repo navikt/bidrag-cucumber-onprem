@@ -26,7 +26,10 @@ jobs:
   build:
     name: Build with maven and docker
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     steps:
       - run: echo NOT_FOUND=${{ steps.dockerimage.outputs.not_found }} >> $GITHUB_ENV
       - uses: actions/checkout@v3
