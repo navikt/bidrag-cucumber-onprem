@@ -2,6 +2,7 @@ name: bidrag-cucumber-onprem-feature
 ingresses:
   - https://bidrag-cucumber-onprem-feature.dev.adeo.no
   - https://bidrag-cucumber-onprem-feature.dev.intern.nav.no
+  - https://bidrag-cucumber-onprem-feature.intern.dev.nav.no
 access:
   outbound:
     bidrag-sak: bidrag-sak-feature.dev-fss-pub.nais.io
