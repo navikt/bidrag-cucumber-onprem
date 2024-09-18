@@ -10,17 +10,9 @@ import java.time.Year
 @Suppress("unused") // used by cucumber
 class SakEgenskaper : No {
     init {
-        Når("jeg henter bidragssaker for person med fnr som finnes") {
-            CucumberTestRun.hentRestTjenesteTilTesting()
-                .exchangeGet("/bidrag-sak/person/sak/$fnr1")
-        }
         Når("jeg bruker post for å hente bidragssaker for person med fnr som finnes") {
             CucumberTestRun.hentRestTjenesteTilTesting()
                 .exchangePost("/person/sak", "\"$fnr1\"")
-        }
-        Når("jeg henter bidragssaker for person med fnr som ikke finnes") {
-            CucumberTestRun.hentRestTjenesteTilTesting()
-                .exchangeGet("/bidrag-sak/person/sak/12345678901", failOnNotFound = false)
         }
         Når("jeg oppretter bidragssak med enhet {string}") { enhet: String ->
             CucumberTestRun.hentRestTjenesteTilTesting().exchangePost(
