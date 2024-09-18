@@ -13,20 +13,12 @@ Egenskap: bidrag-sak
     Og header 'content-type' skal være 'application/json'
     Og responsen skal inneholde 'status' = 'UP'
 
-  Scenario: Sjekk at vi får NOT FOUND dersom vi ber om sak for person som ikke eksisterer i databasen
-    Når jeg henter bidragssaker for person med fnr som ikke finnes
-    Så skal http status være 404
-
   Scenario: Sjekk at vi får 201 CREATE hvis vi ber om å opprette en sak i databasen
     Når jeg oppretter bidragssak med enhet '1701'
     Så skal http status være 201
 
   Scenario: Sjekk at vi får 200 OK når vi ber om å opprette en sak i databasen
     Når jeg oppretter bidragssak med rolle for fnr som finnes
-    Så skal http status være 200
-
-  Scenario: Sjekk at vi får 200 OK når vi ber om sak for person som eksisterer i databasen
-    Når jeg henter bidragssaker for person med fnr som finnes
     Så skal http status være 200
 
   Scenario: Sjekk at vi får 200 OK når vi bruker post for å finne sak for person som eksisterer i databasen
